@@ -33,7 +33,7 @@ classdef mdtsObject < CoreObject
             defaultName = 'Time Series';
             defaultWho = 'Author';
             defaultWhen = 'Now';
-            defaultDescription = 'No descriptioni available';
+            defaultDescription = 'No description available';
             defaultComment = 'No comment available';
             
             addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric'}, {'nonempty'}));
