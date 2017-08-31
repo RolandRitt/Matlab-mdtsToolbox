@@ -53,6 +53,41 @@ classdef mdtsObject < CoreObject
             obj@CoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment);
             
         end
+        
+        function expandDataSet(obj, addData, addTags)
+            
+            timeSize = numel(obj.time);
+            addTagSize = numel(addTags);
+            
+            if~isnumeric(addData)
+                
+                errID = 'expandDataSet:DataNotNumeric';
+                errMsg = 'The given data matrix is not numeric!';
+                error(errID, errMsg);
+                
+            elseif~(size(addData, 1) == timeSize)
+                
+                errID = 'expandDataSet:InvalideDataSize1';
+                errMsg = 'The given data matrix has a different number of time stamps than the original data!';
+                error(errID, errMsg);
+                
+            elseif~(size(addData, 2) == addTagSize)
+                
+                errID = 'expandDataSet:InvalideDataSize2';
+                errMsg = 'The given data matrix has a different number of time stamps than the original data!';
+                error(errID, errMsg);
+                
+            elseif~(iscell(addTags))
+                
+                errID = 'expandDataSet:InvalidTags';
+                errMsg = 'The given tags are no cell array!';
+                error(errID, errMsg);
+                              
+            end
+            
+            expandDataSet@CoreObject(obj, addData, addTags); 
+            
+        end
             
     end
     
