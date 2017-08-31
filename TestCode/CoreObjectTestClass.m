@@ -473,6 +473,50 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
         
         end
         
+        function testExpandDataSet(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 25, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 30, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 5, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 15, 14, 3, 3, 123));
+                    datenum(datetime(2017, 9, 5, 14, 3, 3, 123))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3;
+                    4, 3, 2, 1;
+                    5, 4, 3, 2];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            
+            addData = [2, 3;
+                       3, 4;
+                       4, 5;
+                       5, 6;
+                       6, 7;
+                       7, 8];
+            addTags = {'AddedTag1', 'AddedTag2'};
+
+            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns.expandDataSet(addData, addTags);
+            
+            testCase.verifyEqual(returns.exData, addData);
+            testCase.verifyEqual(returns.exTags, addTags);
+            
+            returns.expandDataSet(addData, addTags);
+            
+            testCase.verifyEqual(returns.exData, [addData, addData]);
+            testCase.verifyEqual(returns.exTags, [addTags, addTags]);
+            
+        end
+        
     end
     
 end
