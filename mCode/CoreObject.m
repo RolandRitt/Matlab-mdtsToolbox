@@ -26,6 +26,8 @@ classdef CoreObject < matlab.mixin.Copyable
         time
         data
         tags
+        exData = [];
+        exTags = [];
         
         %Meta data
         
@@ -252,7 +254,7 @@ classdef CoreObject < matlab.mixin.Copyable
                 
             end
              
-            end
+        end
         
         function tagIndices = getTagIndices(obj, tagList)
             
@@ -319,6 +321,13 @@ classdef CoreObject < matlab.mixin.Copyable
             
             startDateNum = datenum(startVec);
             endDateNum = datenum(endVec) - 1;
+            
+        end
+        
+        function expandDataSet(obj, addData, addTags)
+            
+            obj.exData = [obj.exData, addData];
+            obj.exTags = [obj.exTags, addTags];
             
         end
                 
