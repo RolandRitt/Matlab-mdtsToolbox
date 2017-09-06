@@ -258,11 +258,25 @@ classdef CoreObject < matlab.mixin.Copyable
         
         function tagIndices = getTagIndices(obj, tagList)
             
-            correctTagInput = ismember(tagList, obj.tags);
+            nColumns = numel(obj.tags);
             
-            if(correctTagInput)
+            if(isempty(obj.exTags))
+                
+                correctTagInput = ismember(tagList, obj.tags);
+            
+            else
+                
+                correctTagInput = ismember(tagList, obj.tags) | ismember(tagList, obj.exTags);
+                
+            end
+            
+            if(prod(correctTagInput) && isempty(obj.exTags))
                 
                 tagIndices = find(ismember(obj.tags, tagList) == 1);
+                
+            elseif(prod(correctTagInput) && ~isempty(obj.exTags))
+                
+                tagIndices = [find(ismember(obj.tags, tagList) == 1), find(ismember(obj.exTags, tagList) == 1) + nColumns];
                 
             else
                 
@@ -344,9 +358,26 @@ classdef CoreObject < matlab.mixin.Copyable
         
         function keepTagsOfData(obj, tagsI)
         
-            obj.data = obj.data(:, tagsI);
-            obj.tags = obj.tags(tagsI);
-            obj.units = obj.units(tagsI);
+            nColumns = numel(obj.tags);
+            
+            tagsITags = tagsI(tagsI <= nColumns);
+            tagsIExTags = tagsI(tagsI > nColumns) - nColumns;
+            
+            obj.data = obj.data(:, tagsITags);
+            obj.tags = obj.tags(tagsITags);
+            obj.units = obj.units(tagsITags);
+            
+            if(isempty(tagsIExTags))
+                
+                obj.exData = [];
+                obj.exTags = [];
+                
+            else
+            
+                obj.exData = obj.exData(:, tagsIExTags);
+                obj.exTags = obj.exTags(tagsIExTags);
+                
+            end
         
         end
         
