@@ -161,5 +161,42 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.exTags, {[tags{2}, '_', 'Calc', '_', operator]});
             
         end
+        
+        function testCascading(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 25, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 30, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 5, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 15, 14, 3, 3, 123));
+                    datenum(datetime(2017, 9, 5, 14, 3, 3, 123))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3;
+                    4, 3, 2, 1;
+                    5, 4, 3, 2];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            
+            operator = 'multiply';
+            calcObj = DummyCalcObject(3, operator);
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+                        
+            returns.calc(calcObj, tags(2)).calc(calcObj, tags(1));
+            
+            testCase.verifyEqual(returns.exData(:, 1), data(:, 2) .* 3);
+            testCase.verifyEqual(returns.exTags(:, 1), {[tags{2}, '_', 'Calc', '_', operator]});
+            testCase.verifyEqual(returns.exData(:, 2), data(:, 1) .* 3);
+            testCase.verifyEqual(returns.exTags(:, 2), {[tags{1}, '_', 'Calc', '_', operator]});
+            
+        end
     end
 end
