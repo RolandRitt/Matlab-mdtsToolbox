@@ -1,4 +1,4 @@
-classdef (Abstract) calcObjectInterface
+classdef (Abstract) calcObjectInterface < handle
     %
     % Description : Define the interface of calculation objects
     %
