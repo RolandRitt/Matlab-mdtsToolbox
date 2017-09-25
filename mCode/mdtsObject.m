@@ -95,7 +95,17 @@ classdef mdtsObject < CoreObject
             
             dataOut = calcObj.apply(obj.data(:, tagI));
             
-            expandDataSet(obj, dataOut, {tagNameOutput});
+            expandDataSet(obj, dataOut, tagNameOutput);
+            
+        end
+        
+        function obj = localDerivative(obj, tagNameInput, ls, noBfs)
+            
+            L = dopD(obj.time(1 : ls), noBfs);
+            LDOobj = LDO(L);
+            
+            tagNameOutput = {['LD_', tagNameInput{1}]};
+            obj = obj.calc(LDOobj, tagNameInput, tagNameOutput);
             
         end
             
