@@ -152,13 +152,14 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             operator = 'multiply';
             calcObj = DummyCalcObject(3, operator);
+            returnTagName = 'calculatedColumn';
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
                         
-            returns.calc(calcObj, tags(2));
+            returns.calc(calcObj, tags(2), returnTagName);
             
             testCase.verifyEqual(returns.exData, data(:, 2) .* 3);
-            testCase.verifyEqual(returns.exTags, {[tags{2}, '_', 'Calc', '_', operator]});
+            testCase.verifyEqual(returns.exTags, {returnTagName});
             
         end
         
@@ -187,15 +188,17 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             operator = 'multiply';
             calcObj = DummyCalcObject(3, operator);
+            returnTagName1 = 'calculatedColumn_1';
+            returnTagName2 = 'calculatedColumn_2';
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
                         
-            returns.calc(calcObj, tags(2)).calc(calcObj, tags(1));
+            returns.calc(calcObj, tags(2), returnTagName1).calc(calcObj, tags(3), returnTagName2);
             
             testCase.verifyEqual(returns.exData(:, 1), data(:, 2) .* 3);
-            testCase.verifyEqual(returns.exTags(:, 1), {[tags{2}, '_', 'Calc', '_', operator]});
-            testCase.verifyEqual(returns.exData(:, 2), data(:, 1) .* 3);
-            testCase.verifyEqual(returns.exTags(:, 2), {[tags{1}, '_', 'Calc', '_', operator]});
+            testCase.verifyEqual(returns.exTags(:, 1), {returnTagName1});
+            testCase.verifyEqual(returns.exData(:, 2), data(:, 3) .* 3);
+            testCase.verifyEqual(returns.exTags(:, 2), {returnTagName2});
             
         end
     end
