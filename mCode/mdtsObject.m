@@ -93,7 +93,7 @@ classdef mdtsObject < CoreObject
             
             tagI = getTagIndices(obj, tagNameInput);
             
-            dataOut = calcObj.calc(obj.data(:, tagI));
+            dataOut = calcObj.apply(obj.data(:, tagI));
             
             expandDataSet(obj, dataOut, {tagNameOutput});
             
