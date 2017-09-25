@@ -152,14 +152,14 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             operator = 'multiply';
             calcObj = DummyCalcObject(3, operator);
-            returnTagName = 'calculatedColumn';
+            returnTagName = {'calculatedColumn'};
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
                         
             returns.calc(calcObj, tags(2), returnTagName);
             
             testCase.verifyEqual(returns.exData, data(:, 2) .* 3);
-            testCase.verifyEqual(returns.exTags, {returnTagName});
+            testCase.verifyEqual(returns.exTags, returnTagName);
             
         end
         
@@ -188,17 +188,17 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             operator = 'multiply';
             calcObj = DummyCalcObject(3, operator);
-            returnTagName1 = 'calculatedColumn_1';
-            returnTagName2 = 'calculatedColumn_2';
+            returnTagName1 = {'calculatedColumn_1'};
+            returnTagName2 = {'calculatedColumn_2'};
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
                         
             returns.calc(calcObj, tags(2), returnTagName1).calc(DummyCalcObject(4, 'subtract'), tags(3), returnTagName2);
             
             testCase.verifyEqual(returns.exData(:, 1), data(:, 2) .* 3);
-            testCase.verifyEqual(returns.exTags(:, 1), {returnTagName1});
+            testCase.verifyEqual(returns.exTags(:, 1), returnTagName1);
             testCase.verifyEqual(returns.exData(:, 2), data(:, 3) - 4);
-            testCase.verifyEqual(returns.exTags(:, 2), {returnTagName2});
+            testCase.verifyEqual(returns.exTags(:, 2), returnTagName2);
             
         end
         
@@ -220,7 +220,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                  -1,  0,  1;
                   0, -1,  1];
             calcObj = LDO(L);
-            returnTagName = 'calculatedColumn';
+            returnTagName = {'calculatedColumn'};
             expectedReturn = ones(10, 1);
             expectedReturn(2 : end - 1) = 2;
             
@@ -229,7 +229,34 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             returns.calc(calcObj, tags(1), returnTagName);
             
             testCase.verifyEqual(returns.exData, expectedReturn);
-            testCase.verifyEqual(returns.exTags, {returnTagName});
+            testCase.verifyEqual(returns.exTags, returnTagName);
+            
+        end
+        
+        function testStandardLocalDerivative(testCase)
+            
+            vec = [1 : 10]';
+            time = 736900 + vec;
+            ts = duration(0, 0, 0, 50);
+            data = vec;
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            
+            ls1 = 3;
+            noBfs1 = 3;
+            expectedReturn1 = ones(10, 1);
+
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+                        
+            returns.localDerivative(tags(1), ls1, noBfs1);
+            
+            testCase.verifyLessThan(returns.exData(:, 1) - expectedReturn1, 1e-14);
+            testCase.verifyEqual(returns.exTags(1), {['LD_', tags{1}]});
             
         end
     end
