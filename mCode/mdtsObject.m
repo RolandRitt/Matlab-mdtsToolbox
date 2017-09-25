@@ -89,13 +89,13 @@ classdef mdtsObject < CoreObject
             
         end
         
-        function obj = calc(obj, calcObj, tagName)
+        function obj = calc(obj, calcObj, tagNameInput, tagNameOutput)
             
-            tagI = getTagIndices(obj, tagName);
+            tagI = getTagIndices(obj, tagNameInput);
             
-            [dataOut, calcTagName] = calcObj.calc(obj.data(:, tagI));
+            dataOut = calcObj.calc(obj.data(:, tagI));
             
-            expandDataSet(obj, dataOut, {[tagName{1}, '_', calcTagName]});
+            expandDataSet(obj, dataOut, {tagNameOutput});
             
         end
             
