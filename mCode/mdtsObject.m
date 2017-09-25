@@ -36,11 +36,11 @@ classdef mdtsObject < CoreObject
             defaultDescription = 'No description available';
             defaultComment = 'No comment available';
             
-            addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric'}, {'nonempty'}));
+            addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(dataIn, 1), 1]}));            
             addRequired(p, 'dataIn', @(x)validateattributes(x, {'numeric'}, {'nonempty'}));
-            addRequired(p, 'tagsIn', @(x)validateattributes(x, {'cell'}, {'nonempty'}));
+            addRequired(p, 'tagsIn', @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(dataIn, 2)]}));
             
-            addParameter(p, 'units', defaultUnits);
+            addParameter(p, 'units', defaultUnits, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(dataIn, 2)]}));
             addParameter(p, 'ts', defaultts);
             addParameter(p, 'name', defaultName);
             addParameter(p, 'who', defaultWho);
