@@ -91,21 +91,33 @@ classdef mdtsObject < CoreObject
         
         function obj = calc(obj, calcObj, tagNameInput, tagNameOutput)
             
-            tagI = getTagIndices(obj, tagNameInput);
+            p = inputParser();
+            addRequired(p, 'calcObj', @(x) isa(x, 'calcObjectInterface'));
+            addRequired(p, 'tagNameInput', @(x) iscell(x) && ischar(x{1}));
+            addRequired(p, 'tagNameOutput', @(x) iscell(x) && ischar(x{1}));
+            parse(p, calcObj, tagNameInput, tagNameOutput);
+            
+            tagI = getTagIndices(obj, p.Results.tagNameInput);
             
             dataOut = calcObj.apply(obj.data(:, tagI));
             
-            expandDataSet(obj, dataOut, tagNameOutput);
+            expandDataSet(obj, dataOut, p.Results.tagNameOutput);
             
         end
         
         function obj = localDerivative(obj, tagNameInput, ls, noBfs)
             
-            L = dopD(obj.time(1 : ls), noBfs);
+            p = inputParser();
+            addRequired(p, 'tagNameInput', @(x) iscell(x) && ischar(x{1}));
+            addRequired(p, 'ls', @(x) isnumeric(x) && isequal(size(x),[1 1]));
+            addRequired(p, 'noBfs', @(x) isnumeric(x) && isequal(size(x),[1 1]));
+            parse(p, tagNameInput, ls, noBfs);
+            
+            L = dopD(obj.time(1 : p.Results.ls), p.Results.noBfs);
             LDOobj = LDO(L);
             
-            tagNameOutput = {['LD_', tagNameInput{1}]};
-            obj = obj.calc(LDOobj, tagNameInput, tagNameOutput);
+            tagNameOutput = {['LD_', p.Results.tagNameInput{1}]};
+            obj = obj.calc(LDOobj, p.Results.tagNameInput, tagNameOutput);
             
         end
             
