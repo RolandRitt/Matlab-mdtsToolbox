@@ -89,7 +89,7 @@ classdef mdtsObject < CoreObject
             
         end
         
-        function calc(obj, calcObj, tagName)
+        function obj = calc(obj, calcObj, tagName)
             
             tagI = getTagIndices(obj, tagName);
             
