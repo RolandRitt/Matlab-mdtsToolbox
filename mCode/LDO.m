@@ -1,4 +1,4 @@
-classdef LDO < handle
+classdef LDO < handle & calcObjectInterface
     properties (Access=private)
         lc
         lc_conv %center row flipped for convolution
