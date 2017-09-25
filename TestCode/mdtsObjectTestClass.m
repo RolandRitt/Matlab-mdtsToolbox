@@ -34,7 +34,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                     7, 6;
                     8, 7;
                     6, 5];
-            tags = {'Channel 1'; 'Channel2'};
+            tags = {'Channel 1', 'Channel2'};
             units = {'s', 'min'};
             name = 'TS-Test';
             who = 'Operator';
@@ -208,8 +208,8 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             time = 736900 + vec;
             ts = duration(0, 0, 0, 50);
             data = vec;
-            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
-            units = {'s', 'min', 'elephants', 'giraffes'};
+            tags = {'Channel 1'};
+            units = {'s'};
             name = 'TS-Test';
             who = 'Operator';
             when = 'Now';
@@ -239,8 +239,8 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             time = 736900 + vec;
             ts = duration(0, 0, 0, 50);
             data = vec;
-            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
-            units = {'s', 'min', 'elephants', 'giraffes'};
+            tags = {'Channel 1'};
+            units = {'s'};
             name = 'TS-Test';
             who = 'Operator';
             when = 'Now';
