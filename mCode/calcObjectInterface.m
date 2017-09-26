@@ -24,6 +24,9 @@ classdef (Abstract) calcObjectInterface < handle
     methods (Abstract)
         
         result = apply(obj, inputData)
+        % All inputs from the calc method of the MDTS object will be passed
+        % to this function. The calc object has to check the inputs,
+        % whether they are m or just 1 data column(s).
         
     end
     
