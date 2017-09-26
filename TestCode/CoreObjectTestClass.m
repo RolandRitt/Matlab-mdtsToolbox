@@ -97,6 +97,8 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             
             testCase.verifyEqual(returns.timeRelative, time - time(1));
             testCase.verifyEqual(returns.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
+            
+            testCase.verifyError(@()returns.fs, 'fs:dataNotUniform');
 
         end
         
