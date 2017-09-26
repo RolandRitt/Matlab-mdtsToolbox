@@ -81,10 +81,20 @@ classdef CoreObject < matlab.mixin.Copyable
             
         end
         
-        function fs = get.fs(obj)            
+        function fs = get.fs(obj)
             
-            ts_s = seconds(obj.ts);
-            fs = 1 / ts_s;
+            if(isempty(obj.ts))
+                
+                errID = 'fs:dataNotUniform';
+                errMsg = 'Data is not uniform, no fs existent!';
+                error(errID, errMsg);
+                
+            else
+                
+                ts_s = seconds(obj.ts);
+                fs = 1 / ts_s;
+                
+            end
             
         end
         
@@ -337,7 +347,7 @@ classdef CoreObject < matlab.mixin.Copyable
             
         end
         
-        function expandDataSet(obj, addData, addTags)
+        function obj = expandDataSet(obj, addData, addTags)
             
             obj.exData = [obj.exData, addData];
             obj.exTags = [obj.exTags, addTags];
