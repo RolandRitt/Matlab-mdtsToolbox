@@ -84,8 +84,7 @@ classdef CoreObject < matlab.mixin.Copyable
         function fs = get.fs(obj)            
             
             ts_s = seconds(obj.ts);
-            fs_s = 1 / ts_s;
-            fs = duration(0, 0, fs_s);
+            fs = 1 / ts_s;
             
         end
         
