@@ -56,7 +56,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.description, description);
             testCase.verifyEqual(returns.comment, comment);
             
-            testCase.verifyEqual(returns.fs, duration(0, 0, 1 / seconds(ts)));
+            testCase.verifyEqual(returns.fs, 1 / seconds(ts));
             testCase.verifyEqual(returns.timeRelative, time - time(1));
             testCase.verifyEqual(returns.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
             
