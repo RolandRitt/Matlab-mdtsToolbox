@@ -120,6 +120,26 @@ classdef mdtsObject < CoreObject
             obj = obj.calc(LDOobj, p.Results.tagNameInput, tagNameOutput);
             
         end
+        
+        function figH = plotMulti(obj, varargin)
+            
+            p = inputParser();
+            p.KeepUnmatched=true;
+            addRequired(p, 'obj', @(x) isa(x, 'mdtsObject')); %check if input is a MDTSObject
+            addParameter(p, 'Size', [8.8,11.7], @(x)isnumeric(x)&&isvector(x)); %higth and width
+            addParameter(p, 'FontSize', 10, @isnumeric);
+            parse(p, obj, varargin{:});
+            tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
+            UnmatchedArgs = reshape(tmp',[],1)';
+            
+            tagIndices = obj.getTagIndices(obj.tags);
+            
+            figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
+            %fM = FigureManager;
+               
+            plotMulti(obj.timeDateTime, obj.data(:, tagIndices), 'Time', obj.tags, UnmatchedArgs{:});
+            
+        end
             
     end
     
