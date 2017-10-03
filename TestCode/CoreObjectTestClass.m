@@ -497,24 +497,27 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
                        5, 6;
                        6, 7;
                        7, 8];
-            addTags = {'AddedTag1', 'AddedTag2'};
+            addTags1 = {'AddedTag1', 'AddedTag2'};
+            addTags2 = {'AddedTag3', 'AddedTag4'};
 
             returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             returns2 = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             
-            returns.expandDataSet(addData, addTags);
-            returns2.expandDataSet(addData, addTags).expandDataSet(addData, addTags);
+            returns.expandDataSet(addData, addTags1);
+            returns2.expandDataSet(addData, addTags1).expandDataSet(addData, addTags2);
             
             testCase.verifyEqual(returns.data(:, 5 : end), addData);
-            testCase.verifyEqual(returns.tags(:, 5 : end), addTags);
+            testCase.verifyEqual(returns.tags(:, 5 : end), addTags1);
             
-            returns.expandDataSet(addData, addTags);
+            returns.expandDataSet(addData, addTags2);
             
             testCase.verifyEqual(returns.data(:, 5 : end), [addData, addData]);
-            testCase.verifyEqual(returns.tags(:, 5 : end), [addTags, addTags]);
+            testCase.verifyEqual(returns.tags(:, 5 : end), [addTags1, addTags2]);
             
             testCase.verifyEqual(returns2.data(:, 5 : end), [addData, addData]);
-            testCase.verifyEqual(returns2.tags(:, 5 : end), [addTags, addTags]);
+            testCase.verifyEqual(returns2.tags(:, 5 : end), [addTags1, addTags2]);
+            
+            testCase.verifyError(@()returns.expandDataSet(addData, addTags1), 'expandDataSet:NonUniqueTags');
             
         end
         
