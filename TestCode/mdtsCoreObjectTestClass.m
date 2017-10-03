@@ -1,6 +1,6 @@
-classdef CoreObjectTestClass < matlab.unittest.TestCase
+classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
     %
-    % Description : Test the CoreObject class
+    % Description : Test the mdtsCoreObject class
     %
     % Author :
     %    Paul O'Leary
@@ -42,7 +42,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -81,7 +81,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -125,7 +125,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -196,7 +196,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             
             testCase.verifyError(@()returns.getData(), 'getData:InvalidNumberOfInputs');  
 
@@ -226,7 +226,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             dataToExtract = data(:, columnsToExtract);
             unitsToExtract = units(:, columnsToExtract);
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             returnObject = returns.getData(tagsToExtract);
             
             testCase.verifyEqual(returnObject.time, time);
@@ -270,7 +270,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             dataToExtract2 = data(linesToExtract2, columnsToExtract);
             unitsToExtract = units(:, columnsToExtract);
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             returnObject1 = returns.getData(tagsToExtract, timeToExtract1);
             returnObject2 = returns.getData(tagsToExtract, timeToExtract2);
             returnObject3 = returns.getData(tagsToExtract, timeToExtract2StartEnd);
@@ -313,7 +313,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             
             testCase.verifyError(@()returns.getData(1, 2, 3), 'getData:InvalidNumberOfInputs');
             
@@ -341,7 +341,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             columnsToExtract = [2, 4];
             tagsToExtract = tags(columnsToExtract);
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             tagIndices = returns.getTagIndices(tagsToExtract);
             
             testCase.verifyEqual(tagIndices, columnsToExtract);           
@@ -376,7 +376,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             timeInterval = time(linesToExtract);
             tooLargeInterval = [time(2); time(end) + 1 / (60 * 60 * 24)];
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             timeIndices = returns.getIntervalIndices(timeInterval);
             
             testCase.verifyEqual(timeIndices, linesToExtract);   
@@ -411,7 +411,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             tagListInCorrect1 = {'Channel 1', 'Channel 2', 'Channel 3', 'SomeChannel'};
             tagListInCorrect2 = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 5'};
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
                         
             testCase.verifyEqual(true, returns.checkTags(tagListCorrect));   
             testCase.verifyEqual(false, returns.checkTags(tagListInCorrect1));   
@@ -447,7 +447,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             date3 = '2017_7_25';
             date4 = '2017_8';
             
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             extractedReturns = returns.getData(tags, date4);    
             
             [start1, end1] = returns.endStartOfDate(date1);
@@ -500,8 +500,8 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             addTags1 = {'AddedTag1', 'AddedTag2'};
             addTags2 = {'AddedTag3', 'AddedTag4'};
 
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
-            returns2 = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns2 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             
             returns.expandDataSet(addData, addTags1);
             returns2.expandDataSet(addData, addTags1).expandDataSet(addData, addTags2);
@@ -552,7 +552,7 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
                        7, 8];
             addTags = {'AddedTag1', 'AddedTag2'};
                       
-            returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             returns.expandDataSet(addData, addTags);
             
             extraction1 = returns(:, :);

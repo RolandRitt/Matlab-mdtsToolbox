@@ -1,4 +1,4 @@
-classdef CoreObject < matlab.mixin.Copyable
+classdef mdtsCoreObject < matlab.mixin.Copyable
     %
     % Description : Core object to store time series data together with
     % relevant additional information
@@ -51,7 +51,7 @@ classdef CoreObject < matlab.mixin.Copyable
     
     methods
         
-        function obj = CoreObject(timeIn, dataIn, tagsIn, unitsIn, tsIn, nameIn, whoIn, whenIn, descriptionIn, commentIn)
+        function obj = mdtsCoreObject(timeIn, dataIn, tagsIn, unitsIn, tsIn, nameIn, whoIn, whenIn, descriptionIn, commentIn)
             
             % Core data
             
