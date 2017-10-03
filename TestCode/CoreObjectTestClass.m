@@ -197,15 +197,8 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             comment = {'This is'; 'a comment'};
             
             returns = CoreObject(time, data, tags, units, ts, name, who, when, description, comment);
-            returnObject = returns.getData;
             
-            testCase.verifyEqual(returnObject.time, time);
-            testCase.verifyEqual(returnObject.data, data);
-            testCase.verifyEqual(returnObject.tags, tags);
-            testCase.verifyEqual(returnObject.units, units);
-            testCase.verifyEqual(returnObject.isSubset, false);
-            
-            testCase.verifyEqual(returns.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
+            testCase.verifyError(@()returns.getData(), 'getData:InvalidNumberOfInputs');  
 
         end
         
@@ -512,16 +505,16 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             returns.expandDataSet(addData, addTags);
             returns2.expandDataSet(addData, addTags).expandDataSet(addData, addTags);
             
-            testCase.verifyEqual(returns.exData, addData);
-            testCase.verifyEqual(returns.exTags, addTags);
+            testCase.verifyEqual(returns.data(:, 5 : end), addData);
+            testCase.verifyEqual(returns.tags(:, 5 : end), addTags);
             
             returns.expandDataSet(addData, addTags);
             
-            testCase.verifyEqual(returns.exData, [addData, addData]);
-            testCase.verifyEqual(returns.exTags, [addTags, addTags]);
+            testCase.verifyEqual(returns.data(:, 5 : end), [addData, addData]);
+            testCase.verifyEqual(returns.tags(:, 5 : end), [addTags, addTags]);
             
-            testCase.verifyEqual(returns2.exData, [addData, addData]);
-            testCase.verifyEqual(returns2.exTags, [addTags, addTags]);
+            testCase.verifyEqual(returns2.data(:, 5 : end), [addData, addData]);
+            testCase.verifyEqual(returns2.tags(:, 5 : end), [addTags, addTags]);
             
         end
         
@@ -564,25 +557,23 @@ classdef CoreObjectTestClass < matlab.unittest.TestCase
             extraction3 = returns(:, tags(2 : 4));
             extraction4 = returns(:, [tags(2 : 4), addTags(1)]);
             
-            testCase.verifyEqual(data(:, :), extraction1.data);
-            testCase.verifyEqual(tags(:, :), extraction1.tags);
-            testCase.verifyEqual(addData(:, :), extraction1.exData);
-            testCase.verifyEqual(addTags(:, :), extraction1.exTags);
+            testCase.verifyEqual(data(:, :), extraction1.data(:, 1 : 4));
+            testCase.verifyEqual(tags(:, :), extraction1.tags(:, 1 : 4));
+            testCase.verifyEqual(addData(:, :), extraction1.data(:, 5 : end));
+            testCase.verifyEqual(addTags(:, :), extraction1.tags(:, 5 : end));
 
-            testCase.verifyEqual(data(:, 3 : 4), extraction2.data);
-            testCase.verifyEqual(tags(:, 3 : 4), extraction2.tags);
-            testCase.verifyEqual(addData(:, :), extraction2.exData);
-            testCase.verifyEqual(addTags(:, :), extraction2.exTags);
+            testCase.verifyEqual(data(:, 3 : 4), extraction2.data(:, 1 : 2));
+            testCase.verifyEqual(tags(:, 3 : 4), extraction2.tags(:, 1 : 2));
+            testCase.verifyEqual(addData(:, :), extraction2.data(:, 3 : 4));
+            testCase.verifyEqual(addTags(:, :), extraction2.tags(:, 3 : 4));
 
             testCase.verifyEqual(data(:, 2 : 4), extraction3.data);
             testCase.verifyEqual(tags(:, 2 : 4), extraction3.tags);
-            testCase.verifyEqual([], extraction3.exData);
-            testCase.verifyEqual([], extraction3.exTags);
             
-            testCase.verifyEqual(data(:, 2 : 4), extraction4.data);
-            testCase.verifyEqual(tags(:, 2 : 4), extraction4.tags);
-            testCase.verifyEqual(addData(:, 1), extraction4.exData);
-            testCase.verifyEqual(addTags(:, 1), extraction4.exTags);
+            testCase.verifyEqual(data(:, 2 : 4), extraction4.data(:, 1 : 3));
+            testCase.verifyEqual(tags(:, 2 : 4), extraction4.tags(:, 1 : 3));
+            testCase.verifyEqual(addData(:, 1), extraction4.data(:, 4 : end));
+            testCase.verifyEqual(addTags(:, 1), extraction4.tags(:, 4 : end));
             
         end
         
