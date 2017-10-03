@@ -330,12 +330,22 @@ classdef CoreObject < matlab.mixin.Copyable
         
         function obj = expandDataSet(obj, addData, addTags)
             
-            addUnits = cell(1, numel(addTags));
-            addUnits(:) = {'-'};
-            
-            obj.data = [obj.data, addData];
-            obj.tags = [obj.tags, addTags];
-            obj.units = [obj.units, addUnits];
+            if(~checkTags(obj, addTags))
+                
+                addUnits = cell(1, numel(addTags));
+                addUnits(:) = {'-'};
+                
+                obj.data = [obj.data, addData];
+                obj.tags = [obj.tags, addTags];
+                obj.units = [obj.units, addUnits];
+                
+            else
+                
+                errID = 'expandDataSet:NonUniqueTags';
+                errMsg = 'Given tags for data expansion are already existend in the data set!';
+                error(errID, errMsg);
+                
+            end
             
         end
                 
