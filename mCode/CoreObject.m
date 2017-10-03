@@ -26,8 +26,6 @@ classdef CoreObject < matlab.mixin.Copyable
         time
         data
         tags
-        exData = [];
-        exTags = [];
         
         %Meta data
         
@@ -215,13 +213,10 @@ classdef CoreObject < matlab.mixin.Copyable
             
             nArguments = numel(varargin);
     
-            tagList = obj.tags;
             intervalIndices = [1; numel(obj.time)];
     
             switch nArguments
-        
-                case 0 %getData()
-            
+                   
                 case 1 %getData(tagList)
             
                     tagList = varargin{1};
@@ -266,27 +261,13 @@ classdef CoreObject < matlab.mixin.Copyable
         end
         
         function tagIndices = getTagIndices(obj, tagList)
-            
-            nColumns = numel(obj.tags);
-            
-            if(isempty(obj.exTags))
-                
-                correctTagInput = ismember(tagList, obj.tags);
-            
-            else
-                
-                correctTagInput = ismember(tagList, obj.tags) | ismember(tagList, obj.exTags);
-                
-            end
-            
-            if(prod(correctTagInput) && isempty(obj.exTags))
+                       
+            correctTagInput = ismember(tagList, obj.tags);
+                       
+            if(correctTagInput)
                 
                 tagIndices = find(ismember(obj.tags, tagList) == 1);
-                
-            elseif(prod(correctTagInput) && ~isempty(obj.exTags))
-                
-                tagIndices = [find(ismember(obj.tags, tagList) == 1), find(ismember(obj.exTags, tagList) == 1) + nColumns];
-                
+                               
             else
                 
                 notIncludedTags = tagList(~correctTagInput);
@@ -349,8 +330,12 @@ classdef CoreObject < matlab.mixin.Copyable
         
         function obj = expandDataSet(obj, addData, addTags)
             
-            obj.exData = [obj.exData, addData];
-            obj.exTags = [obj.exTags, addTags];
+            addUnits = cell(1, numel(addTags));
+            addUnits(:) = {'-'};
+            
+            obj.data = [obj.data, addData];
+            obj.tags = [obj.tags, addTags];
+            obj.units = [obj.units, addUnits];
             
         end
                 
@@ -366,27 +351,10 @@ classdef CoreObject < matlab.mixin.Copyable
         end
         
         function keepTagsOfData(obj, tagsI)
-        
-            nColumns = numel(obj.tags);
-            
-            tagsITags = tagsI(tagsI <= nColumns);
-            tagsIExTags = tagsI(tagsI > nColumns) - nColumns;
-            
-            obj.data = obj.data(:, tagsITags);
-            obj.tags = obj.tags(tagsITags);
-            obj.units = obj.units(tagsITags);
-            
-            if(isempty(tagsIExTags))
-                
-                obj.exData = [];
-                obj.exTags = [];
-                
-            else
-            
-                obj.exData = obj.exData(:, tagsIExTags);
-                obj.exTags = obj.exTags(tagsIExTags);
-                
-            end
+                   
+            obj.data = obj.data(:, tagsI);
+            obj.tags = obj.tags(tagsI);
+            obj.units = obj.units(tagsI);
         
         end
         
