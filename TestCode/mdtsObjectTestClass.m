@@ -107,22 +107,23 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                        5, 6;
                        6, 7;
                        7, 8];
-            addTags = {'AddedTag1', 'AddedTag2'};
+            addTags1 = {'AddedTag1', 'AddedTag2'};
+            addTags2 = {'AddedTag3', 'AddedTag4'};
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
-            returns.expandDataSet(addData, addTags);
+            returns.expandDataSet(addData, addTags1);
             
-            testCase.verifyEqual(returns.exData, addData);
-            testCase.verifyEqual(returns.exTags, addTags);
+            testCase.verifyEqual(returns.data(:, end - 1 : end), addData);
+            testCase.verifyEqual(returns.tags(end - 1 : end), addTags1);
             
-            returns.expandDataSet(addData, addTags);
+            returns.expandDataSet(addData, addTags2);
             
-            testCase.verifyEqual(returns.exData, [addData, addData]);
-            testCase.verifyEqual(returns.exTags, [addTags, addTags]);
+            testCase.verifyEqual(returns.data(:, end - 3 : end), [addData, addData]);
+            testCase.verifyEqual(returns.tags(end - 3 : end), [addTags1, addTags2]);
                                   
-            testCase.verifyError(@()returns.expandDataSet({'No numeric dataset'}, addTags), 'expandDataSet:DataNotNumeric');
-            testCase.verifyError(@()returns.expandDataSet(addData(1 : end - 1, :), addTags), 'expandDataSet:InvalideDataSize1');
-            testCase.verifyError(@()returns.expandDataSet(addData(:, 1), addTags), 'expandDataSet:InvalideDataSize2');
+            testCase.verifyError(@()returns.expandDataSet({'No numeric dataset'}, addTags1), 'expandDataSet:DataNotNumeric');
+            testCase.verifyError(@()returns.expandDataSet(addData(1 : end - 1, :), addTags1), 'expandDataSet:InvalideDataSize1');
+            testCase.verifyError(@()returns.expandDataSet(addData(:, 1), addTags1), 'expandDataSet:InvalideDataSize2');
             testCase.verifyError(@()returns.expandDataSet(addData, [1, 2]), 'expandDataSet:InvalidTags');
             
         end
@@ -158,8 +159,8 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                         
             returns.calc(calcObj, tags(2), returnTagName);
             
-            testCase.verifyEqual(returns.exData, data(:, 2) .* 3);
-            testCase.verifyEqual(returns.exTags, returnTagName);
+            testCase.verifyEqual(returns.data(:, end), data(:, 2) .* 3);
+            testCase.verifyEqual(returns.tags(end), returnTagName);
             
         end
         
@@ -195,10 +196,10 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                         
             returns.calc(calcObj, tags(2), returnTagName1).calc(DummyCalcObject(4, 'subtract'), tags(3), returnTagName2);
             
-            testCase.verifyEqual(returns.exData(:, 1), data(:, 2) .* 3);
-            testCase.verifyEqual(returns.exTags(:, 1), returnTagName1);
-            testCase.verifyEqual(returns.exData(:, 2), data(:, 3) - 4);
-            testCase.verifyEqual(returns.exTags(:, 2), returnTagName2);
+            testCase.verifyEqual(returns.data(:, end - 1), data(:, 2) .* 3);
+            testCase.verifyEqual(returns.tags(end - 1), returnTagName1);
+            testCase.verifyEqual(returns.data(:, end), data(:, 3) - 4);
+            testCase.verifyEqual(returns.tags(end), returnTagName2);
             
         end
         
@@ -228,8 +229,8 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                         
             returns.calc(calcObj, tags(1), returnTagName);
             
-            testCase.verifyEqual(returns.exData, expectedReturn);
-            testCase.verifyEqual(returns.exTags, returnTagName);
+            testCase.verifyEqual(returns.data(:, end), expectedReturn);
+            testCase.verifyEqual(returns.tags(end), returnTagName);
             
         end
         
@@ -255,8 +256,43 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                         
             returns.localDerivative(tags(1), ls1, noBfs1);
             
-            testCase.verifyLessThan(returns.exData(:, 1) - expectedReturn1, 1e-14);
-            testCase.verifyEqual(returns.exTags(1), {['LD_', tags{1}]});
+            testCase.verifyLessThan(returns.data(:, end) - expectedReturn1, 1e-14);
+            testCase.verifyEqual(returns.tags(end), {['LD_', tags{1}]});
+            
+        end
+        
+        function testConvCalc(testCase)
+            
+            vec = [1 : 10]';
+            time = 736900 + vec;
+            ts = duration(0, 0, 0, 50);
+            data = [vec, vec * 2];
+            tags = {'Channel 1', 'Channel 2'};
+            units = {'s', 'min'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            
+            calcName = 'Test calculation';
+            inputTag = {'Channel 1'};
+            outputTag = {'Result 1'};
+            convM = [-1,  1,  0;
+                     -1,  0,  1;
+                      0, -1,  1];
+                  
+            calcObj = DummyCalcObject2(calcName, inputTag, outputTag, convM);
+
+            expectedReturn = ones(10, 1);
+            expectedReturn(2 : end - 1) = 2;
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+                        
+            returns.convCalc(calcObj);
+            
+            testCase.verifyEqual(returns.data(:, end), expectedReturn);
+            testCase.verifyEqual(returns.tags(:, end), outputTag);
             
         end
     end
