@@ -266,7 +266,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                        
             if(correctTagInput)
                 
-                tagIndices = find(ismember(obj.tags, tagList) == 1);
+                [Lia, idx] = ismember(obj.tags, tagList);
+                indVec = 1 : numel(obj.tags);
+                indVec = indVec(Lia);
+                idx = idx(Lia);
+                [~, idxSort] = sort(idx);
+                tagIndices = indVec(idxSort);
                                
             else
                 
