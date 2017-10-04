@@ -1,4 +1,4 @@
-classdef mdtsObject < CoreObject
+classdef mdtsObject < mdtsCoreObject
     %
     % Description : Based on the core object, checks validity of input data
     % and passes it to the core object
@@ -50,7 +50,7 @@ classdef mdtsObject < CoreObject
             
             parse(p, timeIn, dataIn, tagsIn, varargin{:});
             
-            obj@CoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment);
+            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment);
             
         end
         
@@ -85,7 +85,7 @@ classdef mdtsObject < CoreObject
                               
             end
             
-            expandDataSet@CoreObject(obj, addData, addTags); 
+            expandDataSet@mdtsCoreObject(obj, addData, addTags); 
             
         end
         
@@ -102,6 +102,22 @@ classdef mdtsObject < CoreObject
             dataOut = calcObj.apply(obj.data(:, tagI));
             
             expandDataSet(obj, dataOut, p.Results.tagNameOutput);
+            
+        end
+        
+        function obj = convCalc(obj, calcObject)
+            
+            inputTag = calcObject.inputTag;
+            outputTag = calcObject.outputTag;
+            
+            tagI = getTagIndices(obj, inputTag);
+            y = obj.data(:, tagI);
+            
+            yL = conv(y, calcObject.lc_conv, 'same'); %convolution with central row of LDO Matrix
+            yL(1 : calcObject.mid - 1) = calcObject.T * y(1 : calcObject.ls);
+            yL(end - calcObject.mid + 2 : end) = calcObject.B * y(end - calcObject.ls + 1 : end);
+            
+            expandDataSet(obj, yL, outputTag);
             
         end
         
