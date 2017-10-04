@@ -276,8 +276,8 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             comment = {'This is'; 'a comment'};
             
             calcName = 'Test calculation';
-            inputTag = {'Channel 1'};
-            outputTag = {'Result 1'};
+            inputTag = 'Channel 1';
+            outputTag = 'Result 1';
             convM = [-1,  1,  0;
                      -1,  0,  1;
                       0, -1,  1];
@@ -292,7 +292,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             returns.convCalc(calcObj);
             
             testCase.verifyEqual(returns.data(:, end), expectedReturn);
-            testCase.verifyEqual(returns.tags(:, end), outputTag);
+            testCase.verifyEqual(returns.tags(:, end), {outputTag});
             
         end
     end
