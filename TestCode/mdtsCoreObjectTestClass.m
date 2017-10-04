@@ -338,13 +338,19 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             
-            columnsToExtract = [2, 4];
-            tagsToExtract = tags(columnsToExtract);
+            columnsToExtract1 = [2, 4];
+            tagsToExtract1 = tags(columnsToExtract1);
+            
+            columnsToExtract2 = [4, 3];
+            tagsToExtract2 = tags(columnsToExtract2);
             
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
-            tagIndices = returns.getTagIndices(tagsToExtract);
             
-            testCase.verifyEqual(tagIndices, columnsToExtract);           
+            tagIndices1 = returns.getTagIndices(tagsToExtract1);
+            tagIndices2 = returns.getTagIndices(tagsToExtract2);
+            
+            testCase.verifyEqual(tagIndices1, columnsToExtract1);           
+            testCase.verifyEqual(tagIndices2, columnsToExtract2); 
             testCase.verifyError(@()returns.getTagIndices({'Channel 5'}), 'getTagIndices:TagNotAvailable');    
         
         end
