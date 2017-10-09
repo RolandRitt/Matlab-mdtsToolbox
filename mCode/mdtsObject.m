@@ -109,15 +109,34 @@ classdef mdtsObject < mdtsCoreObject
             
             if(numel(varargin) == 1)
                 
-                calcObject = varargin{1};
+                calcObjectArray = varargin{1};
                 
-                inputTag = calcObject.inputTag;
-                outputTag = calcObject.outputTag;
-                convMatrix = calcObject.convM;
+                if(~iscell(calcObjectArray))
+                    
+                    calcObjectArray = {calcObjectArray};
+                    
+                end
+                
+                for i = 1 : numel(calcObjectArray)
+                    
+                    calcObject = calcObjectArray{i};
+                    
+                    inputTag = calcObject.inputTag;
+                    outputTag = calcObject.outputTag;
+                    convMatrix = calcObject.convM;
+                    
+                    tagI = getTagIndices(obj, inputTag);
+                    inputVector = obj.data(:, tagI);
+                    
+                    outputVector = convCalcFct(inputVector, convMatrix);
+                    
+                    expandDataSet(obj, outputVector, outputTag);
+                    
+                end
                 
             elseif(numel(varargin) == 3)
                 
-                inputTag = varargin{1};                                     
+                inputTag = varargin{1};
                 outputTag = varargin{2};
                 
                 if(ischar(outputTag))
@@ -128,6 +147,13 @@ classdef mdtsObject < mdtsCoreObject
                 
                 convMatrix = varargin{3};
                 
+                tagI = getTagIndices(obj, inputTag);
+                inputVector = obj.data(:, tagI);
+                
+                outputVector = convCalcFct(inputVector, convMatrix);
+                
+                expandDataSet(obj, outputVector, outputTag);
+                
             else
                 
                 errID = 'mdtsObject:InvalidNumberOfInputArguments';
@@ -136,13 +162,6 @@ classdef mdtsObject < mdtsCoreObject
                 error(errID, errMsg);
                 
             end
-            
-            tagI = getTagIndices(obj, inputTag);
-            inputVector = obj.data(:, tagI);
-            
-            outputVector = convCalcFct(inputVector, convMatrix);
-            
-            expandDataSet(obj, outputVector, outputTag);
             
         end
         
