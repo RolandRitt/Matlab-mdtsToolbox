@@ -283,8 +283,14 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                 0, -1,  1];
             
             outputTag2 = 'Result 2';
+            outputTag3 = 'Result 3';
+            outputTag4 = 'Result 4';
+            outputTag5 = 'Result 5';
             
-            calcObj = DummyCalcObject2(calcName, inputTag, outputTag1, convM);
+            calcObj1 = DummyCalcObject2(calcName, inputTag, outputTag1, convM);
+            calcObj2 = DummyCalcObject2(calcName, inputTag, outputTag2, convM);
+            calcObj3 = DummyCalcObject2(calcName, inputTag, outputTag3, convM);
+            calcObj4 = DummyCalcObject2(calcName, inputTag, outputTag4, convM);
 
             expectedReturn = ones(10, 1);
             expectedReturn(2 : end - 1) = 2;
@@ -292,20 +298,27 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
                         
             % Test with calculation object
-            returns.convCalc(calcObj);
+            returns.convCalc(calcObj1);
             
             testCase.verifyEqual(returns.data(:, end), expectedReturn);
             testCase.verifyEqual(returns.tags(:, end), {outputTag1});
             
+            % Test with cell array of calculation object
+            calcObjectArray = {calcObj2; calcObj3; calcObj4};
+            returns.convCalc(calcObjectArray);
+            
+            testCase.verifyEqual(returns.data(:, end - 2 : end), [expectedReturn, expectedReturn, expectedReturn]);
+            testCase.verifyEqual(returns.tags(end - 2 : end), {outputTag2, outputTag3, outputTag4});
+            
             % Test with direct inputs
-            returns.convCalc(inputTag, outputTag2, convM);
+            returns.convCalc(inputTag, outputTag5, convM);
             
             testCase.verifyEqual(returns.data(:, end), expectedReturn);
-            testCase.verifyEqual(returns.tags(:, end), {outputTag2});
+            testCase.verifyEqual(returns.tags(:, end), {outputTag5});
             
             % Test for error in case of any other number of inputs
                         
-            testCase.verifyError(@()returns.convCalc(inputTag, outputTag2, convM, 1), 'mdtsObject:InvalidNumberOfInputArguments');
+            testCase.verifyError(@()returns.convCalc(inputTag, outputTag5, convM, 1), 'mdtsObject:InvalidNumberOfInputArguments');
             
         end
     end
