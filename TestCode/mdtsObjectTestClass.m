@@ -277,22 +277,35 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             calcName = 'Test calculation';
             inputTag = 'Channel 1';
-            outputTag = 'Result 1';
+            outputTag1 = 'Result 1';
             convM = [-1,  1,  0;
-                     -1,  0,  1;
-                      0, -1,  1];
-                  
-            calcObj = DummyCalcObject2(calcName, inputTag, outputTag, convM);
+                -1,  0,  1;
+                0, -1,  1];
+            
+            outputTag2 = 'Result 2';
+            
+            calcObj = DummyCalcObject2(calcName, inputTag, outputTag1, convM);
 
             expectedReturn = ones(10, 1);
             expectedReturn(2 : end - 1) = 2;
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
                         
+            % Test with calculation object
             returns.convCalc(calcObj);
             
             testCase.verifyEqual(returns.data(:, end), expectedReturn);
-            testCase.verifyEqual(returns.tags(:, end), {outputTag});
+            testCase.verifyEqual(returns.tags(:, end), {outputTag1});
+            
+            % Test with direct inputs
+            returns.convCalc(inputTag, outputTag2, convM);
+            
+            testCase.verifyEqual(returns.data(:, end), expectedReturn);
+            testCase.verifyEqual(returns.tags(:, end), {outputTag2});
+            
+            % Test for error in case of any other number of inputs
+                        
+            testCase.verifyError(@()returns.convCalc(inputTag, outputTag2, convM, 1), 'mdtsObject:InvalidNumberOfInputArguments');
             
         end
     end
