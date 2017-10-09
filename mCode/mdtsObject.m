@@ -105,19 +105,44 @@ classdef mdtsObject < mdtsCoreObject
             
         end
         
-        function obj = convCalc(obj, calcObject)
+        function obj = convCalc(obj, varargin)
             
-            inputTag = calcObject.inputTag;
-            outputTag = calcObject.outputTag;
+            if(numel(varargin) == 1)
+                
+                calcObject = varargin{1};
+                
+                inputTag = calcObject.inputTag;
+                outputTag = calcObject.outputTag;
+                convMatrix = calcObject.convM;
+                
+            elseif(numel(varargin) == 3)
+                
+                inputTag = varargin{1};                                     
+                outputTag = varargin{2};
+                
+                if(ischar(outputTag))
+                    
+                    outputTag = {outputTag};
+                    
+                end
+                
+                convMatrix = varargin{3};
+                
+            else
+                
+                errID = 'mdtsObject:InvalidNumberOfInputArguments';
+                errMsg = ['Invalid number of input arguments! Input must be ',...
+                'either a convolution calculation object or inputTag, outputTag, convolutionMatrix!'];
+                error(errID, errMsg);
+                
+            end
             
             tagI = getTagIndices(obj, inputTag);
-            y = obj.data(:, tagI);
+            inputVector = obj.data(:, tagI);
             
-            yL = conv(y, calcObject.lc_conv, 'same'); %convolution with central row of LDO Matrix
-            yL(1 : calcObject.mid - 1) = calcObject.T * y(1 : calcObject.ls);
-            yL(end - calcObject.mid + 2 : end) = calcObject.B * y(end - calcObject.ls + 1 : end);
+            outputVector = convCalcFct(inputVector, convMatrix);
             
-            expandDataSet(obj, yL, outputTag);
+            expandDataSet(obj, outputVector, outputTag);
             
         end
         
@@ -151,7 +176,7 @@ classdef mdtsObject < mdtsCoreObject
             tagIndices = obj.getTagIndices(obj.tags);
             
             figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
-            %fM = FigureManager;
+            fM = FigureManager;
                
             plotMulti(obj.timeDateTime, obj.data(:, tagIndices), 'Time', obj.tags, UnmatchedArgs{:});
             
