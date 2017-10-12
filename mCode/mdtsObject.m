@@ -109,17 +109,11 @@ classdef mdtsObject < mdtsCoreObject
             
             if(numel(varargin) == 1)
                 
-                calcObjectArray = varargin{1};
+                calcObjects = varargin{1};
                 
-                if(~iscell(calcObjectArray))
+                for i = 1 : numel(calcObjects)
                     
-                    calcObjectArray = {calcObjectArray};
-                    
-                end
-                
-                for i = 1 : numel(calcObjectArray)
-                    
-                    calcObject = calcObjectArray{i};
+                    calcObject = calcObjects(i);
                     
                     inputTag = calcObject.inputTag;
                     outputTag = calcObject.outputTag;
