@@ -26,6 +26,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         time
         data
         tags
+        tsEvents = containers.Map;
         
         %Meta data
         
@@ -351,6 +352,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                 error(errID, errMsg);
                 
             end
+            
+        end
+        
+        function obj = addEvent(obj, name, x)
+            
+            obj.tsEvents(name) = x;  
             
         end
                 
