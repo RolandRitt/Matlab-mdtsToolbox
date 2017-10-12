@@ -288,9 +288,9 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             outputTag5 = 'Result 5';
             
             calcObj1 = DummyCalcObject2(calcName, inputTag, outputTag1, convM);
-            calcObj2 = DummyCalcObject2(calcName, inputTag, outputTag2, convM);
-            calcObj3 = DummyCalcObject2(calcName, inputTag, outputTag3, convM);
-            calcObj4 = DummyCalcObject2(calcName, inputTag, outputTag4, convM);
+            calcObjectArray(1) = DummyCalcObject2(calcName, inputTag, outputTag2, convM);
+            calcObjectArray(2) = DummyCalcObject2(calcName, inputTag, outputTag3, convM);
+            calcObjectArray(3) = DummyCalcObject2(calcName, inputTag, outputTag4, convM);
 
             expectedReturn = ones(10, 1);
             expectedReturn(2 : end - 1) = 2;
@@ -304,7 +304,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.tags(:, end), {outputTag1});
             
             % Test with cell array of calculation object
-            calcObjectArray = {calcObj2; calcObj3; calcObj4};
             returns.convCalc(calcObjectArray);
             
             testCase.verifyEqual(returns.data(:, end - 2 : end), [expectedReturn, expectedReturn, expectedReturn]);
