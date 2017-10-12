@@ -200,6 +200,37 @@ classdef mdtsObject < mdtsCoreObject
             plotMulti(obj.timeDateTime, obj.data(:, tagIndices), 'Time', obj.tags, UnmatchedArgs{:});
             
         end
+        
+        function obj = addEvent(obj, name, x, bInd)
+            % function to add events at defined x positions
+            %
+            %   Syntax:
+            %       addEvent(obj, name, x)
+            %
+            %   Input Parameters :
+            %       name := the name of the Events at positions x
+            %
+            %       x := x position where the event occurs, either the
+            %       timestamp (datenum) or datetimeobj
+            %
+            %       bInd := (optional) if true x is the index on which the event occurs
+            %
+            
+            if nargin > 3 && bInd
+                
+                x = obj.time(x);
+                
+            end
+            
+            if isdatetime(x)
+                
+                x = datenum(x);
+                
+            end
+            
+            addEvent@mdtsCoreObject(obj, name, x); 
+            
+        end
             
     end
     
