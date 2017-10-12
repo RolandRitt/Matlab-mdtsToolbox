@@ -183,21 +183,75 @@ classdef mdtsObject < mdtsCoreObject
         
         function figH = plotMulti(obj, varargin)
             
+            % Plot channels
+            
             p = inputParser();
             p.KeepUnmatched=true;
             addRequired(p, 'obj', @(x) isa(x, 'mdtsObject')); %check if input is a MDTSObject
             addParameter(p, 'Size', [8.8,11.7], @(x)isnumeric(x)&&isvector(x)); %higth and width
             addParameter(p, 'FontSize', 10, @isnumeric);
+            addParameter(p, 'bUseDatetime', true, @islogical);
             parse(p, obj, varargin{:});
             tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
             UnmatchedArgs = reshape(tmp',[],1)';
+            
+            bDatetime = p.Results.bUseDatetime;
             
             tagIndices = obj.getTagIndices(obj.tags);
             
             figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
             fM = FigureManager;
-               
-            plotMulti(obj.timeDateTime, obj.data(:, tagIndices), 'Time', obj.tags, UnmatchedArgs{:});
+            
+            if bDatetime
+                
+                [out, ph] = plotMulti(obj.timeDateTime, obj.data(:, tagIndices), 'Time', obj.tags, UnmatchedArgs{:});
+            else
+                
+                [out, ph] = plotMulti(obj.time, obj.data(:, tagIndices), 'Time', obj.tags, UnmatchedArgs{:});
+            
+            end
+                       
+            shouldAddold = fM.shouldAdd;
+            fM.shouldAdd = false; % otherwise it is tooo slow!!!  
+            title(out(1), obj.name);
+            
+            % Plot events
+                        
+            nEvents = length(keys(obj.tsEvents));
+            colors = distinguishable_colors(nEvents, {'w', get(ph(1), 'Color')});
+            
+            if bDatetime
+                
+                if nEvents
+                    
+                    indEv = 1;
+                    
+                    for key = keys(obj.tsEvents)
+                        
+                        xev = datetime(obj.tsEvents(key{1}), 'ConvertFrom', 'datenum');
+                        ph2 = plotvline(xev, 'Axes', out, 'Color', colors(indEv,:));
+                        indEv = indEv + 1;
+                        ph = [ph, ph2];
+                        
+                    end
+                end
+            else
+                if nEvents
+                    
+                    indEv = 1;
+                    
+                    for key = keys(obj.tsEvents)
+                        
+                        xev = obj.tsEvents(key{1});
+                        ph2 = plotvline(xev, 'Axes', out, 'Color', colors(indEv,:));
+                        indEv = indEv + 1;
+                        ph = [ph, ph2];
+                        
+                    end
+                end
+            end
+            
+            fM.shouldAdd = shouldAddold;
             
         end
         
