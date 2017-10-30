@@ -75,6 +75,12 @@ classdef genericCalcObject
             obj.convM = p.Results.convM;
                         
         end
+        
+        function calcString = getString(obj)
+            
+            calcString = jsonencode(obj);
+            
+        end
     end
     
 end
