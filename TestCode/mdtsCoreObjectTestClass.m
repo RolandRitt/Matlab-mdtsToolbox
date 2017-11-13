@@ -177,31 +177,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
         end
         
-        function testgetDataNargin0(testCase)
-            
-            ts = duration(0, 0, 0, 50);
-            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
-            data = [9, 8, 7, 6;
-                    7, 6, 5, 4;
-                    8, 7, 6, 5;
-                    6, 5, 4, 3];
-            tags = {'Channel 1'; 'Channel 2'; 'Channel 3'; 'Channel 4'};
-            units = {'s', 'min', 'elephants', 'giraffes'};
-            name = 'TS-Test';
-            who = 'Operator';
-            when = 'Now';
-            description = {'This is a TS-Test'; 'with two text lines'};
-            comment = {'This is'; 'a comment'};
-            
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
-            
-            testCase.verifyError(@()returns.getData(), 'getData:InvalidNumberOfInputs');  
-
-        end
-        
         function testgetDataNargin1(testCase)
             
             ts = duration(0, 0, 0, 50);
@@ -294,31 +269,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
 
         end
         
-        function testgetDataNarginN(testCase)
-            
-            ts = duration(0, 0, 0, 50);
-            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
-            data = [9, 8, 7, 6;
-                    7, 6, 5, 4;
-                    8, 7, 6, 5;
-                    6, 5, 4, 3];
-            tags = {'Channel 1'; 'Channel 2'; 'Channel 3'; 'Channel 4'};
-            units = {'s', 'min', 'elephants', 'giraffes'};
-            name = 'TS-Test';
-            who = 'Operator';
-            when = 'Now';
-            description = {'This is a TS-Test'; 'with two text lines'};
-            comment = {'This is'; 'a comment'};
-            
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
-            
-            testCase.verifyError(@()returns.getData(1, 2, 3), 'getData:InvalidNumberOfInputs');
-            
-        end
-        
         function testgetTagIndices(testCase)
             
             ts = duration(0, 0, 0, 50);
@@ -351,7 +301,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
             testCase.verifyEqual(tagIndices1, columnsToExtract1);           
             testCase.verifyEqual(tagIndices2, columnsToExtract2); 
-            testCase.verifyError(@()returns.getTagIndices({'Channel 5'}), 'getTagIndices:TagNotAvailable');    
         
         end
         
@@ -380,13 +329,11 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
             linesToExtract = [2; 4];
             timeInterval = time(linesToExtract);
-            tooLargeInterval = [time(2); time(end) + 1 / (60 * 60 * 24)];
             
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             timeIndices = returns.getIntervalIndices(timeInterval);
             
             testCase.verifyEqual(timeIndices, linesToExtract);   
-            testCase.verifyError(@()returns.getIntervalIndices(tooLargeInterval), 'getIntervalIndices:IntervalOutOfBoundaries');
             
         end
         
@@ -522,8 +469,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
             testCase.verifyEqual(returns2.data(:, 5 : end), [addData, addData]);
             testCase.verifyEqual(returns2.tags(:, 5 : end), [addTags1, addTags2]);
-            
-            testCase.verifyError(@()returns.expandDataSet(addData, addTags1), 'expandDataSet:NonUniqueTags');
             
         end
         
