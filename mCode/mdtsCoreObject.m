@@ -238,12 +238,6 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     end
                     
                     intervalIndices = obj.getIntervalIndices(timeInterval);
-                   
-                otherwise
-            
-                    errID = 'getData:InvalidNumberOfInputs';
-                    errMsg = 'Invalid number of input arguments!';
-                    error(errID, errMsg);
             
             end
     
@@ -262,46 +256,22 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         end
         
         function tagIndices = getTagIndices(obj, tagList)
-                       
-            correctTagInput = ismember(tagList, obj.tags);
-                       
-            if(correctTagInput)
-                
-                [Lia, idx] = ismember(obj.tags, tagList);
-                indVec = 1 : numel(obj.tags);
-                indVec = indVec(Lia);
-                idx = idx(Lia);
-                [~, idxSort] = sort(idx);
-                tagIndices = indVec(idxSort);
-                               
-            else
-                
-                notIncludedTags = tagList(~correctTagInput);
-                
-                errID = 'getTagIndices:TagNotAvailable';
-                errMsg = ['Tag(s) ', strjoin(notIncludedTags, ', '), ' not available within the data!'];
-                error(errID, errMsg);
-                
-            end
+            
+            [Lia, idx] = ismember(obj.tags, tagList);
+            indVec = 1 : numel(obj.tags);
+            indVec = indVec(Lia);
+            idx = idx(Lia);
+            [~, idxSort] = sort(idx);
+            tagIndices = indVec(idxSort);
             
         end
         
         function intervalIndices = getIntervalIndices(obj, timeInterval)
             
-            if(timeInterval(1) >= obj.time(1) && timeInterval(end) <= obj.time(end))
-                
-                startI = find(obj.time >= timeInterval(1), 1);
-                endI = find(obj.time <= timeInterval(end), 1, 'last');
-                
-                intervalIndices = [startI; endI];
-                
-            else
-                
-                errID = 'getIntervalIndices:IntervalOutOfBoundaries';
-                errMsg = 'Specified interval exceeds the boundaries of the data!';
-                error(errID, errMsg);
-                
-            end
+            startI = find(obj.time >= timeInterval(1), 1);
+            endI = find(obj.time <= timeInterval(end), 1, 'last');
+            
+            intervalIndices = [startI; endI];
             
         end
         
@@ -336,22 +306,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         
         function obj = expandDataSet(obj, addData, addTags)
             
-            if(~checkTags(obj, addTags))
-                
-                addUnits = cell(1, numel(addTags));
-                addUnits(:) = {'-'};
-                
-                obj.data = [obj.data, addData];
-                obj.tags = [obj.tags, addTags];
-                obj.units = [obj.units, addUnits];
-                
-            else
-                
-                errID = 'expandDataSet:NonUniqueTags';
-                errMsg = 'Given tags for data expansion are already existend in the data set!';
-                error(errID, errMsg);
-                
-            end
+            addUnits = cell(1, numel(addTags));
+            addUnits(:) = {'-'};
+            
+            obj.data = [obj.data, addData];
+            obj.tags = [obj.tags, addTags];
+            obj.units = [obj.units, addUnits];
             
         end
         
