@@ -110,10 +110,14 @@ classdef mdtsObject < mdtsCoreObject
         
         function expandDataSet(obj, addData, addTags)
             
+            if(ischar(addTags))
+                
+                addTags = {addTags};
+                
+            end
+            
             timeSize = numel(obj.time);
             addTagSize = numel(addTags);
-            
-            
             
             if~isnumeric(addData)
                 
