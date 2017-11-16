@@ -78,6 +78,81 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testsubsref(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts)))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3;
+                    4, 3, 2, 1;
+                    5, 4, 3, 2];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            
+            extraction1 = returns(1, 1);
+            extraction2 = returns(3, 2);
+            extraction3 = returns(:, 4);
+            extraction4 = returns(3, :);
+            extraction5 = returns(2 : 4, 2 : 3);
+            extraction6 = returns(2 : 4, tags{2});
+            extraction7 = returns(3 : 5, tags(2 : 3));
+            
+            testCase.verifyEqual(data(1, 1), extraction1.data);
+            testCase.verifyEqual(time(1), extraction1.time);
+            testCase.verifyEqual(tags(1), extraction1.tags);
+            testCase.verifyEqual(units(1), extraction1.units);
+            testCase.verifyEqual(name, extraction1.name);
+            testCase.verifyEqual(who, extraction1.who);
+            testCase.verifyEqual(when, extraction1.when);
+            testCase.verifyEqual(description, extraction1.description);
+            testCase.verifyEqual(comment, extraction1.comment);
+            
+            testCase.verifyEqual(data(3, 2), extraction2.data);
+            testCase.verifyEqual(time(3), extraction2.time);
+            testCase.verifyEqual(tags(2), extraction2.tags);
+            testCase.verifyEqual(units(2), extraction2.units);
+               
+            testCase.verifyEqual(data(:, 4), extraction3.data);
+            testCase.verifyEqual(time, extraction3.time);
+            testCase.verifyEqual(tags(4), extraction3.tags);
+            testCase.verifyEqual(units(4), extraction3.units);
+            
+            testCase.verifyEqual(data(3, :), extraction4.data);
+            testCase.verifyEqual(time(3), extraction4.time);
+            testCase.verifyEqual(tags, extraction4.tags);
+            testCase.verifyEqual(units, extraction4.units);
+            
+            testCase.verifyEqual(data(2 : 4, 2 : 3), extraction5.data);
+            testCase.verifyEqual(time(2 : 4), extraction5.time);
+            testCase.verifyEqual(tags(2 : 3), extraction5.tags);
+            testCase.verifyEqual(units(2 : 3), extraction5.units);
+            
+            testCase.verifyEqual(data(2 : 4, 2), extraction6.data);
+            testCase.verifyEqual(time(2 : 4), extraction6.time);
+            testCase.verifyEqual(tags(2), extraction6.tags);
+            testCase.verifyEqual(units(2), extraction6.units);
+            
+            testCase.verifyEqual(data(3 : 5, 2 : 3), extraction7.data);
+            testCase.verifyEqual(time(3 : 5), extraction7.time);
+            testCase.verifyEqual(tags(2 : 3), extraction7.tags);
+            testCase.verifyEqual(units(2 : 3), extraction7.units);
+            
+        end
+        
         function testgetDataNargin0(testCase)
             
             ts = duration(0, 0, 0, 50);
