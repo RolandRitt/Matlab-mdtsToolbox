@@ -531,48 +531,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
         end
         
-        function testAddEvent(testCase)
-            
-            ts = duration(0, 0, 0, 50);
-            time = [datenum(datetime(2017, 7, 25, 14, 3, 3, 123));
-                    datenum(datetime(2017, 7, 30, 14, 3, 3, 123));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
-                    datenum(datetime(2017, 8, 5, 14, 3, 3, 123));
-                    datenum(datetime(2017, 8, 15, 14, 3, 3, 123));
-                    datenum(datetime(2017, 9, 5, 14, 3, 3, 123))];
-            data = [9, 8, 7, 6;
-                    7, 6, 5, 4;
-                    8, 7, 6, 5;
-                    6, 5, 4, 3;
-                    4, 3, 2, 1;
-                    5, 4, 3, 2];
-            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
-            units = {'s', 'min', 'elephants', 'giraffes'};
-            name = 'TS-Test';
-            who = 'Operator';
-            when = 'Now';
-            description = {'This is a TS-Test'; 'with two text lines'};
-            comment = {'This is'; 'a comment'};
-            
-            eventName1 = 'MyEvent1';
-            eventName2 = 'MyEvent2';
-            eventName3 = 'MyEvent3';
-            eventTime1 = time(3);
-            eventTime2 = time(5);
-            eventTime3 = time(end);
-            
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
-            
-            returns.addEvent(eventName1, eventTime1);
-            returns.addEvent(eventName2, eventTime2);
-            returns.addEvent(eventName3, eventTime3);
-            
-            testCase.verifyEqual(eventTime1, returns.tsEvents(eventName1));
-            testCase.verifyEqual(eventTime2, returns.tsEvents(eventName2));
-            testCase.verifyEqual(eventTime3, returns.tsEvents(eventName3));
-            
-        end
-        
     end
     
 end
