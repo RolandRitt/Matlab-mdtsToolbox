@@ -101,7 +101,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
