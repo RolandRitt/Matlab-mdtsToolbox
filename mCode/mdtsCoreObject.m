@@ -26,7 +26,6 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         time
         data
         tags
-        tsEvents = containers.Map;
         
         %Meta data
         
@@ -124,7 +123,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     intervalI(2) =  max(s1subs);
                     extractRows = 1;
                     
-                elseif iscell(s1subs) %time indexing
+                elseif iscell(s1subs) % time indexing
                     
                     if (isequal(size(s1subs),[2 1]) || isequal(size(s1subs), [1 2]))
                         
@@ -139,7 +138,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     
                 elseif isequal(s1subs, ':')
                     
-                    % nothing, no indexing --> all rows returned
+                    % nothing, no indexing -> all rows returned
                     
                 else
                     
@@ -158,14 +157,14 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                         
                     elseif isequal(tagsInput, ':')
                         
-                         % nothing, no indexing --> all tags returned
+                         % nothing, no indexing -> all tags returned
                         
-                    elseif ischar(tagsInput) % one string given --> extract only one tag
+                    elseif ischar(tagsInput) % one string given -> extract only one tag
                         
                         tagsIndices = obj.getTagIndices({tagsInput});
                         extractTags = 1;
                         
-                    elseif iscellstr(tagsInput) %% if cell array --> extract all tags
+                    elseif iscellstr(tagsInput) % if cell array -> extract all tags
                         
                         tagsIndices = obj.getTagIndices(tagsInput);
                         extractTags = 1;
@@ -312,12 +311,6 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.data = [obj.data, addData];
             obj.tags = [obj.tags, addTags];
             obj.units = [obj.units, addUnits];
-            
-        end
-        
-        function obj = addEvent(obj, name, x)
-            
-            obj.tsEvents(name) = x;  
             
         end
                 
