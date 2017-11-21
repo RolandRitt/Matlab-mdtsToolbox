@@ -1,7 +1,7 @@
 classdef mdtsCoreObject < matlab.mixin.Copyable
     %
     % Description : Core object to store time series data together with
-    % relevant additional information
+    % relevant additional information (meta data)
     %
     % Author :
     %    Paul O'Leary
@@ -132,7 +132,9 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                         
                     else
                         
-                        error('wrong time indexing');
+                        errID = 'subsref:IncorrectTagCellSize';
+                        errMsg = 'Incorrect indexing of time interval! Interval must be of dimensions [1, 2] or [2, 1], if given as cell!';
+                        error(errID, errMsg);
                         
                     end
                     
@@ -142,7 +144,9 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     
                 else
                     
-                    error('wrong row indexing');
+                    errID = 'subsref:UnknownTimeIntervalFormat';
+                    errMsg = 'Incorrect indexing of time interval - unknown format!';
+                    error(errID, errMsg);
                     
                 end
                 
@@ -170,7 +174,11 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                         extractTags = 1;
                         
                     else
-                        error('wrong tag indexing');
+                        
+                        errID = 'subsref:IncorrectTagIndexing';
+                        errMsg = 'Incorrect tag indexing! Tags must be given as direct index, '':'', string or cell array of strings!';
+                        error(errID, errMsg);
+                        
                     end
                 end              
                 
