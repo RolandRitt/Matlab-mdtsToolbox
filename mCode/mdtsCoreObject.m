@@ -294,16 +294,45 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             defVec = zeros(1, 6); %for Year, Month, Day, Hour, Minutes, Seconds
             defVec([2,3]) = 1; %day and month start with 1
             
-            delimiter = '_';
+%             delimiter = '_';
             
-            dateParts = strsplit(dateString, delimiter);
-            dateVec = cellfun(@str2double, dateParts)';
+%             dateParts = strsplit(dateString, delimiter);
+%             dateVec = cellfun(@str2double, dateParts)';
             
-            n = length(dateVec);
+%             n = length(dateVec);
+
+            n = numel(strsplit(dateString, {' ', '-', ':'}));
             
-            startVec = defVec;    
-            startVec(1:n) = dateVec;
-            endVec = startVec; 
+            if(regexpi(dateString, '^[a-zA-Z]{3}-\d{4}$'))
+                
+                monthName = regexpi(dateString, '[a-zA-Z]{3}', 'match');
+                theMonth = strfind({'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'}, monthName{1});
+                monthNum = find(not(cellfun('isempty', theMonth)));
+                
+                dateParts = strsplit(dateString, '-');
+                year = str2double(dateParts{2});
+                dateVec = defVec;
+                dateVec(1) = year;
+                dateVec(2) = monthNum;
+                
+            elseif(regexpi(dateString, '^\d{4}$'))
+                
+                dateVec = str2double(dateString);
+                dateVec(numel(dateVec) + 1 : 6) = defVec(numel(dateVec) + 1 : 6);
+                
+            else
+                
+                dateVec = datevec(dateString);
+                
+            end
+            
+%             startVec = defVec;    
+%             startVec(1:n) = dateVec;
+%             endVec = startVec; 
+%             endVec(n) = endVec(n) + 1;          
+            
+            startVec = dateVec;
+            endVec = dateVec;
             endVec(n) = endVec(n) + 1;
             
             startDateNum = datenum(startVec);
