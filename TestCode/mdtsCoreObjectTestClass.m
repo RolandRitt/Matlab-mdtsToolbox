@@ -395,10 +395,15 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             
-            date1 = '2017_7_25_14_3';
-            date2 = '2017_7_25_14';
-            date3 = '2017_7_25';
-            date4 = '2017_8';
+%             date1 = '2017_7_25_14_3';
+%             date2 = '2017_7_25_14';
+%             date3 = '2017_7_25';
+%             date4 = '2017_8';
+
+            date1 = '25-Jul-2017 14:03';
+            date2 = '25-Jul-2017 2pm';
+            date3 = '25-Jul-2017';
+            date4 = 'Aug-2017';
             
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             extractedReturns = returns.getData(tags, date4);    
