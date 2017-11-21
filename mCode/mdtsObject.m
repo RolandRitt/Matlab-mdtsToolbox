@@ -24,10 +24,10 @@ classdef mdtsObject < mdtsCoreObject
     
     methods
         
-        function obj = mdtsObject(timeIn, dataIn, tagsIn, varargin)
+        function obj = mdtsObject(time, data, tags, varargin)
             
             p = inputParser;
-            defaultUnits = cell(1, numel(tagsIn));
+            defaultUnits = cell(1, numel(tags));
             defaultUnits(:) = {'-'};
             defaultts = [];
             defaultName = 'Time Series';
@@ -36,11 +36,11 @@ classdef mdtsObject < mdtsCoreObject
             defaultDescription = 'No description available';
             defaultComment = 'No comment available';
             
-            addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(dataIn, 1), 1]}));            
+            addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(data, 1), 1]}));            
             addRequired(p, 'dataIn', @(x)validateattributes(x, {'numeric'}, {'nonempty'}));
-            addRequired(p, 'tagsIn', @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(dataIn, 2)]}));
+            addRequired(p, 'tagsIn', @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             
-            addParameter(p, 'units', defaultUnits, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(dataIn, 2)]}));
+            addParameter(p, 'units', defaultUnits, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             addParameter(p, 'ts', defaultts, @(x)validateattributes(x, {'duration', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'name', defaultName, @(x)validateattributes(x, {'char'}, {'nonempty'}));
             addParameter(p, 'who', defaultWho, @(x)validateattributes(x, {'char'}, {'nonempty'}));
@@ -48,7 +48,7 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'description', defaultDescription, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'comment', defaultComment, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             
-            parse(p, timeIn, dataIn, tagsIn, varargin{:});
+            parse(p, time, data, tags, varargin{:});
             
             obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment);
             
