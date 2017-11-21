@@ -51,31 +51,31 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
     
     methods
         
-        function obj = mdtsCoreObject(timeIn, dataIn, tagsIn, unitsIn, tsIn, nameIn, whoIn, whenIn, descriptionIn, commentIn)
+        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment)
             
             % Core data
             
-            obj.time = timeIn;
-            obj.data = dataIn;
+            obj.time = time;
+            obj.data = data;
             
             % Meta data
             
-            obj.tags = tagsIn;
-            obj.units = unitsIn;
+            obj.tags = tags;
+            obj.units = units;
             
-            if(isempty(tsIn))
+            if(isempty(ts))
                 obj.uniform = 0;
                 obj.ts = [];
             else
                 obj.uniform = 1;
-                obj.ts = tsIn;
+                obj.ts = ts;
             end
             
-            obj.name = nameIn;
-            obj.who = whoIn;
-            obj.when = whenIn;
-            obj.description = descriptionIn;
-            obj.comment = commentIn;
+            obj.name = name;
+            obj.who = who;
+            obj.when = when;
+            obj.description = description;
+            obj.comment = comment;
             
         end
         
