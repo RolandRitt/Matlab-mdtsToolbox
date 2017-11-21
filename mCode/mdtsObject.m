@@ -73,6 +73,8 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function tagIndices = getTagIndices(obj, tagList)
+            
+            validateattributes( tagList, {'cell', 'char'}, {'nonempty'}, '', 'tagList');
                        
             correctTagInput = ismember(tagList, obj.tags);
                        
@@ -94,7 +96,13 @@ classdef mdtsObject < mdtsCoreObject
         
         function intervalIndices = getIntervalIndices(obj, timeInterval)
             
-            if(timeInterval(1) >= obj.time(1) && timeInterval(end) <= obj.time(end))
+            if(~isa(timeInterval, 'double'))
+                
+                errID = 'getIntervalIndices:InputNoDatenum';
+                errMsg = 'Given input is not a datenum vector!';
+                error(errID, errMsg);
+            
+            elseif(timeInterval(1) >= obj.time(1) && timeInterval(end) <= obj.time(end))
                 
                 intervalIndices = getIntervalIndices@mdtsCoreObject(obj, timeInterval); 
                 
