@@ -236,7 +236,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     if ischar(varargin{2})
                         
                         dateString = varargin{2};
-                        [timeInterval(1), timeInterval(2)] = obj.endStartOfDate(dateString);
+                        [timeInterval(1), timeInterval(2)] = obj.startEndOfDate(dateString);
                         
                     else
                         
@@ -289,7 +289,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             
         end
         
-        function [startDateNum, endDateNum] = endStartOfDate(obj, dateString)
+        function [startDateNum, endDateNum] = startEndOfDate(obj, dateString)
             
             defVec = zeros(1, 6); %for Year, Month, Day, Hour, Minutes, Seconds
             defVec([2,3]) = 1; %day and month start with 1

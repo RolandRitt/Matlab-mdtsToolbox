@@ -408,10 +408,10 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
             extractedReturns = returns.getData(tags, date4);    
             
-            [start1, end1] = returns.endStartOfDate(date1);
-            [start2, end2] = returns.endStartOfDate(date2);
-            [start3, end3] = returns.endStartOfDate(date3);
-            [start4, end4] = returns.endStartOfDate(date4);
+            [start1, end1] = returns.startEndOfDate(date1);
+            [start2, end2] = returns.startEndOfDate(date2);
+            [start3, end3] = returns.startEndOfDate(date3);
+            [start4, end4] = returns.startEndOfDate(date4);
             
             testCase.verifyEqual(datenum(2017, 7, 25, 14, 3, 0), start1);
             testCase.verifyEqual(datenum(2017, 7, 25, 14, 4, 0) - 1, end1);   
