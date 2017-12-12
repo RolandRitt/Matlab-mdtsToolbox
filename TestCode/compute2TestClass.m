@@ -97,6 +97,39 @@ classdef compute2TestClass < matlab.unittest.TestCase
             
         end
         
+        function directlyAddToObject(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8;
+                    7, 6;
+                    8, 7;
+                    6, 5];
+            tags = {'Channel 1', 'Channel 2'};
+            units = {'s', 'min'};
+            
+            mdtsObject1 = mdtsObject(time, data, tags, 'units', units, 'ts', ts);
+            mdtsObject2 = mdtsObject(time, data, tags, 'units', units, 'ts', ts);
+            
+            input1.object = mdtsObject1;
+            input1.tag = 'Channel 1';
+            input2.object = mdtsObject2;
+            input2.tag = 'Channel 2';
+            
+            operator1 = '.*';
+            expectedReturn1 = data(:, 1) .* data(:, 2);
+            
+            newChannelName = 'newChannel';
+            
+            mdtsObject1.expandDataSet(compute2(operator1, input1, input2), newChannelName);
+            
+            testCase.verifyEqual(mdtsObject1.data, [data, expectedReturn1]);   
+            testCase.verifyEqual(mdtsObject1.tags, [tags, newChannelName]);   
+        end
+        
     end
     
 end
