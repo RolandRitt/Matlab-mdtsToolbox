@@ -3,11 +3,52 @@ function output = mdtsCompute(varargin)
 %
 % Purpose : execute various computations
 %
-% Syntax : output = mdtsCompute(varargin)
+% Syntax :
+%   output = mdtsCompute(operator1, input1, input2) : compute2 function
+%   output = mdtsCompute(operator2, scalar, input) : compute1Scalar function
+%   output = mdtsCompute(matrix, input) : compute1 function
 %
 % Input Parameters :
-%   varargin : Different input parameters, according to corresponding
-%   functions
+%   input, input1, input2 : Input for the computation. These can be given as:
+%
+%       Vector := Double vector holding the data
+%
+%       Struct := Struct which holds the handle to the mdtsObject as
+%       input.object and the required tag as input.tag
+%
+%   operator1 : Computation operator. Possible options are:
+%
+%       '.*' := Element wise multiplikation
+%
+%       './' := Element wise division
+%
+%       '+' := Element wise addition
+%
+%       '-' := Element wise subtraction
+%
+%       'dot' := Inner product (dot product) of both vectors
+%
+%       'outer' := Outer product of both vectors
+%       
+%       'xcorr' := Cross correlation between both inputs
+%
+%       handle := handle to other function
+%
+%   operator2 : Computation operator. Possible options are:
+%
+%       '*' := Element wise multiplikation
+%
+%       '/' := Element wise division
+%
+%       '+' := Element wise addition
+%
+%       '-' := Element wise subtraction
+%
+%       handle := handle to other function
+%
+%   scalar : Scalar for the operation
+%
+%   matrix : Convolution matrix
 %
 % Return Parameters :
 %   output : result of computation
