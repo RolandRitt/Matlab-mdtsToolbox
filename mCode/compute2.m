@@ -20,6 +20,8 @@ function outputVector = compute2(operator, input1, input2)
 %
 %       'outer' := Outer product of both vectors
 %
+%       handle := handle to other function
+%
 %   input1, input2 : Inputs for the computation. They can be given as:
 %
 %       Vectors := Double vector holding the data

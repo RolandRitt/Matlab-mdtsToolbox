@@ -16,6 +16,8 @@ function output = compute1Scalar(operator, scalar, input)
 %
 %       '-' := Element wise subtraction
 %
+%       handle := handle to other function
+%
 %   scalar : Scalar for the operation
 %
 %   input : Input for the computation. This can be given as:
