@@ -64,6 +64,8 @@ if(~isa(matrix, 'double'))
     
 end
 
+%% Compute
+
 y = inputVector;
 M = matrix;
 
@@ -73,7 +75,7 @@ if(m == n)
     
     if ~isOdd(n)
         
-        errID = 'convCalcFct:EvenSupportLength';
+        errID = 'compute1:EvenSupportLength';
         errMsg = 'LDO is only implemented for odd support length!';
         error(errID, errMsg);
         
@@ -94,7 +96,7 @@ if(m == n)
     
 else
     
-    errID = 'convCalcFct:NonSquareOperator';
+    errID = 'compute1:NonSquareOperator';
     errMsg = 'LDO is only implemented for squared Operators!';
     error(errID, errMsg);
     

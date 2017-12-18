@@ -14,7 +14,7 @@ function outputVector = compute2(operator, input1, input2)
 %
 %       '+' := Element wise addition
 %
-%       '.*' := Element wise subtraction
+%       '-' := Element wise subtraction
 %
 %       'dot' := Inner product (dot product) of both vectors
 %
@@ -49,7 +49,7 @@ function outputVector = compute2(operator, input1, input2)
 % url: www.harkeroleary.org
 % --------------------------------------------------------
 
-%% Extract input data
+%% Extract input data and validate inputs
 
 if(isa(input1, 'double'))
     
@@ -94,6 +94,8 @@ if~(numel(vector1) == numel(vector2))
     error(errID, errMsg);
     
 end
+
+%% Compute
 
 if(isa(operator, 'function_handle'))
     
