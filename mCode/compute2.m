@@ -19,6 +19,8 @@ function outputVector = compute2(operator, input1, input2)
 %       'dot' := Inner product (dot product) of both vectors
 %
 %       'outer' := Outer product of both vectors
+%       
+%       'xcorr' := Cross correlation between both inputs
 %
 %       handle := handle to other function
 %
