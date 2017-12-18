@@ -52,16 +52,24 @@ classdef compute2TestClass < matlab.unittest.TestCase
             expectedReturn3 = data(:, 1) + data(:, 2);
             operator4 = '-';
             expectedReturn4 = data(:, 1) - data(:, 2);
+            operator5 = 'dot';
+            expectedReturn5 = dot(data(:, 1), data(:, 2));
+            operator6 = 'outer';
+            expectedReturn6 = data(:, 1) * data(:, 2)';
             
             output1 = compute2(operator1, input1, input2);
             output2 = compute2(operator2, input1, input2);
             output3 = compute2(operator3, input1, input2);
             output4 = compute2(operator4, input1, input2);
+            output5 = compute2(operator5, input1, input2);
+            output6 = compute2(operator6, input1, input2);
             
             testCase.verifyEqual(output1, expectedReturn1);        
             testCase.verifyEqual(output2, expectedReturn2);  
             testCase.verifyEqual(output3, expectedReturn3);        
             testCase.verifyEqual(output4, expectedReturn4);  
+            testCase.verifyEqual(output5, expectedReturn5);  
+            testCase.verifyEqual(output6, expectedReturn6);  
                         
         end
         

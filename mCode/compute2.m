@@ -6,6 +6,20 @@ function outputVector = compute2(operator, input1, input2)
 % Syntax : outputVector = compute2(operator, input1, input2)
 %
 % Input Parameters :
+%   operator : Computation operator. Possible options are:
+%
+%       '.*' := Element wise multiplikation
+%
+%       './' := Element wise division
+%
+%       '+' := Element wise addition
+%
+%       '.*' := Element wise subtraction
+%
+%       'dot' := Inner product (dot product) of both vectors
+%
+%       'outer' := Outer product of both vectors
+%
 %   input1, input2 : Inputs for the computation. They can be given as:
 %
 %       Vectors := Double vector holding the data
@@ -96,6 +110,10 @@ else
             outputVector = vector1 + vector2;
         case '-'
             outputVector = vector1 - vector2;
+        case 'dot'
+            outputVector = dot(vector1, vector2);
+        case 'outer'
+            outputVector = vector1 * vector2';
         otherwise
             errID = 'compute2:InvalidOperator';
             errMsg = 'Invalid operator!';
