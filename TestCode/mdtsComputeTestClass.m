@@ -142,7 +142,7 @@ classdef mdtsComputeTestClass < matlab.unittest.TestCase
             expectedReturn1 = - ones(size(data, 1), 1) * 2;
             expectedReturn1(2 : end - 1) = - 1;
             
-            output1 = compute1(matrix1, input);
+            output1 = mdtsCompute(matrix1, input);
             
             testCase.verifyEqual(output1, expectedReturn1);
             
