@@ -52,20 +52,30 @@ if~(numel(vector1) == numel(vector2))
     
 end
 
-switch operator
-    case '.*'
-        outputVector = vector1 .* vector2;
-    case './'
-        outputVector = vector1 ./ vector2;  
-    case '+'
-        outputVector = vector1 + vector2;
-    case '-'
-        outputVector = vector1 - vector2;
-    otherwise
-        errID = 'compute2:InvalidOperator';
-        errMsg = 'Invalid operator!';
-        error(errID, errMsg);
+if(isa(operator, 'function_handle'))
+    
+    outputVector = operator(vector1, vector2);
+    
+else
+    
+    switch operator
+        case '.*'
+            outputVector = vector1 .* vector2;
+        case './'
+            outputVector = vector1 ./ vector2;
+        case '+'
+            outputVector = vector1 + vector2;
+        case '-'
+            outputVector = vector1 - vector2;
+        otherwise
+            errID = 'compute2:InvalidOperator';
+            errMsg = 'Invalid operator!';
+            error(errID, errMsg);
+    end
+    
 end
+
+
 
 end
 
