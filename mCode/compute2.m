@@ -6,10 +6,12 @@ function outputVector = compute2(operator, input1, input2)
 % Syntax : outputVector = compute2(operator, input1, input2)
 %
 % Input Parameters :
-%   input1 : struct which holds the handle to the first mdtsObject as
-%   input1.object and the required tag as input1.tag
-%   input2 : struct which holds the handle to the second mdtsObject as
-%   input2.object and the required tag as input2.tag
+%   input1, input2 : Inputs for the computation. They can be given as:
+%
+%       Vectors := Double vector holding the data
+%
+%       Structs := Struct which holds the handle to the mdtsObject as
+%       input.object and the required tag as input.tag
 %
 % Return Parameters :
 %   outputVector : result as vector
@@ -35,14 +37,41 @@ function outputVector = compute2(operator, input1, input2)
 
 %% Extract input data
 
-object1 = input1.object;
-object2 = input2.object;
+if(isa(input1, 'double'))
+    
+    vector1 = input1;
+    
+elseif(isa(input1, 'struct'))
+    
+    object1 = input1.object;
+    tag1 = input1.tag;
+    vector1 = object1.data(:, object1.getTagIndices(tag1));
+    
+else
+    
+    errID = 'compute2:IllegalInputFormat';
+    errMsg = 'Illegal input format of ''input1''! Input must be either a double vector or a struct!';
+    error(errID, errMsg);    
+    
+end
 
-tag1 = input1.tag;
-tag2 = input2.tag;
-
-vector1 = object1.data(:, object1.getTagIndices(tag1));
-vector2 = object2.data(:, object2.getTagIndices(tag2));
+if(isa(input2, 'double'))
+    
+    vector2 = input2;
+    
+elseif(isa(input2, 'struct'))
+    
+    object2 = input2.object;
+    tag2 = input2.tag;
+    vector2 = object2.data(:, object2.getTagIndices(tag2));
+    
+else
+    
+    errID = 'compute2:IllegalInputFormat';
+    errMsg = 'Illegal input format of ''input2''! Input must be either a double vector or a struct!';
+    error(errID, errMsg);   
+    
+end
 
 if~(numel(vector1) == numel(vector2))
     
