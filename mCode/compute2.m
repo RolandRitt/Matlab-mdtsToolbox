@@ -114,6 +114,8 @@ else
             outputVector = dot(vector1, vector2);
         case 'outer'
             outputVector = vector1 * vector2';
+        case 'xcorr'
+            outputVector = xcorr(vector1, vector2);
         otherwise
             errID = 'compute2:InvalidOperator';
             errMsg = 'Invalid operator!';

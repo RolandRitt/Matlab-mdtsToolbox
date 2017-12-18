@@ -56,6 +56,8 @@ classdef compute2TestClass < matlab.unittest.TestCase
             expectedReturn5 = dot(data(:, 1), data(:, 2));
             operator6 = 'outer';
             expectedReturn6 = data(:, 1) * data(:, 2)';
+            operator7 = 'xcorr';
+            expectedReturn7 = xcorr(data(:, 1), data(:, 2));
             
             output1 = compute2(operator1, input1, input2);
             output2 = compute2(operator2, input1, input2);
@@ -63,6 +65,7 @@ classdef compute2TestClass < matlab.unittest.TestCase
             output4 = compute2(operator4, input1, input2);
             output5 = compute2(operator5, input1, input2);
             output6 = compute2(operator6, input1, input2);
+            output7 = compute2(operator7, input1, input2);
             
             testCase.verifyEqual(output1, expectedReturn1);        
             testCase.verifyEqual(output2, expectedReturn2);  
@@ -70,6 +73,7 @@ classdef compute2TestClass < matlab.unittest.TestCase
             testCase.verifyEqual(output4, expectedReturn4);  
             testCase.verifyEqual(output5, expectedReturn5);  
             testCase.verifyEqual(output6, expectedReturn6);  
+            testCase.verifyEqual(output7, expectedReturn7);  
                         
         end
         
