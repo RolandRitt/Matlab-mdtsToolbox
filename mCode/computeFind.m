@@ -1,26 +1,26 @@
 function conformElements = computeFind(operator, input, value)
 % boolean operations, segmentation
 %
-% Purpose : find all elements of an input which apply to a rule
+% Purpose : find all elements of an input which fulfil a condition
 %
 % Syntax :
 %   conformElements = computeFind(operator, input, value)
 %
 % Input Parameters :
-%   operator : rule operator. Available options: >, <, ==, ~=
+%   operator : condition operator as string. Available options: >, <, ==, ~=
 %
 %   input : Input for the computation as struct which holds the handle to
 %           the mdtsObject as input.object and the required tag as
 %           input.tag
 %
-%   value : reference value for the operation or rule
+%   value : reference value for the condition
 %
 % Return Parameters :
-%   conformElements : boolean array which indicates the rule conform 
-%       elements of 'input'
+%   conformElements : logical array which indicates the elements of 'input'
+%   which fulfil the condition
 %
 % Description : 
-%   Finds all elements of 'input' which apply to the rule according to the
+%   Finds all elements of 'input' which fulfil the condition according to the
 %   operator and the value.
 %
 % Author : 
