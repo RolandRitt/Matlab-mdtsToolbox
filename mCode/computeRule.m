@@ -57,9 +57,9 @@ end
 
 switch operator
     case '&'
-        ruleElements = conformElements1 & conformElements1;
+        ruleElements = conformElements1 & conformElements2;
     case '|'
-        ruleElements = conformElements1 | conformElements1;
+        ruleElements = conformElements1 | conformElements2;
     otherwise
         errID = 'computeRule:InvalidOperator';
         errMsg = 'Invalid operator!';
