@@ -536,6 +536,40 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testAddEvent(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 25, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 30, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 5, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 15, 14, 3, 3, 123));
+                    datenum(datetime(2017, 9, 5, 14, 3, 3, 123))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3;
+                    4, 3, 2, 1;
+                    5, 4, 3, 2];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+                      
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            
+            eventInfo.eventTime = time(2);
+            eventInfo.eventDuration = 5 * ts;
+            
+            returns.addEvent('event1', eventInfo.eventTime, eventInfo.eventDuration);
+                        
+            testCase.verifyEqual(returns.eventMap('event1'), eventInfo);
+            
+        end
+        
     end
     
 end

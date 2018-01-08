@@ -38,6 +38,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         uniform
         ts
         isSubset = false;
+        eventMap = containers.Map;
         
     end
     
@@ -348,6 +349,15 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.data = [obj.data, addData];
             obj.tags = [obj.tags, addTags];
             obj.units = [obj.units, addUnits];
+            
+        end
+        
+        function obj = addEvent(obj, eventID, eventTime, eventDuration)
+            
+            eventInfo.eventTime = eventTime;
+            eventInfo.eventDuration = eventDuration;
+            
+            obj.eventMap(eventID) = eventInfo;
             
         end
                 
