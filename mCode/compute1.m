@@ -6,7 +6,8 @@ function output = compute1(matrix, input)
 % Syntax : output = compute1(matrix, input)
 %
 % Input Parameters :
-%   matrix : Convolution matrix
+%   matrix : Convolution matrix, dense or sparse, or convolution vector
+%
 %   input : Input for the computation. This can be given as:
 %
 %       Vector := Double vector holding the data
