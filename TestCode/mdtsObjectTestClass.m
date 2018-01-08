@@ -349,6 +349,58 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testAddEvent(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 25, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 30, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 5, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 15, 14, 3, 3, 123));
+                    datenum(datetime(2017, 9, 5, 14, 3, 3, 123))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3;
+                    4, 3, 2, 1;
+                    5, 4, 3, 2];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            
+            eventName1 = 'MyEvent1';
+            eventName2 = 123;
+            
+            eventInfo1.eventTime = time(2);
+            eventInfo2.eventTime = [time(2); time(3); time(4)];
+            eventInfo3.eventTime = 'A';
+            eventInfo4.eventTime = time(2);
+            eventInfo5.eventTime = time(end) + 1;
+            
+            eventInfo1.eventDuration = int32(3);
+            eventInfo2.eventDuration = [int32(3); int32(4)];
+            eventInfo3.eventDuration = int32(3);
+            eventInfo4.eventDuration = 3;
+            eventInfo5.eventDuration = int32(3);
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+            
+            returns.addEvent(eventName1, eventInfo1.eventTime, eventInfo1.eventDuration);
+            
+            testCase.verifyEqual(returns.eventMap(eventName1), eventInfo1);
+            
+            testCase.verifyError(@()returns.addEvent(eventName2, eventInfo1.eventTime, eventInfo1.eventDuration), 'addEvent:InvalidEventID');
+            testCase.verifyError(@()returns.addEvent(eventName1, eventInfo2.eventTime, eventInfo2.eventDuration), 'addEvent:TimesInconsistent');
+            testCase.verifyError(@()returns.addEvent(eventName1, eventInfo3.eventTime, eventInfo3.eventDuration), 'addEvent:InvalidEventTime');
+            testCase.verifyError(@()returns.addEvent(eventName1, eventInfo4.eventTime, eventInfo4.eventDuration), 'addEvent:InvalidEventDuration');
+            testCase.verifyError(@()returns.addEvent(eventName1, eventInfo5.eventTime, eventInfo5.eventDuration), 'addEvent:EventTimeNotAvailable');
+          
+        end
+        
 %         function testCalculation(testCase)
 %             
 %             ts = duration(0, 0, 0, 50);
@@ -542,46 +594,5 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
 %             
 %         end
         
-%         function testAddEvent(testCase)
-%             
-%             ts = duration(0, 0, 0, 50);
-%             time = [datenum(datetime(2017, 7, 25, 14, 3, 3, 123));
-%                     datenum(datetime(2017, 7, 30, 14, 3, 3, 123));
-%                     datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
-%                     datenum(datetime(2017, 8, 5, 14, 3, 3, 123));
-%                     datenum(datetime(2017, 8, 15, 14, 3, 3, 123));
-%                     datenum(datetime(2017, 9, 5, 14, 3, 3, 123))];
-%             data = [9, 8, 7, 6;
-%                     7, 6, 5, 4;
-%                     8, 7, 6, 5;
-%                     6, 5, 4, 3;
-%                     4, 3, 2, 1;
-%                     5, 4, 3, 2];
-%             tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
-%             units = {'s', 'min', 'elephants', 'giraffes'};
-%             name = 'TS-Test';
-%             who = 'Operator';
-%             when = 'Now';
-%             description = {'This is a TS-Test'; 'with two text lines'};
-%             comment = {'This is'; 'a comment'};
-%             
-%             eventName1 = 'MyEvent1';
-%             eventName2 = 'MyEvent2';
-%             eventName3 = 'MyEvent3';
-%             eventTime1 = time(3);
-%             eventTime2 = 5;
-%             eventTime3 = datetime(2017, 9, 5, 14, 3, 3, 123);
-%             
-%             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
-%             
-%             returns.addEvent(eventName1, eventTime1);
-%             returns.addEvent(eventName2, eventTime2, 1);
-%             returns.addEvent(eventName3, eventTime3);
-%             
-%             testCase.verifyEqual(eventTime1, returns.tsEvents(eventName1));
-%             testCase.verifyEqual(time(eventTime2), returns.tsEvents(eventName2));
-%             testCase.verifyEqual(datenum(eventTime3), returns.tsEvents(eventName3));
-%             
-%         end
     end
 end

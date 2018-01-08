@@ -162,7 +162,45 @@ classdef mdtsObject < mdtsCoreObject
             obj = expandDataSet@mdtsCoreObject(obj, addData, addTags);
             
         end
-                    
+        
+        function obj = addEvent(obj, eventID, eventTime, eventDuration)
+            
+            if~isa(eventID, 'char')
+                
+                errID = 'addEvent:InvalidEventID';
+                errMsg = 'Variable eventID must be a string!';
+                error(errID, errMsg);
+                
+            elseif~(numel(eventTime) == numel(eventDuration))
+                
+                errID = 'addEvent:TimesInconsistent';
+                errMsg = 'eventTime and eventDuration must have the same number of elements!';
+                error(errID, errMsg);
+                
+            elseif~isa(eventTime, 'numeric')
+                
+                errID = 'addEvent:InvalidEventTime';
+                errMsg = 'Event time must be a datenum (array)!';
+                error(errID, errMsg);
+                
+            elseif~isa(eventDuration, 'integer')
+                
+                errID = 'addEvent:InvalidEventDuration';
+                errMsg = 'Event duration must be an integer (array)!';
+                error(errID, errMsg);
+                
+            elseif~prod(ismember(eventTime, obj.time))
+                
+                errID = 'addEvent:EventTimeNotAvailable';
+                errMsg = 'Only time stemps available within the data set are permitted as eventTime!';
+                error(errID, errMsg);
+                
+            end
+            
+            obj = addEvent@mdtsCoreObject(obj, eventID, eventTime, eventDuration);
+            
+        end
+        
     end
     
 end
