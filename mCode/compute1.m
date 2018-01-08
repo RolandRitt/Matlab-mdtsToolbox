@@ -71,7 +71,19 @@ M = matrix;
 
 [m, n] = size(M);
 
-if(m == n)
+if(issparse(M))
+    
+    if~(numel(y) == m && numel(y) == n)
+        
+        errID = 'compute1:IncorrectMatrixDimensions';
+        errMsg = 'Sparse matrix must be of dimension n x n, where n is the length of the given data vector!';
+        error(errID, errMsg);
+        
+    end
+    
+    output = M * y;
+    
+elseif(m == n)
     
     if ~isOdd(n)
         
@@ -94,10 +106,14 @@ if(m == n)
     
     output = yL;
     
+elseif(m == 1 || n == 1)
+    
+    output = conv(y, matrix, 'same');
+    
 else
     
-    errID = 'compute1:NonSquareOperator';
-    errMsg = 'LDO is only implemented for squared Operators!';
+    errID = 'compute1:InvalidOperator';
+    errMsg = 'Operator must be a n x n matrix (dense or sparse) or a vector!';
     error(errID, errMsg);
     
 end
