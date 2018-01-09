@@ -35,6 +35,7 @@ classdef mdtsObject < mdtsCoreObject
             defaultWhen = 'Now';
             defaultDescription = 'No description available';
             defaultComment = 'No comment available';
+            defaulttsEvents = containers.Map;
             
             addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(data, 1), 1]}));            
             addRequired(p, 'dataIn', @(x)validateattributes(x, {'numeric'}, {'nonempty'}));
@@ -47,10 +48,11 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'when', defaultWhen, @(x)validateattributes(x, {'char'}, {'nonempty'}));
             addParameter(p, 'description', defaultDescription, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'comment', defaultComment, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
+            addParameter(p, 'tsEvents', defaulttsEvents, @(x)validateattributes(x, {'containers.Map'}, {'nonempty'}));
             
             parse(p, time, data, tags, varargin{:});
             
-            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment);
+            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents);
             
         end
         

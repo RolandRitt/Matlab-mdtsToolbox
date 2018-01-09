@@ -41,8 +41,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             returns2 = mdtsObject(time, data, tags);
             
             testCase.verifyEqual(returns.time, time);
@@ -78,26 +81,29 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
         end
         
-                function testEqualDistribution(testCase)
+        function testEqualDistribution(testCase)
             
             ts = duration(0, 0, 0, 50);
             time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
             data = [9, 8;
-                    7, 6;
-                    8, 7;
-                    6, 5];
-            tags = {'Channel 1'; 'Channel2'};
+                7, 6;
+                8, 7;
+                6, 5];
+            tags = {'Channel 1', 'Channel2'};
             units = {'s', 'min'};
             name = 'TS-Test';
             who = 'Operator';
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -121,17 +127,17 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             ts = duration(0, 0, 0, 50);
             time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts)));
-                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts)))];
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts)))];
             data = [9, 8, 7, 6;
-                    7, 6, 5, 4;
-                    8, 7, 6, 5;
-                    6, 5, 4, 3;
-                    4, 3, 2, 1;
-                    5, 4, 3, 2];
+                7, 6, 5, 4;
+                8, 7, 6, 5;
+                6, 5, 4, 3;
+                4, 3, 2, 1;
+                5, 4, 3, 2];
             tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
             units = {'s', 'min', 'elephants', 'giraffes'};
             name = 'TS-Test';
@@ -139,8 +145,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -210,8 +219,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             
             testCase.verifyError(@()returns.getData(), 'getData:InvalidNumberOfInputs');  
 
@@ -235,8 +247,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             
             testCase.verifyError(@()returns.getData(1, 2, 3), 'getData:InvalidNumberOfInputs');
             
@@ -260,8 +275,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
 
             testCase.verifyError(@()returns.getTagIndices({'Channel 5'}), 'getTagIndices:TagNotAvailable');    
         
@@ -289,10 +307,13 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
             tooLargeInterval = [time(2); time(end) + 1 / (60 * 60 * 24)];
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);            
  
             testCase.verifyError(@()returns.getIntervalIndices(tooLargeInterval), 'getIntervalIndices:IntervalOutOfBoundaries');
             
@@ -320,6 +341,9 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
             addData = [2, 3;
                        3, 4;
@@ -330,7 +354,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             addTags1 = {'AddedTag1', 'AddedTag2'};
             addTags2 = {'AddedTag3', 'AddedTag4'};
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             returns.expandDataSet(addData, addTags1);
             
             testCase.verifyEqual(returns.data(:, end - 1 : end), addData);
@@ -371,6 +395,9 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
             
             eventName1 = 'MyEvent1';
             eventName2 = 123;
@@ -387,11 +414,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             eventInfo4.eventDuration = 3;
             eventInfo5.eventDuration = int32(3);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             
             returns.addEvent(eventName1, eventInfo1.eventTime, eventInfo1.eventDuration);
             
-            testCase.verifyEqual(returns.eventMap(eventName1), eventInfo1);
+            testCase.verifyEqual(returns.tsEvents(eventName1), eventInfo1);
             
             testCase.verifyError(@()returns.addEvent(eventName2, eventInfo1.eventTime, eventInfo1.eventDuration), 'addEvent:InvalidEventID');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo2.eventTime, eventInfo2.eventDuration), 'addEvent:TimesInconsistent');
