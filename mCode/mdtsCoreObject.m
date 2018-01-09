@@ -38,7 +38,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         uniform
         ts
         isSubset = false;
-        eventMap = containers.Map;
+        tsEvents;
         
     end
     
@@ -52,7 +52,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
     
     methods
         
-        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment)
+        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents)
             
             % Core data
             
@@ -77,6 +77,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.when = when;
             obj.description = description;
             obj.comment = comment;
+            obj.tsEvents = tsEvents;
             
         end
         
@@ -357,7 +358,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             eventInfo.eventTime = eventTime;
             eventInfo.eventDuration = eventDuration;
             
-            obj.eventMap(eventID) = eventInfo;
+            obj.tsEvents(eventID) = eventInfo;
             
         end
                 
