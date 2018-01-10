@@ -90,7 +90,7 @@ title(out(1), inputObject.name);
 eventKeys = keys(inputObject.tsEvents);
 nEvents = length(eventKeys);
 colors = distinguishable_colors(nEvents, {'w', get(ph(1), 'Color')});
-phLegend = [],
+phLegend = [];
     
 for i = 1 : nEvents
     
@@ -107,13 +107,12 @@ for i = 1 : nEvents
     end
     
     ph2 = plotvline(xev, 'Axes', out, 'Color', colors(i, :));
-    ph = [ph,ph2];
     
     phLegend = [phLegend, ph2(end)];
     
 end
 
-legend(phLegend, cellfun(@num2str, eventKeys, 'UniformOutput', false), 'Location', 'southoutside', 'Orientation', 'horizontal');
+legend(phLegend, cellfun(@num2str, eventKeys, 'UniformOutput', false));
 
 fM.shouldAdd = shouldAddold;
 
