@@ -36,6 +36,7 @@ classdef mdtsObject < mdtsCoreObject
             defaultDescription = 'No description available';
             defaultComment = 'No comment available';
             defaulttsEvents = containers.Map;
+            defaultSegmentations = cell(1, numel(tags));
             
             addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(data, 1), 1]}));            
             addRequired(p, 'dataIn', @(x)validateattributes(x, {'numeric'}, {'nonempty'}));
@@ -49,10 +50,11 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'description', defaultDescription, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'comment', defaultComment, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'tsEvents', defaulttsEvents, @(x)validateattributes(x, {'containers.Map'}, {'nonempty'}));
+            addParameter(p, 'segmentations', defaultSegmentations, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             
             parse(p, time, data, tags, varargin{:});
             
-            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents);
+            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.segmentations);
             
         end
         
@@ -200,6 +202,26 @@ classdef mdtsObject < mdtsCoreObject
             end
             
             obj = addEvent@mdtsCoreObject(obj, eventID, eventTime, eventDuration);
+            
+        end
+        
+        function obj = addSegmentsToChannel(obj, channelNumber, segObj)
+            
+            if~isa(segObj, 'SegmentationObject')
+                
+                errID = 'addSegmentsToChannel:NotASegmentationObject';
+                errMsg = 'The input segObj must be of class SegmentationObject!';
+                error(errID, errMsg);
+                
+            elseif~isa(channelNumber, 'numeric')
+                
+                errID = 'addSegmentsToChanne:InvalidChannelNumber';
+                errMsg = 'Event duration must be numeric!';
+                error(errID, errMsg);
+                
+            end
+                                   
+            obj = addSegmentsToChannel@mdtsCoreObject(obj, channelNumber, segObj);
             
         end
         
