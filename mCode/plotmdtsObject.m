@@ -74,23 +74,47 @@ fM = FigureManager;
 
 if bDatetime
     
-%     if ~inputObject.bXdatetimeCalculated
-%         
-%         inputObject.recalcXDatetime();
-%         
-%     end
-    
     [out, ph] = plotMulti(inputObject.timeDateTime(Range), inputObject.data(Range,inds), 'time', inputObject.tags(inds), UnmatchedArgs{:});
     
 else
     
-    [out, ph] = plotMulti(inputObject.timeDateTime(Range),inputObject.data(Range,inds), 'time', inputObject.tags(inds), UnmatchedArgs{:});
+    [out, ph] = plotMulti(inputObject.time(Range), inputObject.data(Range,inds), 'time', inputObject.tags(inds), UnmatchedArgs{:});
     
 end
 
 shouldAddold = fM.shouldAdd;
 fM.shouldAdd = false; %% otherwise it is too slow!!!
 title(out(1), inputObject.name);
+
+%% Plot Events
+eventKeys = keys(inputObject.tsEvents);
+nEvents = length(eventKeys);
+colors = distinguishable_colors(nEvents, {'w', get(ph(1), 'Color')});
+phLegend = [],
+    
+for i = 1 : nEvents
+    
+    eventInfo = inputObject.tsEvents(eventKeys{i});
+    
+    if bDatetime
+        
+        xev = datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum');
+        
+    else
+        
+        xev = eventInfo.eventTime;
+        
+    end
+    
+    ph2 = plotvline(xev, 'Axes', out, 'Color', colors(i, :));
+    ph = [ph,ph2];
+    
+    phLegend = [phLegend, ph2(end)];
+    
+end
+
+legend(phLegend, cellfun(@num2str, eventKeys, 'UniformOutput', false), 'Location', 'southoutside', 'Orientation', 'horizontal');
+
 fM.shouldAdd = shouldAddold;
 
 end
