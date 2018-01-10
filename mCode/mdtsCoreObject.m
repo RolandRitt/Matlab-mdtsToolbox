@@ -26,6 +26,8 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         time
         data
         tags
+        tsEvents
+        segmentations
         
         %Meta data
         
@@ -38,7 +40,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         uniform
         ts
         isSubset = false;
-        tsEvents;
+        
         
     end
     
@@ -52,16 +54,18 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
     
     methods
         
-        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents)
+        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, segmentations)
             
             % Core data
             
             obj.time = time;
             obj.data = data;
-            
-            % Meta data
-            
             obj.tags = tags;
+            obj.tsEvents = tsEvents;
+            obj.segmentations = segmentations;
+            
+            % Meta data            
+            
             obj.units = units;
             
             if(isempty(ts))
@@ -76,8 +80,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.who = who;
             obj.when = when;
             obj.description = description;
-            obj.comment = comment;
-            obj.tsEvents = tsEvents;
+            obj.comment = comment;            
             
         end
         
@@ -359,6 +362,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             eventInfo.eventDuration = eventDuration;
             
             obj.tsEvents(eventID) = eventInfo;
+            
+        end
+        
+        function obj = addSegmentsToChannel(obj, channelNumber, segObj)
+            
+            obj.segmentations{channelNumber} = segObj;
             
         end
                 
