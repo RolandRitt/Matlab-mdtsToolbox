@@ -46,11 +46,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             returns2 = mdtsObject(time, data, tags);
             
             testCase.verifyEqual(returns.time, time);
@@ -65,7 +65,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.description, description);
             testCase.verifyEqual(returns.comment, comment);
             testCase.verifyEqual(returns.tsEvents, tsEvents);
-            testCase.verifyEqual(returns.segmentations, segmentations);
+            testCase.verifyEqual(returns.symbReps, symbReps);
             
             testCase.verifyEqual(returns.fs, 1 / seconds(ts));
             testCase.verifyEqual(returns.timeRelative, time - time(1));
@@ -83,7 +83,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns2.description, 'No description available');
             testCase.verifyEqual(returns2.comment, 'No comment available');
             testCase.verifyEqual(returns2.tsEvents, containers.Map);
-            testCase.verifyEqual(returns2.segmentations, cell(1, numel(tags)));
+            testCase.verifyEqual(returns2.symbReps, cell(1, numel(tags)));
             
             testCase.verifyEqual(returns2.timeRelative, time - time(1));
             testCase.verifyEqual(returns2.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
@@ -113,11 +113,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -164,11 +164,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -243,11 +243,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             testCase.verifyError(@()returns.getData(), 'getData:InvalidNumberOfInputs');  
 
@@ -276,11 +276,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             testCase.verifyError(@()returns.getData(1, 2, 3), 'getData:InvalidNumberOfInputs');
             
@@ -309,11 +309,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
 
             testCase.verifyError(@()returns.getTagIndices({'Channel 5'}), 'getTagIndices:TagNotAvailable');    
         
@@ -346,13 +346,13 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
             tooLargeInterval = [time(2); time(end) + 1 / (60 * 60 * 24)];
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);            
  
             testCase.verifyError(@()returns.getIntervalIndices(tooLargeInterval), 'getIntervalIndices:IntervalOutOfBoundaries');
             
@@ -385,9 +385,9 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
             addData = [2, 3;
                        3, 4;
@@ -398,7 +398,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             addTags1 = {'AddedTag1', 'AddedTag2'};
             addTags2 = {'AddedTag3', 'AddedTag4'};
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             returns.expandDataSet(addData, addTags1);
             
             testCase.verifyEqual(returns.data(:, end - 1 : end), addData);
@@ -444,9 +444,9 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
             
             eventName1 = 'MyEvent1';
             eventName2 = 123;
@@ -463,7 +463,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             eventInfo4.eventDuration = 3;
             eventInfo5.eventDuration = int32(3);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             returns.addEvent(eventName1, eventInfo1.eventTime, eventInfo1.eventDuration);
             
@@ -477,7 +477,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
           
         end
         
-        function testAddSegmentationToChannel(testCase)
+        function testAddSymbRepToChannel(testCase)
             
             ts = duration(0, 0, 0, 50);
             time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
@@ -510,11 +510,11 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
-            segObj = SegmentationObject(durations, symbols);
-            segmentations = cell(1, numel(tags));
-            segmentations{2} = segObj;
+            symbObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = symbObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segmentations', segmentations);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             input1.object = returns;
             input1.tag = 'Channel 1';
@@ -532,17 +532,17 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             expectedReturn3.durations = [1; 4; 4];
             expectedReturn3.symbols = categorical({'a', 'b', 'c'}, 'Ordinal', true)';
             
-            segObj1 = segmentChannel(input1, edges1, alphabet1);     
-            segObj3 = segmentChannel(input3, edges3, alphabet3); 
+            symbObj1 = symbRepChannel(input1, edges1, alphabet1);     
+            symbObj3 = symbRepChannel(input3, edges3, alphabet3); 
             
-            returns.addSegmentsToChannel(1, segObj1);
-            returns.addSegmentsToChannel(3, segObj3);
+            returns.addSymbRepToChannel(1, symbObj1);
+            returns.addSymbRepToChannel(3, symbObj3);
             
-            testCase.verifyEqual(returns.segmentations{1}.durations, expectedReturn1.durations);
-            testCase.verifyEqual(returns.segmentations{1}.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(returns.symbReps{1}.durations, expectedReturn1.durations);
+            testCase.verifyEqual(returns.symbReps{1}.symbols, expectedReturn1.symbols);
             
-            testCase.verifyEqual(returns.segmentations{3}.durations, expectedReturn3.durations);
-            testCase.verifyEqual(returns.segmentations{3}.symbols, expectedReturn3.symbols);
+            testCase.verifyEqual(returns.symbReps{3}.durations, expectedReturn3.durations);
+            testCase.verifyEqual(returns.symbReps{3}.symbols, expectedReturn3.symbols);
             
         end
         

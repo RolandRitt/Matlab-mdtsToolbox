@@ -50,11 +50,11 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'description', defaultDescription, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'comment', defaultComment, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'tsEvents', defaulttsEvents, @(x)validateattributes(x, {'containers.Map'}, {'nonempty'}));
-            addParameter(p, 'segmentations', defaultSegmentations, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
+            addParameter(p, 'symbReps', defaultSegmentations, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             
             parse(p, time, data, tags, varargin{:});
             
-            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.segmentations);
+            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.symbReps);
             
         end
         
@@ -278,38 +278,38 @@ classdef mdtsObject < mdtsCoreObject
             
         end
         
-        function obj = addSegmentsToChannel(obj, channelNumber, segObj)
+        function obj = addSymbRepToChannel(obj, channelNumber, symbObj)
             % Purpose : Add symbolic representation to channel
             %
             % Syntax :
-            %   mdtsObject = mdtsObject.addSegmentsToChannel(channelNumber, segObj)
+            %   mdtsObject = mdtsObject.addSymbRepToChannel(channelNumber, symbObj)
             %
             % Input Parameters :
             %   channelNumber : channel number or tag indices of the
             %   according channel/tag
             %
-            %   segObj : segmentationObject with the corresponding symbolic
+            %   symbObj : SymbRepObject with the corresponding symbolic
             %   representation
             %
             % Return Parameters :
             %   mdtsObject : Original object with the added symbolic
             %   representation
             
-            if~isa(segObj, 'SegmentationObject')
+            if~isa(symbObj, 'SymbRepObject')
                 
-                errID = 'addSegmentsToChannel:NotASegmentationObject';
-                errMsg = 'The input segObj must be of class SegmentationObject!';
+                errID = 'addSymbRepToChannel:NotASymbRepObject';
+                errMsg = 'The input symbObj must be of class SymbRepObject!';
                 error(errID, errMsg);
                 
             elseif~isa(channelNumber, 'numeric')
                 
-                errID = 'addSegmentsToChanne:InvalidChannelNumber';
+                errID = 'addSymbRepToChanne:InvalidChannelNumber';
                 errMsg = 'Event duration must be numeric!';
                 error(errID, errMsg);
                 
             end
                                    
-            obj = addSegmentsToChannel@mdtsCoreObject(obj, channelNumber, segObj);
+            obj = addSymbRepToChannel@mdtsCoreObject(obj, channelNumber, symbObj);
             
         end
         
