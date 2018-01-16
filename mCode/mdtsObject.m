@@ -59,6 +59,24 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function returnObject = getData(obj, varargin)
+            % Purpose : Extract a subset of the data in the object and
+            % return it as new object
+            %
+            % Syntax :
+            %   returnObject = mdtsObject.getData(tagList)
+            %   returnObject = mdtsObject.getData(tagList, timeInterval)
+            %
+            % Input Parameters :
+            %   tagList : All tags of the required data subset as cell
+            %   array of strings
+            %
+            %   timeInterval : time interval of the required data subset as
+            %   vector with two elements, where the first element
+            %   represents the start of the interval and the second element
+            %   represents the end of the interval
+            %
+            % Return Parameters :
+            %   returnObject : mdtsObject with the extracted data
             
             nArguments = numel(varargin);
     
@@ -77,6 +95,17 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function tagIndices = getTagIndices(obj, tagList)
+            % Purpose : Return the indices of the given tags
+            %
+            % Syntax :
+            %   tagIndices = mdtsObject.getTagIndices(tagList)
+            %
+            % Input Parameters :
+            %   tagList : All tags of the required data subset as cell
+            %   array of strings
+            %
+            % Return Parameters :
+            %   tagIndices : Indices of the required tags as array 
             
             validateattributes( tagList, {'cell', 'char'}, {'nonempty'}, '', 'tagList');
                        
@@ -99,6 +128,18 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function intervalIndices = getIntervalIndices(obj, timeInterval)
+            % Purpose : Return the indices of the given interval
+            %
+            % Syntax :
+            %   intervalIndices = mdtsObject.getIntervalIndices(timeInterval)
+            %
+            % Input Parameters :
+            %   timeInterval : Two time stamps as datenum, given as vector
+            %   with two elements
+            %
+            % Return Parameters :
+            %   intervalIndices : Indices of the required time interval.
+            %   The returned indices include the given interval.
             
             if(~isa(timeInterval, 'double'))
                 
@@ -121,6 +162,20 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function obj = expandDataSet(obj, addData, addTags)
+            % Purpose : Expand the data set of the object by the given data
+            % in the given tags
+            %
+            % Syntax :
+            %   mdtsObject = mdtsObject.expandDataSet(addData, addTags)
+            %
+            % Input Parameters :
+            %   addData : Data set to be added to the objects data set,
+            %   given as numeric n x m matrix
+            %   addTags : Tags of the data set to be added to the objects
+            %   data set, given as 1 x m cell array of strings
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the expanded data set
             
             if(ischar(addTags))
                 
@@ -168,6 +223,21 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function obj = addEvent(obj, eventID, eventTime, eventDuration)
+            % Purpose : Add event to the object
+            %
+            % Syntax :
+            %   mdtsObject = mdtsObject.addEvent(eventID, eventTime, eventDuration)
+            %
+            % Input Parameters :
+            %   eventID : Identification of the event as string
+            %
+            %   eventTime : Time stamp of the event as datenum
+            %
+            %   eventDuration : duration of the event as number of time
+            %   stamps
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added event
             
             if~isa(eventID, 'char')
                 
@@ -206,6 +276,21 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function obj = addSegmentsToChannel(obj, channelNumber, segObj)
+            % Purpose : Add symbolic representation to channel
+            %
+            % Syntax :
+            %   mdtsObject = mdtsObject.addSegmentsToChannel(channelNumber, segObj)
+            %
+            % Input Parameters :
+            %   channelNumber : channel number or tag indices of the
+            %   according channel/tag
+            %
+            %   segObj : segmentationObject with the corresponding symbolic
+            %   representation
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added symbolic
+            %   representation
             
             if~isa(segObj, 'SegmentationObject')
                 
