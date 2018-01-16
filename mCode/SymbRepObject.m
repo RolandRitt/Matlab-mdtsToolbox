@@ -73,7 +73,8 @@ classdef SymbRepObject
             %   representation
             
             nSymbSequence = numel(symbSequence);
-            newSequence = join(symbSequence, '');
+            joinedSequence = join(symbSequence, '');
+            newSequence = {['[', joinedSequence{1}, ']']};
             indArray = ones(numel(obj.symbols) + nSymbSequence - 1, 1);
             
             for i = 1 : nSymbSequence
