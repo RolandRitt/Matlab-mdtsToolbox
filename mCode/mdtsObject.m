@@ -231,10 +231,13 @@ classdef mdtsObject < mdtsCoreObject
             % Input Parameters :
             %   eventID : Identification of the event as string
             %
-            %   eventTime : Time stamp of the event as datenum
+            %   eventTime : Time stamp of the event as datenum. Multiple
+            %   occurrence of the event can be given as vector including
+            %   all time stamps.
             %
-            %   eventDuration : duration of the event as number of time
-            %   stamps
+            %   eventDuration : duration of the event as (integer) number
+            %   of time stamps. Multiple occurrence of the event can be
+            %   given as vector including all durations.
             %
             % Return Parameters :
             %   mdtsObject : Original object with the added event
