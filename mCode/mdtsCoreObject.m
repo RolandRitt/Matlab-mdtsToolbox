@@ -27,7 +27,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         data
         tags
         tsEvents
-        segmentations
+        symbReps
         
         %Meta data
         
@@ -54,7 +54,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
     
     methods
         
-        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, segmentations)
+        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps)
             
             % Core data
             
@@ -62,7 +62,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.data = data;
             obj.tags = tags;
             obj.tsEvents = tsEvents;
-            obj.segmentations = segmentations;
+            obj.symbReps = symbReps;
             
             % Meta data            
             
@@ -492,24 +492,24 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             
         end
         
-        function obj = addSegmentsToChannel(obj, channelNumber, segObj)
+        function obj = addSymbRepToChannel(obj, channelNumber, symbObj)
             % Purpose : Add symbolic representation to channel
             %
             % Syntax :
-            %   mdtsObject = mdtsObject.addSegmentsToChannel(channelNumber, segObj)
+            %   mdtsObject = mdtsObject.addSymbRepToChannel(channelNumber, symbObj)
             %
             % Input Parameters :
             %   channelNumber : channel number or tag indices of the
             %   according channel/tag
             %
-            %   segObj : segmentationObject with the corresponding symbolic
+            %   symbObj : symbolicObject with the corresponding symbolic
             %   representation
             %
             % Return Parameters :
             %   mdtsObject : Original object with the added symbolic
             %   representation
             
-            obj.segmentations{channelNumber} = segObj;
+            obj.symbReps{channelNumber} = symbObj;
             
         end
                 
