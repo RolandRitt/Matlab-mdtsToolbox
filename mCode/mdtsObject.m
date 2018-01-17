@@ -102,12 +102,18 @@ classdef mdtsObject < mdtsCoreObject
             %
             % Input Parameters :
             %   tagList : All tags of the required data subset as cell
-            %   array of strings
+            %   array of strings or string (in case of one tag)
             %
             % Return Parameters :
             %   tagIndices : Indices of the required tags as array 
             
             validateattributes( tagList, {'cell', 'char'}, {'nonempty'}, '', 'tagList');
+            
+            if~iscell(tagList)
+                
+                tagList = {tagList};
+                
+            end
                        
             correctTagInput = ismember(tagList, obj.tags);
                        
