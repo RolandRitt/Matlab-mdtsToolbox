@@ -72,18 +72,27 @@ classdef symbRepChannelTestClass < matlab.unittest.TestCase
             alphabet3 = {'a', 'b', 'c'};
             edges3 = [-inf, 0, 1.5, inf];
             
+            input4.object = returns;
+            input4.tag = 'Channel2';
+            alphabet4 = {'a', 'b', 'c'};
+            edges4 = [-inf, 2, 10, inf];
+            
             expectedReturn1.durations = [1; 1; 3; 1; 2; 1];
-            expectedReturn1.symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c'}, 'Ordinal', true)';
+            expectedReturn1.symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c'}, {'a', 'b', 'c'}, 'Ordinal', true)';
             
             expectedReturn2.durations = [1; 1; 1; 1; 5];
-            expectedReturn2.symbols = categorical({'c', 'b', 'c', 'b', 'a'}, 'Ordinal', true)';
+            expectedReturn2.symbols = categorical({'c', 'b', 'c', 'b', 'a'}, {'a', 'b', 'c'}, 'Ordinal', true)';
             
             expectedReturn3.durations = [1; 4; 4];
-            expectedReturn3.symbols = categorical({'a', 'b', 'c'}, 'Ordinal', true)';
+            expectedReturn3.symbols = categorical({'a', 'b', 'c'}, {'a', 'b', 'c'}, 'Ordinal', true)';
+            
+            expectedReturn4.durations = [4; 5];
+            expectedReturn4.symbols = categorical({'b', 'a'}, {'a', 'b', 'c'}, 'Ordinal', true)';
             
             symbObj1 = symbRepChannel(input1, edges1, alphabet1);    
             symbObj2 = symbRepChannel(input2, edges2, alphabet2);  
             symbObj3 = symbRepChannel(input3, edges3, alphabet3); 
+            symbObj4 = symbRepChannel(input4, edges4, alphabet4); 
           
             testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
             testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
@@ -93,6 +102,9 @@ classdef symbRepChannelTestClass < matlab.unittest.TestCase
             
             testCase.verifyEqual(symbObj3.durations, expectedReturn3.durations);
             testCase.verifyEqual(symbObj3.symbols, expectedReturn3.symbols);
+            
+            testCase.verifyEqual(symbObj4.durations, expectedReturn4.durations);
+            testCase.verifyEqual(symbObj4.symbols, expectedReturn4.symbols);
             
         end
                 
