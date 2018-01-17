@@ -38,7 +38,7 @@ classdef applyMCLATestClass < matlab.unittest.TestCase
             
             symbRepObjectsList = {symbObj1, symbObj2, symbObj3};
             
-            expectedReturn1.symbols = categorical({'axu', 'byu', 'cyu', 'cyw', 'czw', 'byv', 'ayu', 'azw', 'cxw', 'bxw', 'cyu', 'cyv', 'byw', 'bxv', 'bzv'})';
+            expectedReturn1.symbols = categorical({'(axu)', '(byu)', '(cyu)', '(cyw)', '(czw)', '(byv)', '(ayu)', '(azw)', '(cxw)', '(bxw)', '(cyu)', '(cyv)', '(byw)', '(bxv)', '(bzv)'})';
             expectedReturn1.durations = [1; 1; 1; 1; 1; 1; 1; 1; 1; 2; 2; 1; 1; 1; 2];           
                         
             mclaSymbRepObject = applyMCLA(symbRepObjectsList);

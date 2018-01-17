@@ -68,7 +68,7 @@ allCombinations = cell(nCombinations, 1);
 for i = 1 : nCombinations
     
     tempText = join(allCombinationsMat(i, :), '');
-    allCombinations{i} = tempText{1};
+    allCombinations{i} = ['(', tempText{1}, ')'];
     
 end
 
@@ -86,7 +86,7 @@ mergedSymbols = cell(channelLength, 1);
 for i = 1 : channelLength
     
     tempSymbol = join(allSymbols(i, :), '');
-    mergedSymbols{i} = tempSymbol{1};
+    mergedSymbols{i} = ['(', tempSymbol{1}, ')'];
     
 end
 
