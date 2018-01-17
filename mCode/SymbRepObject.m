@@ -108,7 +108,7 @@ classdef SymbRepObject
             
             for i = 1 : nSymbSequence
                 
-                indArray = indArray .* [false(nSymbSequence - 1, 1); obj.symbols == symbSequence{1}];
+                indArray = indArray .* [false(nSymbSequence - i, 1); obj.symbols == symbSequence{i}; false(i - 1, 1)];
                 
             end
             

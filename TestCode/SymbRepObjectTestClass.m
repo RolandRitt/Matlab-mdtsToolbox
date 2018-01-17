@@ -52,21 +52,31 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
         
         function testMergeSequence(testCase)
             
-            durations = [1; 1; 3; 1; 2; 1; 2; 3; 4];
-            symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
+            durations1 = [1; 1; 3; 1; 2; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
+            durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
+            symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
             
-            symbSequence = {'c', 'b'};
+            symbSequence1 = {'c', 'b'};
+            symbSequence2 = {'x', 'y'};
             
             expectedReturn1.symbols = categorical({'a', 'b', '[cb]', 'a', '[cb]'}, {'a', 'b', 'c', '[cb]'})';
             expectedReturn1.durations = [1; 1; 4; 2; 10];
+            expectedReturn2.symbols = categorical({'[xy]', 'z', 'y', 'z', '[xy]', 'x', 'z'}, {'x', 'y', 'z', '[xy]'})';
+            expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
             
-            symbObj1 = SymbRepObject(durations, symbols);   
+            symbObj1 = SymbRepObject(durations1, symbols1); 
+            symbObj2 = SymbRepObject(durations2, symbols2);
             
-            symbObj1 = symbObj1.mergeSequence(symbSequence);
+            symbObj1 = symbObj1.mergeSequence(symbSequence1);
+            symbObj2 = symbObj2.mergeSequence(symbSequence2);
             
             testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
             testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
             testCase.verifyEqual(categories(symbObj1.symbols), categories(expectedReturn1.symbols));
+            testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
+            testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(categories(symbObj2.symbols), categories(expectedReturn2.symbols));
             
         end
         
