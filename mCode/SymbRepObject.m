@@ -1,7 +1,6 @@
 classdef SymbRepObject
     %
-    % Description : Represents a full segmentation set for one channel of
-    % an mdtsObject
+    % Description : Represents one channel of an mdtsObject as symbols
     %
     % Author :
     %    Paul O'Leary
@@ -36,8 +35,37 @@ classdef SymbRepObject
         
         function obj = SymbRepObject(durations, symbols)
             
-            obj.durations = durations;
-            obj.symbols = symbols;
+            if~iscategorical(symbols)
+                
+                errID = 'SymbRepObject:SymbolsNotCategorical';
+                errMsg = 'The symbols input must be of type categorical!';
+                error(errID, errMsg);
+                
+            elseif~isa(durations, 'numeric')
+                
+                errID = 'SymbRepObject:DurationsNotNumeric';
+                errMsg = 'The durations as input must be numeric!';
+                error(errID, errMsg);
+                
+            elseif~(numel(symbols) == numel(durations))
+                
+                errID = 'SymbRepObject:InvalidInputLength';
+                errMsg = 'The length of both inputs (symbols and durations) must be of the same length!';
+                error(errID, errMsg);
+                
+            end
+            
+            if(isprotected(symbols))
+                
+                obj.symbols = symbols;
+                
+            else
+                
+                obj.symbols = categorical(symbols, 'Protected', true);
+                
+            end
+            
+            obj.durations = durations;            
             
         end
         
@@ -75,6 +103,7 @@ classdef SymbRepObject
             nSymbSequence = numel(symbSequence);
             joinedSequence = join(symbSequence, '');
             newSequence = {['[', joinedSequence{1}, ']']};
+            obj.symbols = addcats(obj.symbols, newSequence);
             indArray = ones(numel(obj.symbols) + nSymbSequence - 1, 1);
             
             for i = 1 : nSymbSequence

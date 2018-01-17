@@ -67,7 +67,8 @@ allCombinations = cell(nCombinations, 1);
 
 for i = 1 : nCombinations
     
-    allCombinations{i} = join(allCombinationsMat(i, :), '');
+    tempText = join(allCombinationsMat(i, :), '');
+    allCombinations{i} = tempText{1};
     
 end
 
@@ -91,7 +92,7 @@ end
 
 numRepr = int32(categorical(mergedSymbols));
 symbolChange = [true; diff(numRepr) ~= 0];
-mclaSymbols = mergedSymbols(symbolChange);
+mclaSymbols = categorical(mergedSymbols(symbolChange), allCombinations);
 mclaDurations = diff(find([symbolChange; 1]));
 
 mclaSymbRepObject = SymbRepObject(mclaDurations, mclaSymbols);
