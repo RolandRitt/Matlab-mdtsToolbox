@@ -86,6 +86,56 @@ shouldAddold = fM.shouldAdd;
 fM.shouldAdd = false; %% otherwise it is too slow!!!
 title(out(1), inputObject.name);
 
+%% Plot Symbolic Representation
+
+allSymbols = {};
+
+for i = 1 : numel(inputObject.symbReps)
+    
+    if~isempty(inputObject.symbReps{i})
+        
+        addSymbols = categories(inputObject.symbReps{i}.symbols);
+        allSymbols = [allSymbols; addSymbols];
+        
+    end
+    
+end
+
+uniqueSymbols = unique(allSymbols);
+nSymbols = numel(uniqueSymbols);
+symbolColors = distinguishable_colors(nSymbols, {'w', get(ph(1), 'Color')});
+alphCol = 0.2;
+
+for i = 1 : numel(out)
+    
+    hold(out(i), 'on');
+    
+    ymin = min(ph(i).YData);
+    ymax = max(ph(i).YData);
+    
+    if~isempty(inputObject.symbReps{i})
+        
+        for j = 1 : nSymbols
+            
+            [startInds, durations] = inputObject.symbReps{i}.findSymbol(uniqueSymbols{j});
+            
+            for k = 1 : numel(startInds)
+                
+                xStart = inputObject.timeDateTime(startInds(k));
+                xEnd = inputObject.timeDateTime(min(startInds(k) + durations(k), Range(end)));
+                pa = fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'LineStyle', 'none', 'Parent', out(i));
+                
+            end
+            
+        end
+        
+        uistack(ph(i), 'top');
+        set(out(i), 'Layer', 'top')
+        
+    end
+    
+end
+
 %% Plot Events
 eventKeys = keys(inputObject.tsEvents);
 nEvents = length(eventKeys);
