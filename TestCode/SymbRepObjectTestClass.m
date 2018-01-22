@@ -85,17 +85,46 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             durations = [1; 1; 3; 1; 2; 1; 2; 3; 4];
             symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
             
+            expectedReturn1.startInds = [1; 7];
+            expectedReturn1.durations = [1; 2];
+            expectedReturn2.startInds = [2; 6; 10; 15];
+            expectedReturn2.durations = [1; 1; 2; 4];
+            expectedReturn3.startInds = [3; 9; 12];
+            expectedReturn3.durations = [3; 1; 3];
+            
+            symbObj = SymbRepObject(durations, symbols); 
+            
+            [return1.startInds, return1.durations] = symbObj.findSymbol('a');
+            [return2.startInds, return2.durations] = symbObj.findSymbol('b');
+            [return3.startInds, return3.durations] = symbObj.findSymbol('c');
+            
+            testCase.verifyEqual(return1.startInds, expectedReturn1.startInds);
+            testCase.verifyEqual(return1.durations, expectedReturn1.durations);
+            testCase.verifyEqual(return2.startInds, expectedReturn2.startInds);
+            testCase.verifyEqual(return2.durations, expectedReturn2.durations);
+            testCase.verifyEqual(return3.startInds, expectedReturn3.startInds);
+            testCase.verifyEqual(return3.durations, expectedReturn3.durations);
+            
+            testCase.verifyError(@()symbObj.findSymbol(123), 'findSymbol:InputNoString');
+            
+        end
+        
+        function findSymbolVec(testCase)
+            
+            durations = [1; 1; 3; 1; 2; 1; 2; 3; 4];
+            symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
+            
             expectedReturn1 = boolean([1; 0; 0; 0; 0; 0; 1; 1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]);
             expectedReturn2 = boolean([0; 1; 0; 0; 0; 1; 0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 1; 1]);
             expectedReturn3 = boolean([0; 0; 1; 1; 1; 0; 0; 0; 1; 0; 0; 1; 1; 1; 0; 0; 0; 0]);
             
             symbObj = SymbRepObject(durations, symbols); 
             
-            testCase.verifyEqual(symbObj.findSymbol('a'), expectedReturn1);
-            testCase.verifyEqual(symbObj.findSymbol('b'), expectedReturn2);
-            testCase.verifyEqual(symbObj.findSymbol('c'), expectedReturn3);
+            testCase.verifyEqual(symbObj.findSymbolVec('a'), expectedReturn1);
+            testCase.verifyEqual(symbObj.findSymbolVec('b'), expectedReturn2);
+            testCase.verifyEqual(symbObj.findSymbolVec('c'), expectedReturn3);
             
-            testCase.verifyError(@()symbObj.findSymbol(123), 'findSymbol:InputNoString');
+            testCase.verifyError(@()symbObj.findSymbolVec(123), 'findSymbolVec:InputNoString');
             
         end
         

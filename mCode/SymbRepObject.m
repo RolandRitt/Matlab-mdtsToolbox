@@ -84,10 +84,40 @@ classdef SymbRepObject
             
         end
         
-        function symbInd = findSymbol(obj, symbol)
+        function [startInds durations] = findSymbol(obj, symbol)
             % Purpose : find indices of symbol
             %
-            % Syntax : symbInd = SymbRepObject.findSymbol(symbol)
+            % Syntax : [startInd durations] = SymbRepObject.findSymbol(symbol)
+            %
+            % Input Parameters :
+            %   symbol : required symbol as character array
+            %
+            % Return Parameters :
+            %   startInd : all start indices of occurrances of the symbol
+            %   durations : all durations of occurrances of the symbol
+            
+            if ~ischar(symbol)
+                
+                errID = 'findSymbol:InputNoString';
+                errMsg = 'The input symbol must be given as character array!';
+                error(errID, errMsg);
+                
+            end
+            
+            symbInd = findSymbolVec(obj, symbol);
+            
+            symbolChange = [symbInd(1); diff(symbInd) == 1];
+            startInds = find(symbolChange);
+            
+            requiredSymbolInd = find(obj.symbols == symbol);
+            durations = obj.durations(requiredSymbolInd);
+            
+        end
+        
+        function symbInd = findSymbolVec(obj, symbol)
+            % Purpose : find indices of symbol
+            %
+            % Syntax : symbInd = SymbRepObject.findSymbolVec(symbol)
             %
             % Input Parameters :
             %   symbol : required symbol as character array
@@ -98,7 +128,7 @@ classdef SymbRepObject
             
             if ~ischar(symbol)
                 
-                errID = 'findSymbol:InputNoString';
+                errID = 'findSymbolVec:InputNoString';
                 errMsg = 'The input symbol must be given as character array!';
                 error(errID, errMsg);
                 
