@@ -76,15 +76,21 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             alphabet3 = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
             edges3 = [0, 20, 40, 60, 80, 100, 120, 140, inf];
             
+            input4.tag = 'Channel 4';
+            
             symbObj1 = symbRepChannel(input1, edges1, alphabet1);    
             symbObj2 = symbRepChannel(input2, edges2, alphabet2);  
             symbObj3 = symbRepChannel(input3, edges3, alphabet3); 
             
+            symbRepObjectsList = {symbObj1, symbObj2, symbObj3};
+            symbObj4 = applyMCLA(symbRepObjectsList);           
+                        
             returns = returns.addSymbRepToChannel(returns.getTagIndices(input1.tag), symbObj1);
             returns = returns.addSymbRepToChannel(returns.getTagIndices(input2.tag), symbObj2);
             returns = returns.addSymbRepToChannel(returns.getTagIndices(input3.tag), symbObj3);
+            returns = returns.addSymbRepToChannel(returns.getTagIndices(input4.tag), symbObj4);
             
-            [out, fM, ph] = plotmdtsObject(returns);
+            [~, ~, ~] = plotmdtsObject(returns);
                         
         end
         
