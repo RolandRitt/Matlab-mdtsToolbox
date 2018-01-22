@@ -162,7 +162,7 @@ for i = 1 : nEvents
     
 end
 
-legend(phLegend, cellfun(@num2str, eventKeys, 'UniformOutput', false));
+legend(out(1), phLegend, cellfun(@num2str, eventKeys, 'UniformOutput', false));
 
 fM.shouldAdd = shouldAddold;
 
