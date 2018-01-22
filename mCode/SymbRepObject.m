@@ -82,6 +82,12 @@ classdef SymbRepObject
             
             symbRepVec = repelem(obj.symbols, obj.durations);
             
+            if(size(symbRepVec, 2) > 1)
+                
+                symbRepVec = symbRepVec';
+                
+            end
+            
         end
         
         function [startInds, durations] = findSymbol(obj, symbol)
