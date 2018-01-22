@@ -28,6 +28,8 @@ function [out, fM, ph] = plotmdtsObject(inputObject, varargin)
 % url: www.harkeroleary.org
 % --------------------------------------------------------
 
+%% Parse inputs
+
 p = inputParser();
 p.KeepUnmatched=true;
 addRequired(p, 'inputObject', @(x) isa(x, 'mdtsObject')); %check if input is mdtsObject
@@ -37,6 +39,9 @@ addParameter(p, 'TagsSelected', [], @(x) isnumeric(x) || iscellstr(x) || ischar(
 addParameter(p, 'Size', [8.8,11.7], @(x)isnumeric(x)&&isvector(x)); %higth and width
 addParameter(p, 'FontSize', 10, @isnumeric);
 addParameter(p, 'bUseDatetime', true, @islogical);
+addParameter(p, 'plotSymbolName', false, @islogical);
+addParameter(p, 'plotSymbolDuration', false, @islogical);
+addParameter(p, 'plotSymbolNameMinLengthRelative', 0.05, @isnumeric);
 parse(p, inputObject, varargin{:});
 tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
 UnmatchedArgs = reshape(tmp',[],1)';
@@ -67,6 +72,10 @@ else
     Range = Startind:Stopind;
     
 end
+
+plotSymbolNameMinLength = numel(inputObject.time) * p.Results.plotSymbolNameMinLengthRelative;
+
+%% Plot data
 
 figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
 
@@ -121,10 +130,47 @@ for i = 1 : numel(out)
             
             for k = 1 : numel(startInds)
                 
-                xStart = inputObject.timeDateTime(startInds(k));
-                xEnd = inputObject.timeDateTime(startInds(k) + durations(k) - 1);
+                if bDatetime
+                    
+                    xStart = inputObject.timeDateTime(startInds(k));
+                    xEnd = inputObject.timeDateTime(startInds(k) + durations(k) - 1);
+                    
+                else
+                    
+                    xStart = inputObject.time(startInds(k));
+                    xEnd = inputObject.time(startInds(k) + durations(k) - 1);
+                    
+                end
+                
                 fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', out(i));
-                %text(out(i), xStart, 5, 'a', 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on');
+                
+                if(p.Results.plotSymbolName && durations(k) > plotSymbolNameMinLength)
+                    
+                    yText = ymin + (ymax - ymin) * 0.25;
+                    
+                    if(~p.Results.plotSymbolDuration)
+                        
+                        symbolText = uniqueSymbols{j};
+                        
+                    else
+                        
+                        symbolText = {uniqueSymbols{j}; num2str(durations(k))};
+                        
+                    end
+                    
+                    if bDatetime
+                        
+                        xSymbol = inputObject.timeDateTime(startInds(k) + round(durations(k) / 2));
+                        
+                    else
+                        
+                        xSymbol = inputObject.time(startInds(k) + round(durations(k) / 2));
+                        
+                    end
+                    
+                    text(out(i), xSymbol, yText, symbolText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+                
+                end
                 
             end
             
