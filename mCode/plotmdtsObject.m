@@ -110,8 +110,8 @@ for i = 1 : numel(out)
     
     hold(out(i), 'on');
     
-    ymin = min(ph(i).YData);
-    ymax = max(ph(i).YData);
+    ymin = min(min(ph(i).YData), -1);
+    ymax = max(max(ph(i).YData), 1);
     
     if~isempty(inputObject.symbReps{i})
         
@@ -122,8 +122,8 @@ for i = 1 : numel(out)
             for k = 1 : numel(startInds)
                 
                 xStart = inputObject.timeDateTime(startInds(k));
-                xEnd = inputObject.timeDateTime(min(startInds(k) + durations(k), Range(end)));
-                fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'LineStyle', 'none', 'Parent', out(i));
+                xEnd = inputObject.timeDateTime(startInds(k) + durations(k) - 1);
+                fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', out(i));
                 %text(out(i), xStart, 5, 'a', 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on');
                 
             end
