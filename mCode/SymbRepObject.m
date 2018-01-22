@@ -84,7 +84,7 @@ classdef SymbRepObject
             
         end
         
-        function [startInds durations] = findSymbol(obj, symbol)
+        function [startInds, durations] = findSymbol(obj, symbol)
             % Purpose : find indices of symbol
             %
             % Syntax : [startInd durations] = SymbRepObject.findSymbol(symbol)
@@ -109,7 +109,8 @@ classdef SymbRepObject
             symbolChange = [symbInd(1); diff(symbInd) == 1];
             startInds = find(symbolChange);
             
-            requiredSymbolInd = find(obj.symbols == symbol);
+            newSymbols = categorical(obj.symbols, 'Protected', false, 'Ordinal', false);
+            requiredSymbolInd = find(newSymbols == symbol);
             durations = obj.durations(requiredSymbolInd);
             
         end
@@ -133,8 +134,9 @@ classdef SymbRepObject
                 error(errID, errMsg);
                 
             end
-            
-            symbInd = obj.symbRepVec == symbol;
+                        
+            newSymbols = categorical(obj.symbRepVec, 'Protected', false, 'Ordinal', false);
+            symbInd = newSymbols == symbol;
             
         end
         
