@@ -84,7 +84,7 @@ end
 
 shouldAddold = fM.shouldAdd;
 fM.shouldAdd = false; %% otherwise it is too slow!!!
-title(out(1), inputObject.name);
+title(out(1), inputObject.name, 'Interpreter', 'none');
 
 %% Plot Symbolic Representation
 
@@ -104,7 +104,7 @@ end
 uniqueSymbols = unique(allSymbols);
 nSymbols = numel(uniqueSymbols);
 symbolColors = distinguishable_colors(nSymbols, {'w', get(ph(1), 'Color')});
-alphCol = 0.2;
+alphCol = 0.3;
 
 for i = 1 : numel(out)
     
@@ -123,7 +123,8 @@ for i = 1 : numel(out)
                 
                 xStart = inputObject.timeDateTime(startInds(k));
                 xEnd = inputObject.timeDateTime(min(startInds(k) + durations(k), Range(end)));
-                pa = fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'LineStyle', 'none', 'Parent', out(i));
+                fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'LineStyle', 'none', 'Parent', out(i));
+                %text(out(i), xStart, 5, 'a', 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on');
                 
             end
             
