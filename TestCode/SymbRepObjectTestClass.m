@@ -80,6 +80,25 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function findSymbol(testCase)
+            
+            durations = [1; 1; 3; 1; 2; 1; 2; 3; 4];
+            symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
+            
+            expectedReturn1 = boolean([1; 0; 0; 0; 0; 0; 1; 1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]);
+            expectedReturn2 = boolean([0; 1; 0; 0; 0; 1; 0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 1; 1]);
+            expectedReturn3 = boolean([0; 0; 1; 1; 1; 0; 0; 0; 1; 0; 0; 1; 1; 1; 0; 0; 0; 0]);
+            
+            symbObj = SymbRepObject(durations, symbols); 
+            
+            testCase.verifyEqual(symbObj.findSymbol('a'), expectedReturn1);
+            testCase.verifyEqual(symbObj.findSymbol('b'), expectedReturn2);
+            testCase.verifyEqual(symbObj.findSymbol('c'), expectedReturn3);
+            
+            testCase.verifyError(@()symbObj.findSymbol(123), 'findSymbol:InputNoString');
+            
+        end
+        
     end
     
 end

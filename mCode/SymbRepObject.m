@@ -72,7 +72,7 @@ classdef SymbRepObject
         function symbRepVec = get.symbRepVec(obj)
             % Purpose : return dependent variable symbRepVec
             %
-            % Syntax : symbRepVec = mdtsObject.symbRepVec
+            % Syntax : symbRepVec = SymbRepObject.symbRepVec
             %
             % Input Parameters :
             %
@@ -81,6 +81,30 @@ classdef SymbRepObject
             %   length (no compression)
             
             symbRepVec = repelem(obj.symbols, obj.durations);
+            
+        end
+        
+        function symbInd = findSymbol(obj, symbol)
+            % Purpose : find indices of symbol
+            %
+            % Syntax : symbInd = SymbRepObject.findSymbol(symbol)
+            %
+            % Input Parameters :
+            %   symbol : required symbol as character array
+            %
+            % Return Parameters :
+            %   symbInd : boolean vector which indicates all occurrances
+            %   of the symbol specified in the input
+            
+            if ~ischar(symbol)
+                
+                errID = 'findSymbol:InputNoString';
+                errMsg = 'The input symbol must be given as character array!';
+                error(errID, errMsg);
+                
+            end
+            
+            symbInd = obj.symbRepVec == symbol;
             
         end
         
