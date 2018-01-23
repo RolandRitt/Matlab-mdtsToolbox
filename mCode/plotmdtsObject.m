@@ -147,14 +147,17 @@ for i = 1 : numel(out)
                 if(p.Results.plotSymbolName && durations(k) > plotSymbolNameMinLength)
                     
                     yText = ymin + (ymax - ymin) * 0.25;
+                    symbolText = uniqueSymbols{j};
+                    symbolText = strrep(symbolText, '{', '\{');
+                    symbolText = strrep(symbolText, '}', '\}');
                     
                     if(~p.Results.plotSymbolDuration)
                         
-                        symbolText = uniqueSymbols{j};
+                        symbRepText = symbolText;
                         
                     else
                         
-                        symbolText = ['\begin{tabular}{c} ', uniqueSymbols{j}, '\\', num2str(durations(k)), ' \end{tabular}'];
+                        symbRepText = ['\begin{tabular}{c} ', symbolText, '\\', num2str(durations(k)), ' \end{tabular}'];
                         
                     end
                     
@@ -168,7 +171,7 @@ for i = 1 : numel(out)
                         
                     end
                     
-                    text(out(i), xSymbol, yText, symbolText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+                    text(out(i), xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
                 
                 end
                 
