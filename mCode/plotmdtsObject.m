@@ -186,30 +186,43 @@ end
 %% Plot Events
 eventKeys = keys(inputObject.tsEvents);
 nEvents = length(eventKeys);
-colors = distinguishable_colors(nEvents, {'w', get(ph(1), 'Color')});
-phLegend = [];
+legendEntries = [];
+xev = [];
     
 for i = 1 : nEvents
     
     eventInfo = inputObject.tsEvents(eventKeys{i});
     
-    if bDatetime
+    if(eventInfo.eventTime >= inputObject.time(Range(1)) && eventInfo.eventTime <= inputObject.time(Range(end)))
         
-        xev = datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum');
-        
-    else
-        
-        xev = eventInfo.eventTime;
+        if bDatetime
+            
+            xev = [xev; datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum')];
+            
+        else
+            
+            xev = [xev; eventInfo.eventTime];
+            
+        end       
+                
+        legendEntries = [legendEntries, eventKeys(i)];
         
     end
     
-    ph2 = plotvline(xev, 'Axes', out, 'Color', colors(i, :));
+end
+
+nEventsToPlot = numel(legendEntries);
+eventColors = distinguishable_colors(nEventsToPlot, {'w', get(ph(1), 'Color')});
+phLegend = [];
+
+for i = 1 : nEventsToPlot    
     
+    ph2 = plotvline(xev(i), 'Axes', out, 'Color', eventColors(i, :));
     phLegend = [phLegend, ph2(end)];
     
 end
 
-legend(out(1), phLegend, cellfun(@num2str, eventKeys, 'UniformOutput', false));
+legend(out(1), phLegend, cellfun(@num2str, legendEntries, 'UniformOutput', false));
 
 fM.shouldAdd = shouldAddold;
 

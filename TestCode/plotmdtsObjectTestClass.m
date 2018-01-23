@@ -56,8 +56,10 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             eventInfo2.eventDuration = int32(0);
             eventInfo3.eventTime = time(750);
             eventInfo3.eventDuration = int32(0);
-            keys = {'Start', 'Middle', 'End'};
-            tsEvents = containers.Map(keys, {eventInfo1, eventInfo2, eventInfo3});
+            eventInfo4.eventTime = time(end) + 10 / (60 *60 * 24);
+            eventInfo4.eventDuration = int32(0);
+            keys = {'Start', 'Middle', 'End', 'Outer'};
+            tsEvents = containers.Map(keys, {eventInfo1, eventInfo2, eventInfo3, eventInfo4});
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             
