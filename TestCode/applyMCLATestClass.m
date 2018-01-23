@@ -38,7 +38,7 @@ classdef applyMCLATestClass < matlab.unittest.TestCase
             
             symbRepObjectsList = {symbObj1, symbObj2, symbObj3};
             
-            expectedReturn1.symbols = categorical({'(axu)', '(byu)', '(cyu)', '(cyw)', '(czw)', '(byv)', '(ayu)', '(azw)', '(cxw)', '(bxw)', '(cyu)', '(cyv)', '(byw)', '(bxv)', '(bzv)'})';
+            expectedReturn1.symbols = categorical({'({a}{x}{u})', '({b}{y}{u})', '({c}{y}{u})', '({c}{y}{w})', '({c}{z}{w})', '({b}{y}{v})', '({a}{y}{u})', '({a}{z}{w})', '({c}{x}{w})', '({b}{x}{w})', '({c}{y}{u})', '({c}{y}{v})', '({b}{y}{w})', '({b}{x}{v})', '({b}{z}{v})'})';
             expectedReturn1.durations = [1; 1; 1; 1; 1; 1; 1; 1; 1; 2; 2; 1; 1; 1; 2];           
                         
             mclaSymbRepObject = applyMCLA(symbRepObjectsList);
@@ -93,9 +93,9 @@ classdef applyMCLATestClass < matlab.unittest.TestCase
             symbRepObjectsList2 = {mclaSymbRepObject1, symbObj3};
             mclaSymbRepObject2 = applyMCLA(symbRepObjectsList2);
             
-            expectedReturn1.symbols = categorical({'(a[xy])', '(b[xy])', '([cb][xy])', '([cb]z)', '([cb]y)', '(ay)', '(az)', '([cb][xy])', '([cb]x)', '([cb]z)'})';
+            expectedReturn1.symbols = categorical({'({a}[{x}{y}])', '({b}[{x}{y}])', '([{c}{b}][{x}{y}])', '([{c}{b}]{z})', '([{c}{b}]{y})', '({a}{y})', '({a}{z})', '([{c}{b}][{x}{y}])', '([{c}{b}]{x})', '([{c}{b}]{z})'})';
             expectedReturn1.durations = [1; 1; 2; 1; 1; 1; 1; 7; 1; 2];  
-            expectedReturn2.symbols = categorical({'((a[xy])u)', '((b[xy])u)', '(([cb][xy])u)', '(([cb][xy])w)', '(([cb]z)w)', '(([cb]y)v)', '((ay)u)', '((az)w)', '(([cb][xy])w)', '(([cb][xy])u)', '(([cb][xy])v)', '(([cb][xy])w)', '(([cb]x)v)', '(([cb]z)v)'})';
+            expectedReturn2.symbols = categorical({'(({a}[{x}{y}]){u})', '(({b}[{x}{y}]){u})', '(([{c}{b}][{x}{y}]){u})', '(([{c}{b}][{x}{y}]){w})', '(([{c}{b}]{z}){w})', '(([{c}{b}]{y}){v})', '(({a}{y}){u})', '(({a}{z}){w})', '(([{c}{b}][{x}{y}]){w})', '(([{c}{b}][{x}{y}]){u})', '(([{c}{b}][{x}{y}]){v})', '(([{c}{b}][{x}{y}]){w})', '(([{c}{b}]{x}){v})', '(([{c}{b}]{z}){v})'})';
             expectedReturn2.durations = [1; 1; 1; 1; 1; 1; 1; 1; 3; 2; 1; 1; 1; 2];  
                         
             testCase.verifyEqual(mclaSymbRepObject1.durations, expectedReturn1.durations);

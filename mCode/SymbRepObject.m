@@ -156,14 +156,22 @@ classdef SymbRepObject
             % Input Parameters :
             %   symbSequence : Sequence which is supposed to be merged to
             %   one new categorical. Must be given as one dimensional cell
-            %   array of strings with an arbitrary number of elements   
+            %   array of strings with an arbitrary number of elements
             %
             % Return Parameters :
             %   SymbRepObject : Original object with merged symbolic
             %   representation
             
             nSymbSequence = numel(symbSequence);
-            joinedSequence = join(symbSequence, '');
+                        
+            addedBrackets = cellfun(@(x) ['{', x, '}'], symbSequence, 'UniformOutput', false);
+            removedBrackets = cellfun(@(x) strrep(x, '{[', '['), addedBrackets, 'UniformOutput', false);
+            removedBrackets = cellfun(@(x) strrep(x, '{(', '('), removedBrackets, 'UniformOutput', false);
+            removedBrackets = cellfun(@(x) strrep(x, ']}', ']'), removedBrackets, 'UniformOutput', false);
+            removedBrackets = cellfun(@(x) strrep(x, ')}', ')'), removedBrackets, 'UniformOutput', false);
+            modifiedSequence = removedBrackets;
+            
+            joinedSequence = join(modifiedSequence, '');
             newSequence = {['[', joinedSequence{1}, ']']};
             obj.symbols = addcats(obj.symbols, newSequence);
             indArray = ones(numel(obj.symbols) + nSymbSequence - 1, 1);

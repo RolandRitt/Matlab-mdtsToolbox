@@ -60,9 +60,9 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbSequence1 = {'c', 'b'};
             symbSequence2 = {'x', 'y'};
             
-            expectedReturn1.symbols = categorical({'a', 'b', '[cb]', 'a', '[cb]'}, {'a', 'b', 'c', '[cb]'})';
+            expectedReturn1.symbols = categorical({'a', 'b', '[{c}{b}]', 'a', '[{c}{b}]'}, {'a', 'b', 'c', '[{c}{b}]'})';
             expectedReturn1.durations = [1; 1; 4; 2; 10];
-            expectedReturn2.symbols = categorical({'[xy]', 'z', 'y', 'z', '[xy]', 'x', 'z'}, {'x', 'y', 'z', '[xy]'})';
+            expectedReturn2.symbols = categorical({'[{x}{y}]', 'z', 'y', 'z', '[{x}{y}]', 'x', 'z'}, {'x', 'y', 'z', '[{x}{y}]'})';
             expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
             
             symbObj1 = SymbRepObject(durations1, symbols1); 

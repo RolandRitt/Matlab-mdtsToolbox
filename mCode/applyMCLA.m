@@ -56,8 +56,15 @@ allCategories = {};
 
 for i = 1 : nSymbRepObjects
     
-    allCategories = [allCategories, {categories(symbRepObjectsList{i}.symbols)}];
+    symbolsInObject = categories(symbRepObjectsList{i}.symbols);
+    addedBrackets = cellfun(@(x) ['{', x, '}'], symbolsInObject, 'UniformOutput', false);
+    removedBrackets = cellfun(@(x) strrep(x, '{[', '['), addedBrackets, 'UniformOutput', false);
+    removedBrackets = cellfun(@(x) strrep(x, '{(', '('), removedBrackets, 'UniformOutput', false);
+    removedBrackets = cellfun(@(x) strrep(x, ']}', ']'), removedBrackets, 'UniformOutput', false);
+    removedBrackets = cellfun(@(x) strrep(x, ')}', ')'), removedBrackets, 'UniformOutput', false);
     
+    allCategories = [allCategories, {removedBrackets}];
+
 end
 
 allCombinationsMat = allcomb(allCategories{:});
@@ -77,7 +84,13 @@ allSymbols = cell(channelLength, nSymbRepObjects);
 
 for i = 1 : nSymbRepObjects
     
-    allSymbols(:, i) = cellstr(symbRepObjectsList{i}.symbRepVec);
+    tempSymbols = cellstr(symbRepObjectsList{i}.symbRepVec);
+    addedBrackets = cellfun(@(x) ['{', x, '}'], tempSymbols, 'UniformOutput', false);
+    removedBrackets = cellfun(@(x) strrep(x, '{[', '['), addedBrackets, 'UniformOutput', false);
+    removedBrackets = cellfun(@(x) strrep(x, '{(', '('), removedBrackets, 'UniformOutput', false);
+    removedBrackets = cellfun(@(x) strrep(x, ']}', ']'), removedBrackets, 'UniformOutput', false);
+    removedBrackets = cellfun(@(x) strrep(x, ')}', ')'), removedBrackets, 'UniformOutput', false);
+    allSymbols(:, i) = removedBrackets;
     
 end
 
