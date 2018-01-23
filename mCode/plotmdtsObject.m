@@ -154,7 +154,7 @@ for i = 1 : numel(out)
                         
                     else
                         
-                        symbolText = {uniqueSymbols{j}; num2str(durations(k))};
+                        symbolText = ['\begin{tabular}{c} ', uniqueSymbols{j}, '\\', num2str(durations(k)), ' \end{tabular}'];
                         
                     end
                     
