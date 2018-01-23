@@ -222,7 +222,9 @@ for i = 1 : nEventsToPlot
     
 end
 
-legend(out(1), phLegend, cellfun(@num2str, legendEntries, 'UniformOutput', false));
+leg = legend(out(1), phLegend, cellfun(@num2str, legendEntries, 'UniformOutput', false));
+title(leg, 'Events');
+uistack(out(1), 'top');
 
 fM.shouldAdd = shouldAddold;
 
