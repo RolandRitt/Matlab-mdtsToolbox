@@ -404,7 +404,7 @@ classdef SymbRepObject
             for i = 1 : nCat
                 for j = 1 : nCat
                     
-                    symbMarkov(i, j) = numel(strfind(symbolVecString, [symbolVec{i}, symbolVec{j}]));
+                    symbMarkov(i, j) = numel(strfind(symbolVecString, [allCat{i}, allCat{j}]));
                     
                 end                
             end
