@@ -166,6 +166,81 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testSetSymbolsInRange(testCase)
+            
+            durations1 = [1; 1; 3; 1; 2; 1; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
+            
+            newSymbol1 = 'd';
+            range1 = [3, 5];
+            
+            newSymbol2 = 'e';
+            range2 = [14, 15];
+            
+            newSymbol3 = 'f';
+            range3 = [7, 11];
+            
+            expectedReturn1.symbols = categorical({'a', 'b', 'd', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
+            expectedReturn1.durations = [1; 1; 3; 1; 2; 1; 1; 2; 3; 4];
+            
+            expectedReturn2.symbols = categorical({'a', 'b', 'd', 'b', 'a', 'c', 'a', 'b', 'c', 'e', 'b'})';
+            expectedReturn2.durations = [1; 1; 3; 1; 2; 1; 1; 2; 1; 2; 4];
+            
+            expectedReturn3.symbols = categorical({'a', 'b', 'd', 'b', 'f', 'b', 'c', 'e', 'b'})';
+            expectedReturn3.durations = [1; 1; 3; 1; 5; 1; 1; 2; 4];
+
+            symbObj1 = SymbRepObject(durations1, symbols1); 
+            
+            symbObj1 = symbObj1.setSymbolsInRange(newSymbol1, range1);
+            symbObj2 = symbObj1.setSymbolsInRange(newSymbol2, range2);
+            symbObj3 = symbObj2.setSymbolsInRange(newSymbol3, range3);
+            
+            testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
+            testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
+            testCase.verifyEqual(symbObj3.symbols, expectedReturn3.symbols);
+            testCase.verifyEqual(symbObj3.durations, expectedReturn3.durations);
+            
+        end
+        
+        function testRemoveShortSymbols(testCase)
+            
+            durations1 = [1; 1; 3; 1; 2; 1; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
+            durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
+            symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
+            durations3 = [1; 1; 3; 1; 1; 1; 1; 2; 3; 4];
+            symbols3 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
+            
+            shortSymbolLength = 1;
+            maxShortSymbolSequenceLength1 = 5;
+            maxShortSymbolSequenceLength2 = 2;
+            
+            expectedReturn1.symbols = categorical({'c', 'a', 'b', 'c', 'b'})';
+            expectedReturn1.durations = [6; 3; 3; 3; 4];
+            expectedReturn2.symbols = categorical({'y', 'x', 'y', 'z'})';
+            expectedReturn2.durations = [8; 3; 5; 2];
+            expectedReturn3.symbols = categorical({'c', 'Undefined', 'b', 'c', 'b'})';
+            expectedReturn3.durations = [5; 4; 2; 3; 4];
+                        
+            symbObj1 = SymbRepObject(durations1, symbols1); 
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            symbObj3 = SymbRepObject(durations3, symbols3);
+            
+            symbObj1 = symbObj1.removeShortSymbols('shortSymbolLength', shortSymbolLength, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength1);
+            symbObj2 = symbObj2.removeShortSymbols('shortSymbolLength', shortSymbolLength, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength1);                       
+            symbObj3 = symbObj3.removeShortSymbols('shortSymbolLength', shortSymbolLength, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength2);                       
+            
+            testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
+            testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
+            testCase.verifyEqual(symbObj3.symbols, expectedReturn3.symbols);
+            testCase.verifyEqual(symbObj3.durations, expectedReturn3.durations);
+            
+        end
+        
     end
     
 end

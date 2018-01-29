@@ -229,6 +229,159 @@ classdef SymbRepObject
             end
             
         end
+        
+        function obj = setSymbolsInRange(obj, newSymbol, range)
+            % Purpose : Set symbols in the given range manually
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.setSymbolsInRange(newSymbol, range)
+            %
+            % Input Parameters :
+            %   newSymbol : Symbol to be set on the specified range, given
+            %   as character array
+            %
+            %   range : Range on which the new symbol has to be set, given
+            %   as 1 x 2 array containing start and end index of the range
+            %
+            % Return Parameters :
+            %   SymbRepObject : Original object with removed short symbols
+            
+            if ~(ischar(newSymbol))
+                
+                errID = 'setSymbolsInRange:NonStringInputs';
+                errMsg = 'The input newSymbol must be given as string!';
+                error(errID, errMsg);
+                
+            elseif ~(isnumeric(range) && (isequal(size(range), [1, 2])))
+                
+                errID = 'setSymbolsInRange:InvalidRange';
+                errMsg = 'The input range must be a numeric 1 x 2 array!';
+                error(errID, errMsg);
+                
+            else
+                
+                newSymbRepVec = cellstr(obj.symbRepVec);
+                newSymbRepVec(range(1) : range(2)) = {newSymbol};
+                
+                numRepr = grp2idx(newSymbRepVec);
+                symbolChange = [true; diff(numRepr) ~= 0];
+                compressedSymbols = newSymbRepVec(symbolChange);
+                symbolLength = diff(find([symbolChange; 1]));
+                
+                obj.symbols = categorical(compressedSymbols, 'Protected', true);
+                obj.durations = symbolLength;
+                
+            end
+            
+        end
+        
+        function obj = removeShortSymbols(obj, varargin)
+            % Purpose : Remove short symbols within the symbolic
+            % representation
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.removeShortSymbols()
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(shortSymbolLength)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(maxShortSymbolSequenceLength)
+            %
+            % Input Parameters :
+            %   shortSymbolLength : Length up to which a symbol sequence is
+            %   considered 'short', default is 1
+            %
+            %   maxShortSymbolSequenceLength : Maximum length of
+            %   consecutive short symbols. If this length is exceeded by a
+            %   sequence of short symbols, this sequence is denominated
+            %   unknown. Default is 10
+            %
+            % Return Parameters :
+            %   SymbRepObject : Original object with removed short symbols
+            
+            p = inputParser;
+            
+            defaultshortSymbolLength = 1;
+            maxShortSymbolSequenceLength = 10;
+            
+            addParameter(p, 'shortSymbolLength', defaultshortSymbolLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            
+            parse(p, varargin{:});
+            
+            shortSymbolLength = p.Results.shortSymbolLength;
+            maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
+            
+            allSymbols = cellstr(obj.symbols);
+            allDurations = obj.durations;
+            allShortSymbolsInd = allDurations <= shortSymbolLength;
+            allNonShortSymbolsInd = (allShortSymbolsInd -1) * -1;
+            cumStartInd = cumsum([1; allDurations(1 : end - 1)]);
+            
+            cumsumSymb = cumsum(allShortSymbolsInd');
+            index  = strfind([allShortSymbolsInd', 0] ~= 0, [true, false]);
+            allShortSymbolsLength = [cumsumSymb(index(1)), diff(cumsumSymb(index))];
+            allEndInd = index;
+            allStartInd = allEndInd - allShortSymbolsLength + 1;
+            
+            shortLongSeparation = allShortSymbolsLength <= maxShortSymbolSequenceLength;
+            
+            for i = 1 : numel(allStartInd)
+                
+                if~(shortLongSeparation(i))
+                    
+                    tempSymbol = 'Undefined';
+                    
+                end
+                
+                if(allStartInd(i) == 1)
+                    
+                    if(shortLongSeparation(i))
+                        
+                        tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1)};
+                        
+                    end
+                    
+                    tempRange = [cumStartInd(allStartInd(1)), cumStartInd(allEndInd(1)) + allDurations(allEndInd(1)) - 1];
+                    
+                    obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+                    
+                elseif(allEndInd(i) == numel(allSymbols))
+                    
+                    if(shortLongSeparation(i))
+                        
+                        tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1, 'last')};
+                        
+                    end                    
+                    
+                    tempRange = [cumStartInd(allStartInd(end)), cumStartInd(allEndInd(end)) + allDurations(allEndInd(end)) - 1];
+                    
+                    obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+                    
+                else
+                    
+                    if(shortLongSeparation(i))
+                        
+                        tempSymbol1 = allSymbols{allStartInd(i) - 1};
+                        tempSymbol2 = allSymbols{allEndInd(i) + 1};
+                        
+                        tempRange1 = [cumStartInd(allStartInd(i)), floor((cumStartInd(allStartInd(i)) + cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1) / 2)];
+                        tempRange2 = [floor((cumStartInd(allStartInd(i)) + cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1) / 2) + 1, cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
+                        
+                        obj = obj.setSymbolsInRange(tempSymbol1, tempRange1);
+                        obj = obj.setSymbolsInRange(tempSymbol2, tempRange2);
+                        
+                    else
+                        
+                        tempRange = [cumStartInd(allStartInd(i)), cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
+                        
+                        obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+                        
+                    end
+                    
+                end
+                
+            end
+            
+        end
+        
     end
     
 end
