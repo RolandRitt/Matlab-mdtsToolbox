@@ -382,6 +382,35 @@ classdef SymbRepObject
             
         end
         
+        function symbMarkov = genSymbMarkov(obj)
+            % Purpose : Generate a markov matrix for all symbolic
+            % combinations
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.genSymbMarkov
+            %
+            % Input Parameters :
+            %
+            % Return Parameters :
+            %   SymbRepObject : Original object with removed short symbols
+            
+            allCat = categories(obj.symbols);
+            nCat = numel(allCat);
+            symbolVec = cellstr(obj.symbols);
+            symbolVecString = [symbolVec{:}];
+            
+            symbMarkov = zeros(nCat, nCat);
+            
+            for i = 1 : nCat
+                for j = 1 : nCat
+                    
+                    symbMarkov(i, j) = numel(strfind(symbolVecString, [symbolVec{i}, symbolVec{j}]));
+                    
+                end                
+            end
+            
+        end
+        
     end
     
 end
