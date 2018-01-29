@@ -200,6 +200,35 @@ classdef SymbRepObject
             obj.durations = diff(find([symbolChange; 1]));
             
         end
+        
+        function obj = renameSymbol(obj, oldSymbol, newSymbol)
+            % Purpose : Rename a symbol in the symbolic representation
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.rename(oldSymbol, newSymbol)
+            %
+            % Input Parameters :
+            %   oldSymbol : Symbol existent in the symbolic representation,
+            %   which has to be renamed. Input given as string.
+            %   newSymbol : New symbol name for the old symbol, given as
+            %   string
+            %
+            % Return Parameters :
+            %   SymbRepObject : Original object with renamed symbol
+            
+            if ~(ischar(oldSymbol) && ischar(newSymbol))
+                
+                errID = 'renameSymbol:NonStringInputs';
+                errMsg = 'The inputs oldSymbol and newSymbol must be given as strings!';
+                error(errID, errMsg);
+                
+            else
+                
+                obj.symbols = renamecats(obj.symbols, oldSymbol, newSymbol);
+                
+            end
+            
+        end
     end
     
 end

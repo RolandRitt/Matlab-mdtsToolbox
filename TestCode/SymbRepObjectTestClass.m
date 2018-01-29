@@ -80,7 +80,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
-        function findSymbol(testCase)
+        function testFindSymbol(testCase)
             
             durations = [1; 1; 3; 1; 2; 1; 2; 3; 4];
             symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
@@ -109,7 +109,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
-        function findSymbolVec(testCase)
+        function testFindSymbolVec(testCase)
             
             durations = [1; 1; 3; 1; 2; 1; 2; 3; 4];
             symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
@@ -125,6 +125,44 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(symbObj.findSymbolVec('c'), expectedReturn3);
             
             testCase.verifyError(@()symbObj.findSymbolVec(123), 'findSymbolVec:InputNoString');
+            
+        end
+        
+        function testRenameSymbol(testCase)
+            
+            durations1 = [1; 1; 3; 1; 2; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
+            durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
+            symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
+            
+            symbSequence1 = {'c', 'b'};
+            symbSequence2 = {'x', 'y'};
+            
+            expectedReturn1.symbols = categorical({'Word2', 'b', 'Word1', 'Word2', 'Word1'}, {'Word2', 'b', 'c', 'Word1'})';
+            expectedReturn1.durations = [1; 1; 4; 2; 10];
+            expectedReturn2.symbols = categorical({'Word1', 'Word2', 'y', 'Word2', 'Word1', 'x', 'Word2'}, {'x', 'y', 'Word2', 'Word1'})';
+            expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
+            
+            symbObj1 = SymbRepObject(durations1, symbols1); 
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            
+            symbObj1 = symbObj1.mergeSequence(symbSequence1);
+            symbObj2 = symbObj2.mergeSequence(symbSequence2);
+            
+            symbObj1 = symbObj1.renameSymbol('[{c}{b}]', 'Word1');
+            symbObj1 = symbObj1.renameSymbol('a', 'Word2');
+            symbObj2 = symbObj2.renameSymbol('[{x}{y}]', 'Word1');
+            symbObj2 = symbObj2.renameSymbol('z', 'Word2');
+            
+            testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
+            testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(categories(symbObj1.symbols), categories(expectedReturn1.symbols));
+            testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
+            testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(categories(symbObj2.symbols), categories(expectedReturn2.symbols));
+            
+            testCase.verifyError(@()symbObj1.renameSymbol('b', 123), 'renameSymbol:NonStringInputs');
+            testCase.verifyError(@()symbObj2.renameSymbol(123, 'Word3'), 'renameSymbol:NonStringInputs');
             
         end
         
