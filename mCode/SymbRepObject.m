@@ -25,12 +25,6 @@ classdef SymbRepObject
         
     end
     
-    properties(Dependent)
-        
-        symbRepVec
-        
-    end
-    
     methods
         
         function obj = SymbRepObject(durations, symbols)
@@ -55,13 +49,13 @@ classdef SymbRepObject
                 
             end
             
-            if(isprotected(symbols))
+            if(isprotected(symbols) && ~isordinal(symbols))
                 
                 obj.symbols = symbols;
                 
             else
                 
-                obj.symbols = categorical(symbols, 'Protected', true);
+                obj.symbols = categorical(symbols, 'Protected', true, 'Ordinal', false);
                 
             end
             
@@ -69,8 +63,10 @@ classdef SymbRepObject
             
         end
         
-        function symbRepVec = get.symbRepVec(obj)
-            % Purpose : return dependent variable symbRepVec
+        function symbRepVec = symbRepVec(obj)
+            % Purpose : return complete symbol vector. NOTE: If symbRepVec
+            % is implemented as dependent variable, it will be recalculated
+            % after every loop execution in every function!
             %
             % Syntax : symbRepVec = SymbRepObject.symbRepVec
             %
@@ -194,9 +190,10 @@ classdef SymbRepObject
                 
             end
             
-            numRepr = int32(obj.symbRepVec);            
+            completeSymbVec = obj.symbRepVec;
+            numRepr = int32(completeSymbVec);            
             symbolChange = [true; diff(numRepr) ~= 0];
-            obj.symbols = obj.symbRepVec(symbolChange);
+            obj.symbols = completeSymbVec(symbolChange);
             obj.durations = diff(find([symbolChange; 1]));
             
         end
@@ -260,17 +257,131 @@ classdef SymbRepObject
                 
             else
                 
-                newSymbRepVec = cellstr(obj.symbRepVec);
-                newSymbRepVec(range(1) : range(2)) = {newSymbol};
+%                 newSymbRepVec = cellstr(obj.symbRepVec);
+%                 newSymbRepVec(range(1) : range(2)) = {newSymbol};
+%                 
+%                 numRepr = grp2idx(newSymbRepVec);
+%                 symbolChange = [true; diff(numRepr) ~= 0];
+%                 compressedSymbols = newSymbRepVec(symbolChange);
+%                 symbolLength = diff(find([symbolChange; 1]));
+%                 
+%                 allCats = unique(compressedSymbols);
+%                 allCats(strcmp(allCats, '<undefined>')) = [];
+%                 obj.symbols = categorical(compressedSymbols, allCats, 'Protected', true);
+%                 obj.durations = symbolLength;
+
+                cumDurations = cumsum(obj.durations);
                 
-                numRepr = grp2idx(newSymbRepVec);
-                symbolChange = [true; diff(numRepr) ~= 0];
-                compressedSymbols = newSymbRepVec(symbolChange);
-                symbolLength = diff(find([symbolChange; 1]));
+                allEnds = cumDurations;
+                allStarts = [1; allEnds(1 : end - 1) + 1];
                 
-                obj.symbols = categorical(compressedSymbols, 'Protected', true);
-                obj.durations = symbolLength;
+                lowerStartInd = find(allStarts <= range(1), 1, 'last');
+                upperStartInd = find(allStarts >= range(1), 1);
+                lowerEndInd = find(allEnds <= range(2), 1, 'last');
+                upperEndInd = find(allEnds >= range(2), 1);
                 
+                if(lowerStartInd == upperStartInd)
+                    
+                    preSymbol = {};
+                    preDuration = [];
+                    
+                else
+                    
+                    preSymbol = cellstr(obj.symbols(lowerStartInd));
+                    preDuration = range(1) - allStarts(lowerStartInd);
+                    
+                end
+                
+                if(lowerEndInd == upperEndInd)
+                    
+                    postSymbol = {};
+                    postDuration = [];
+                    
+                else
+                    
+                    postSymbol = cellstr(obj.symbols(upperEndInd));
+                    postDuration = allEnds(upperEndInd) - range(2);
+                    
+                end
+                
+                insertSymbol = {newSymbol};
+                insertDuration = range(2) - range(1) + 1;
+                
+                if(isequal(preSymbol, insertSymbol))
+                    
+                    insertDuration = insertDuration + preDuration;
+                    
+                    preSymbol = {};
+                    preDuration = [];
+                    
+                end
+                
+                if(isequal(postSymbol, insertSymbol))
+                    
+                    insertDuration = insertDuration + postDuration;
+                    
+                    postSymbol = {};
+                    postDuration = [];
+                    
+                end
+                
+                completeInsertSymbol = [preSymbol; insertSymbol; postSymbol];
+                completeInsertDurations = [preDuration; insertDuration; postDuration];
+                
+                if(lowerStartInd == 1)
+                    
+                    firstSymbolPart = categorical({});
+                    firstDurationsPart = [];
+                    
+                else
+                    
+                    if(strcmp(cellstr(obj.symbols(lowerStartInd - 1)), completeInsertSymbol{1}))
+                        
+                        completeInsertDurations(1) = completeInsertDurations(1) + obj.durations(lowerStartInd - 1);
+                        
+                        firstSymbolPart = obj.symbols(1 : lowerStartInd - 2);
+                        firstDurationsPart = obj.durations(1 : lowerStartInd - 2);
+                        
+                    else
+                        
+                        firstSymbolPart = obj.symbols(1 : lowerStartInd - 1);
+                        firstDurationsPart = obj.durations(1 : lowerStartInd - 1);
+                        
+                    end                   
+                                        
+                end
+                
+                if(upperEndInd == allEnds(end))
+                    
+                    lastSymbolPart = categorical({});
+                    lastDurationsPart = [];
+                    
+                else
+                    
+                    if(strcmp(cellstr(obj.symbols(upperEndInd + 1)), completeInsertSymbol{end}))
+                        
+                        completeInsertDurations(end) = completeInsertDurations(end) + obj.durations(upperEndInd + 1);
+                        
+                        lastSymbolPart = obj.symbols(upperEndInd + 2 : end);
+                        lastDurationsPart = obj.durations(upperEndInd + 2 : end);
+                        
+                    else
+                        
+                        lastSymbolPart = obj.symbols(upperEndInd + 1 : end);
+                        lastDurationsPart = obj.durations(upperEndInd + 1 : end);
+                        
+                    end                         
+                                        
+                end
+                
+                availableCats = unique([categories(obj.symbols); insertSymbol]);
+                
+                obj.symbols = addcats(obj.symbols, insertSymbol);
+                firstSymbolPart = addcats(firstSymbolPart, insertSymbol);
+                lastSymbolPart = addcats(lastSymbolPart, insertSymbol);
+                obj.symbols = [firstSymbolPart; categorical(completeInsertSymbol, availableCats); lastSymbolPart];
+                obj.durations = [firstDurationsPart; completeInsertDurations; lastDurationsPart];
+                                
             end
             
         end
@@ -327,7 +438,7 @@ classdef SymbRepObject
                 
                 if~(shortLongSeparation(i))
                     
-                    tempSymbol = 'Undefined';
+                    tempSymbol = 'NotDefined';
                     
                 end
                 
