@@ -528,33 +528,51 @@ classdef SymbRepObject
             
             abosluteOption = p.Results.Absolute;
             
+            symbolsString = cellstr(obj.symbols);
+            nSymbols = numel(symbolsString);
+            
             allCat = categories(obj.symbols);
             nCat = numel(allCat);
-            symbolVec = cellstr(obj.symbols);
-            symbolVecString = [symbolVec{:}];
+            %             symbolVec = cellstr(obj.symbols);
+            %             symbolVecString = [symbolVec{:}];
             
             symbMarkov = zeros(nCat, nCat);
             
-            for i = 1 : nCat
+            %             for i = 1 : nCat
+            %
+            %                 for j = 1 : nCat
+            %
+            %                     % Subtract '[word]' to avoid double counting of already merged
+            %                     % words
+            %                     symbMarkov(i, j) = numel(strfind(symbolVecString, [allCat{i}, allCat{j}])) - numel(strfind(symbolVecString, ['[', allCat{i}, allCat{j}, ']']));
+            %
+            %                 end
+            %
+            %                 totalChanges = sum(symbMarkov(i, :));
+            %
+            %                 if(totalChanges > 0 && ~abosluteOption)
+            %
+            %                     symbMarkov(i, :) = symbMarkov(i, :) / totalChanges;
+            %
+            %                 end
+            %
+            %             end
+            
+            for i = 1 : nSymbols - 1
                 
-                for j = 1 : nCat
-                    
-                    % Subtract '[word]' to avoid double counting of already merged
-                    % words
-                    symbMarkov(i, j) = numel(strfind(symbolVecString, [allCat{i}, allCat{j}])) - numel(strfind(symbolVecString, ['[', allCat{i}, allCat{j}, ']']));
-                    
-                end    
-                
-                totalChanges = sum(symbMarkov(i, :));
-                
-                if(totalChanges > 0 && ~abosluteOption)
-                    
-                    symbMarkov(i, :) = symbMarkov(i, :) / totalChanges;
-                    
-                end
+                fromInd = find(strcmp(allCat, symbolsString{i}));
+                toInd = find(strcmp(allCat, symbolsString{i + 1}));
+                                
+                symbMarkov(fromInd, toInd) = symbMarkov(fromInd, toInd) + 1;
                 
             end
             
+            if(~abosluteOption)
+                
+                symbMarkov = symbMarkov ./ sum(symbMarkov, 2);
+                
+            end
+
         end
         
     end
