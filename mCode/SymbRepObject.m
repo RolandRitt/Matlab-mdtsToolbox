@@ -500,17 +500,33 @@ classdef SymbRepObject
             
         end
         
-        function symbMarkov = genSymbMarkov(obj)
+        function symbMarkov = genSymbMarkov(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
             % combinations
             %
             % Syntax :
             %   SymbRepObject = SymbRepObject.genSymbMarkov
+            %   SymbRepObject = SymbRepObject.genSymbMarkov('Absolute',
+            %   true);
             %
             % Input Parameters :
+            %   'Absolute' : Set to true if result shall represent the
+            %   absolute number of transitions from one state to another,
+            %   set to false (default) if matrix shall represent transition
+            %   probabilities
             %
             % Return Parameters :
-            %   SymbRepObject : Original object with removed short symbols
+            %   symbMarkov : Markov transition matrix
+            
+            p = inputParser;
+            
+            defaultAbsolute = false;
+            
+            addParameter(p, 'Absolute', defaultAbsolute, @(x)validateattributes(x, {'logical'}, {'size', [1, 1]}));
+            
+            parse(p, varargin{:});
+            
+            abosluteOption = p.Results.Absolute;
             
             allCat = categories(obj.symbols);
             nCat = numel(allCat);
@@ -529,7 +545,7 @@ classdef SymbRepObject
                 
                 totalChanges = sum(symbMarkov(i, :));
                 
-                if(totalChanges > 0)
+                if(totalChanges > 0 && ~abosluteOption)
                     
                     symbMarkov(i, :) = symbMarkov(i, :) / totalChanges;
                     

@@ -248,21 +248,31 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
             symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
             
-            expectedReturn1 = [  0, 2/3, 1/3;
-                               1/3,   0, 2/3;
-                               1/3, 2/3,   0];
-            expectedReturn2 = [  0, 2/3, 1/3;
-                               1/3,   0, 2/3;
-                               1/2, 1/2,   0];
+            expectedReturn1a = [  0, 2/3, 1/3;
+                                1/3,   0, 2/3;
+                                1/3, 2/3,   0];
+            expectedReturn2a = [  0, 2/3, 1/3;
+                                1/3,   0, 2/3;
+                                1/2, 1/2,   0];
+            expectedReturn1b = [0, 2, 1;
+                                1, 0, 2;
+                                1, 2, 0];
+            expectedReturn2b = [0, 2, 1;
+                                1, 0, 2;
+                                1, 1, 0];
             
             symbObj1 = SymbRepObject(durations1, symbols1);
             symbObj2 = SymbRepObject(durations2, symbols2);
             
-            output1 = symbObj1.genSymbMarkov;
-            output2 = symbObj2.genSymbMarkov;
+            output1a = symbObj1.genSymbMarkov;
+            output2a = symbObj2.genSymbMarkov;
+            output1b = symbObj1.genSymbMarkov('Absolute', true);
+            output2b = symbObj2.genSymbMarkov('Absolute', true);            
             
-            testCase.verifyEqual(output1, expectedReturn1);
-            testCase.verifyEqual(output2, expectedReturn2);
+            testCase.verifyEqual(output1a, expectedReturn1a);
+            testCase.verifyEqual(output2a, expectedReturn2a);
+            testCase.verifyEqual(output1b, expectedReturn1b);
+            testCase.verifyEqual(output2b, expectedReturn2b);
             
         end
         
