@@ -517,13 +517,20 @@ classdef SymbRepObject
             symbMarkov = zeros(nCat, nCat);
             
             for i = 1 : nCat
+                
                 for j = 1 : nCat
                     
                     symbMarkov(i, j) = numel(strfind(symbolVecString, [allCat{i}, allCat{j}]));
                     
                 end    
                 
-                 symbMarkov(i, :) = symbMarkov(i, :) / sum(symbMarkov(i, :));
+                totalChanges = sum(symbMarkov(i, :));
+                
+                if(totalChanges > 0)
+                    
+                    symbMarkov(i, :) = symbMarkov(i, :) / totalChanges;
+                    
+                end
                 
             end
             
