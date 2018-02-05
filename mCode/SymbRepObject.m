@@ -434,11 +434,13 @@ classdef SymbRepObject
             
             shortLongSeparation = allShortSymbolsLength <= maxShortSymbolSequenceLength;
             
+            tempWildcard = 'NotDefined'; % Wildcard - will be removed from the categorical at the end of the method
+            
             for i = 1 : numel(allStartInd)
                 
                 if~(shortLongSeparation(i))
                     
-                    tempSymbol = 'NotDefined';
+                    tempSymbol = tempWildcard; % Wildcard - will be removed from the categorical at the end of the method
                     
                 end
                 
@@ -490,6 +492,8 @@ classdef SymbRepObject
                 end
                 
             end
+            
+            obj.symbols = removecats(obj.symbols, tempWildcard);
             
         end
         
