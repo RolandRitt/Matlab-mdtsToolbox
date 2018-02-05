@@ -539,7 +539,9 @@ classdef SymbRepObject
                 
                 for j = 1 : nCat
                     
-                    symbMarkov(i, j) = numel(strfind(symbolVecString, [allCat{i}, allCat{j}]));
+                    % Subtract '[word]' to avoid double counting of already merged
+                    % words
+                    symbMarkov(i, j) = numel(strfind(symbolVecString, [allCat{i}, allCat{j}])) - numel(strfind(symbolVecString, ['[', allCat{i}, allCat{j}, ']']));
                     
                 end    
                 
