@@ -60,7 +60,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbSequence1 = {'c', 'b'};
             symbSequence2 = {'x', 'y'};
             
-            expectedReturn1.symbols = categorical({'a', 'b', '[{c}{b}]', 'a', '[{c}{b}]'}, {'a', 'b', 'c', '[{c}{b}]'})';
+            expectedReturn1.symbols = categorical({'a', 'b', '[{c}{b}]', 'a', '[{c}{b}]'}, {'a', 'b', '[{c}{b}]'})';
             expectedReturn1.durations = [1; 1; 4; 2; 10];
             expectedReturn2.symbols = categorical({'[{x}{y}]', 'z', 'y', 'z', '[{x}{y}]', 'x', 'z'}, {'x', 'y', 'z', '[{x}{y}]'})';
             expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
@@ -138,7 +138,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbSequence1 = {'c', 'b'};
             symbSequence2 = {'x', 'y'};
             
-            expectedReturn1.symbols = categorical({'Word2', 'b', 'Word1', 'Word2', 'Word1'}, {'Word2', 'b', 'c', 'Word1'})';
+            expectedReturn1.symbols = categorical({'Word2', 'b', 'Word1', 'Word2', 'Word1'}, {'Word2', 'b', 'Word1'})';
             expectedReturn1.durations = [1; 1; 4; 2; 10];
             expectedReturn2.symbols = categorical({'Word1', 'Word2', 'y', 'Word2', 'Word1', 'x', 'Word2'}, {'x', 'y', 'Word2', 'Word1'})';
             expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];

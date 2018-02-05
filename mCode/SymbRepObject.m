@@ -190,6 +190,9 @@ classdef SymbRepObject
                 
             end
             
+            cats2remove = ~ismember(symbSequence, obj.symbols);
+            obj.symbols = removecats(obj.symbols, symbSequence(cats2remove));
+            
             completeSymbVec = obj.symbRepVec;
             numRepr = int32(completeSymbVec);            
             symbolChange = [true; diff(numRepr) ~= 0];
