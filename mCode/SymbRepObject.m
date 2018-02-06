@@ -169,7 +169,9 @@ classdef SymbRepObject
             
             joinedSequence = join(modifiedSequence, '');
             newSequence = {['[', joinedSequence{1}, ']']};
-            obj.symbols = addcats(obj.symbols, newSequence);
+            tempRemoving = {'TempRemoving'};
+            tempRemovingCat = categorical(tempRemoving);
+            obj.symbols = addcats(obj.symbols, [newSequence, tempRemoving]);
             indArray = ones(numel(obj.symbols) + nSymbSequence - 1, 1);
             
             for i = 1 : nSymbSequence
@@ -179,16 +181,21 @@ classdef SymbRepObject
             end
             
             sequenceInd = find(indArray) - nSymbSequence + 1;
+            newSequenceCat = categorical(newSequence);            
             
-            for i = numel(sequenceInd) : -1 : 1
+            for i = 1 : numel(sequenceInd)
                 
-                obj.symbols(sequenceInd(i)) = categorical(newSequence);
-                obj.symbols(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = [];
+                obj.symbols(sequenceInd(i)) = newSequenceCat;
+                obj.symbols(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = tempRemovingCat;
                 
                 obj.durations(sequenceInd(i)) = sum(obj.durations(sequenceInd(i) : sequenceInd(i) + nSymbSequence - 1));
-                obj.durations(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = [];
+                obj.durations(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = -1;
                 
             end
+            
+            obj.symbols = obj.symbols(~(obj.symbols == tempRemoving));
+            obj.symbols = removecats(obj.symbols, tempRemoving);
+            obj.durations = obj.durations(~(obj.durations == -1));
             
             cats2remove = ~ismember(symbSequence, obj.symbols);
             obj.symbols = removecats(obj.symbols, symbSequence(cats2remove));
