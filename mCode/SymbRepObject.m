@@ -361,7 +361,7 @@ classdef SymbRepObject
                                         
                 end
                 
-                if(upperEndInd == allEnds(end))
+                if(upperEndInd == numel(allEnds))%allEnds(end))
                     
                     lastSymbolPart = categorical({});
                     lastDurationsPart = [];
