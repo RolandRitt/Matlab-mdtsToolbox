@@ -403,6 +403,7 @@ classdef SymbRepObject
             % Syntax :
             %   SymbRepObject = SymbRepObject.removeShortSymbols()
             %   SymbRepObject = SymbRepObject.removeShortSymbols(shortSymbolLength)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxNumberShortSymbols)
             %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxShortSymbolSequenceLength)
             %   SymbRepObject = SymbRepObject.removeShortSymbols(___, 'splittingMode', splittingMode)
             %
@@ -410,10 +411,15 @@ classdef SymbRepObject
             %   shortSymbolLength : Length up to which a symbol sequence is
             %   considered 'short', default is 1
             %
+            %   maxNumberShortSymbols : Maximum number of consecutive short
+            %   symbols. If this length is exceeded by a
+            %   sequence of short symbols, this sequence is denominated
+            %   unknown. Default is 5.
+            %
             %   maxShortSymbolSequenceLength : Maximum length of
             %   consecutive short symbols. If this length is exceeded by a
             %   sequence of short symbols, this sequence is denominated
-            %   unknown. Default is 10
+            %   unknown. Default is 10.
             %
             %   splittingMode : Decision wether the range of a short symbol
             %   is splitted to the enclosing symbols equally or weighted
@@ -424,18 +430,21 @@ classdef SymbRepObject
             p = inputParser;
             
             defaultshortSymbolLength = 1;
+            defaultMaxNumberShortSymbols = 5;
             defaultMaxShortSymbolSequenceLength = 10;
             defaultSplittingMode = 'equal';
             
             addParameter(p, 'shortSymbolLength', defaultshortSymbolLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'maxNumberShortSymbols', defaultMaxNumberShortSymbols, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'maxShortSymbolSequenceLength', defaultMaxShortSymbolSequenceLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'splittingMode', defaultSplittingMode, @(x)validateattributes(x, {'char'}, {'nonempty'}));
             
             parse(p, varargin{:});
             
             shortSymbolLength = p.Results.shortSymbolLength;
-            maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
+            maxNumberShortSymbols = p.Results.maxNumberShortSymbols;
             splittingMode = p.Results.splittingMode;
+            maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
             
             allSymbols = cellstr(obj.symbols);
             allDurations = obj.durations;
@@ -445,11 +454,23 @@ classdef SymbRepObject
             
             cumsumSymb = cumsum(allShortSymbolsInd');
             index  = strfind([allShortSymbolsInd', 0] ~= 0, [true, false]);
-            allShortSymbolsLength = [cumsumSymb(index(1)), diff(cumsumSymb(index))];
-            allEndInd = index;
-            allStartInd = allEndInd - allShortSymbolsLength + 1;
+            allNumberShortSymbols = [cumsumSymb(index(1)), diff(cumsumSymb(index))]';
+            allEndInd = index';
+            allStartInd = allEndInd - allNumberShortSymbols + 1;
             
-            shortLongSeparation = allShortSymbolsLength <= maxShortSymbolSequenceLength;
+            allShortSymbolsLength = zeros(numel(allStartInd), 1);
+            
+            for i = 1 : numel(allStartInd)
+                
+                allShortSymbolsLength(i) = sum(obj.durations(allStartInd(i) : allEndInd(i)));
+                
+            end
+            
+            shortLongSeparationNumber = allNumberShortSymbols <= maxNumberShortSymbols;
+            
+            shortLongSeparationLength = allShortSymbolsLength <= maxShortSymbolSequenceLength;
+            
+            shortLongSeparation = shortLongSeparationNumber .* shortLongSeparationLength;
             
             tempWildcard = 'NotDefined'; % Wildcard - will be removed from the categorical at the end of the method
             
