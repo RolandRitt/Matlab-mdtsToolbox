@@ -403,7 +403,8 @@ classdef SymbRepObject
             % Syntax :
             %   SymbRepObject = SymbRepObject.removeShortSymbols()
             %   SymbRepObject = SymbRepObject.removeShortSymbols(shortSymbolLength)
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(maxShortSymbolSequenceLength)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxShortSymbolSequenceLength)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, 'splittingMode', splittingMode)
             %
             % Input Parameters :
             %   shortSymbolLength : Length up to which a symbol sequence is
@@ -413,6 +414,9 @@ classdef SymbRepObject
             %   consecutive short symbols. If this length is exceeded by a
             %   sequence of short symbols, this sequence is denominated
             %   unknown. Default is 10
+            %
+            %   splittingMode : Decision wether the range of a short symbol
+            %   is splitted to the enclosing symbols equally or weighted
             %
             % Return Parameters :
             %   SymbRepObject : Original object with removed short symbols
