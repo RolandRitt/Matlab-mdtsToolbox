@@ -420,15 +420,18 @@ classdef SymbRepObject
             p = inputParser;
             
             defaultshortSymbolLength = 1;
-            maxShortSymbolSequenceLength = 10;
+            defaultMaxShortSymbolSequenceLength = 10;
+            defaultSplittingMode = 'equal';
             
             addParameter(p, 'shortSymbolLength', defaultshortSymbolLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
-            addParameter(p, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'maxShortSymbolSequenceLength', defaultMaxShortSymbolSequenceLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'splittingMode', defaultSplittingMode, @(x)validateattributes(x, {'char'}, {'nonempty'}));
             
             parse(p, varargin{:});
             
             shortSymbolLength = p.Results.shortSymbolLength;
             maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
+            splittingMode = p.Results.splittingMode;
             
             allSymbols = cellstr(obj.symbols);
             allDurations = obj.durations;
@@ -485,8 +488,34 @@ classdef SymbRepObject
                         tempSymbol1 = allSymbols{allStartInd(i) - 1};
                         tempSymbol2 = allSymbols{allEndInd(i) + 1};
                         
-                        tempRange1 = [cumStartInd(allStartInd(i)), floor((cumStartInd(allStartInd(i)) + cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1) / 2)];
-                        tempRange2 = [floor((cumStartInd(allStartInd(i)) + cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1) / 2) + 1, cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
+                        if(strcmp(splittingMode, 'equal'))
+                            
+                            startPoint = cumStartInd(allStartInd(i));
+                            endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+                            
+                            splittingPoint = floor((cumStartInd(allStartInd(i)) + cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1) / 2);
+                            
+                            tempRange1 = [startPoint, splittingPoint];
+                            tempRange2 = [splittingPoint + 1, endPoint];
+                            
+                        elseif(strcmp(splittingMode, 'weighted'))
+                            
+                            startPoint = cumStartInd(allStartInd(i));
+                            endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+                            
+                            weightingFactor = allDurations(allStartInd(i) - 1) / (allDurations(allStartInd(i) - 1) + allDurations(allEndInd(i) + 1));
+                            splittingPoint = round(startPoint + (endPoint - startPoint + 1) * weightingFactor - 1);
+                            
+                            tempRange1 = [startPoint, splittingPoint];
+                            tempRange2 = [splittingPoint + 1, endPoint];
+                            
+                        else
+                            
+                            errID = 'removeShortSymbols:InvalidSplittingMode';
+                            errMsg = 'Input SplittingMode must be either equal or weighted!';
+                            error(errID, errMsg);
+                            
+                        end
                         
                         obj = obj.setSymbolsInRange(tempSymbol1, tempRange1);
                         obj = obj.setSymbolsInRange(tempSymbol2, tempRange2);
