@@ -625,7 +625,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
             durations = [4; 5];
-            symbols = categorical({'a'; 'b'}, 'Ordinal', true);
+            symbols = categorical({'a'; 'b'}, {'a'; 'b'});
             symbObj = SymbRepObject(durations, symbols);
             
             returns.addSymbRepToChannel(2, symbObj);
