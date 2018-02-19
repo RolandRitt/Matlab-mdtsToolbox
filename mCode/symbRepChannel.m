@@ -9,12 +9,12 @@ function returnObject = symbRepChannel(input, edges, alphabet)
 %   input : Input for the computation as struct which holds the handle to
 %           the mdtsObject as input.object and the required tag as
 %           input.tag
-%   edges : an array of length(alphabet) + 1, which contains the edges for
+%   edges : Array of length(alphabet) + 1, which contains the edges for
 %           the quantization
-%   alphabet : an array containing the symbols to assing to the values
+%   alphabet : Array containing the symbols to assing to the values
 %
 % Return Parameters :
-%   returnObject : mdtsObject with the symbolized channel
+%   returnObject : symbRepObject with the symbolized channel
 %
 % Description : 
 %   Extract the data from the according channel of the mdtsObject specified
