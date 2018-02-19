@@ -78,6 +78,9 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
             testCase.verifyEqual(categories(symbObj2.symbols), categories(expectedReturn2.symbols));
             
+            testCase.verifyError(@()symbObj1.mergeSequence({'a', 'b', 'c'}), 'mergeSequence:InvalidInput');
+            testCase.verifyError(@()symbObj1.mergeSequence('test1'), 'mergeSequence:InvalidInput');
+            
         end
         
         function testFindSymbol(testCase)
