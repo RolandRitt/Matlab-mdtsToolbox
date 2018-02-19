@@ -309,8 +309,8 @@ classdef mdtsObject < mdtsCoreObject
                 
             elseif~isa(channelNumber, 'numeric')
                 
-                errID = 'addSymbRepToChanne:InvalidChannelNumber';
-                errMsg = 'Event duration must be numeric!';
+                errID = 'addSymbRepToChannel:InvalidChannelNumber';
+                errMsg = 'Channel number must be numeric!';
                 error(errID, errMsg);
                 
             end
