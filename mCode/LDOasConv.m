@@ -36,11 +36,24 @@ function derVec = LDOasConv(input)
 % --------------------------------------------------------
 %
 
+%% Validate inputs
+
+if(isValidInput(input) == 0)
+    
+    errID = 'LDOasConv:IllegalInputFormat';
+    errMsg = 'Illegal input format! Input must be a struct or a numerical vector!';
+    error(errID, errMsg);
+    
+end
+
 %% Compute
 
-derMatrix = [-1/2,  1/2,  0;
-             -1/2,  0,    1/2;
-              0,    -1/2, 1/2];
+ls = 11;
+noBfs = 2;
+
+[P,dP] = dop(ls, noBfs);
+
+derMatrix = dP * P';
 
 derVec = compute1(derMatrix, input);
 
