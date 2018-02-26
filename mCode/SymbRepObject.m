@@ -645,6 +645,11 @@ classdef SymbRepObject
                 symbMarkov = symbMarkov ./ sum(symbMarkov, 2);
                 
             end
+            
+            % Transpose result, such that x1 = P * x0 instead of x1^T =
+            % x0^T * P
+            
+            symbMarkov = symbMarkov';
 
         end
         
