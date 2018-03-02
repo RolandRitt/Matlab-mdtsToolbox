@@ -1,9 +1,11 @@
-function derVec = LDOasConv(input)
+function derVec = LDOasConv(input, ls, noBfs)
 % vector operations, convolution
 %
 % Purpose : compute the first derivative of the input using convolution
 %
-% Syntax : derVec = LDOasConv(input)
+% Syntax :
+%   derVec = LDOasConv(input)
+%   derVec = LDOasConv(input, ls, noBfs)
 %
 % Input Parameters :
 %   input : Input for the computation. This can be given as:
@@ -46,10 +48,14 @@ if(isValidInput(input) == 0)
     
 end
 
-%% Compute
+if(nargin == 1)
+    
+    ls = 11;
+    noBfs = 2;
+    
+end
 
-ls = 11;
-noBfs = 2;
+%% Compute
 
 [P,dP] = dop(ls, noBfs);
 
