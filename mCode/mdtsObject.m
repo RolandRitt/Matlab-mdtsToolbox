@@ -88,7 +88,7 @@ classdef mdtsObject < mdtsCoreObject
                     
             else
                 
-                returnObject = getData@mdtsCoreObject(obj, varargin); 
+                returnObject = getData@mdtsCoreObject(obj, varargin{:}); 
                 
             end
             
