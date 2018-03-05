@@ -1,11 +1,10 @@
-function derVec = LDOasConv(input, ls, noBfs)
+function derVec = LDOasConv(input, varargin)
 % vector operations, convolution
 %
 % Purpose : compute the first derivative of the input using convolution
 %
 % Syntax :
 %   derVec = LDOasConv(input)
-%   derVec = LDOasConv(input, ls, noBfs)
 %
 % Input Parameters :
 %   input : Input for the computation. This can be given as:
@@ -15,8 +14,14 @@ function derVec = LDOasConv(input, ls, noBfs)
 %       Struct := Struct which holds the handle to the mdtsObject as
 %       input.object and the required tag as input.tag
 %
+%   ls : support length as name value pair
+%
+%   noBfs : number of basis functions as name value pair
+%
+%   order : order of the derivative as name value pair. Default is 1.
+%
 % Return Parameters :
-%   derVec : result (first derivative) as vector
+%   derVec : result (derivative) as vector
 %
 % Description : 
 %   Comute the first derivative of the numeric vector given in input. Use
@@ -46,20 +51,39 @@ if(isValidInput(input) == 0)
     errMsg = 'Illegal input format! Input must be a struct or a numerical vector!';
     error(errID, errMsg);
     
+elseif(isValidInput(input) == 1)
+        
+    xTime = input.object.time;
+    
+elseif(isValidInput(input) == 2)
+    
+    xTime = (1 : numel(input))';
+    
 end
 
-if(nargin == 1)
-    
-    ls = 11;
-    noBfs = 2;
-    
-end
+p = inputParser;
+
+defaultls = 11;
+defaultnoBfs = 2;
+defaultorder = 1;
+
+addParameter(p, 'ls', defaultls, @(x)validateattributes(x, {'numeric'}, {'size', [1, 1]}));
+addParameter(p, 'noBfs', defaultnoBfs, @(x)validateattributes(x, {'numeric'}, {'size', [1, 1]}));
+addParameter(p, 'order', defaultorder, @(x)validateattributes(x, {'numeric'}, {'size', [1, 1]}));
+
+parse(p, varargin{:});
+
+ls = p.Results.ls;
+noBfs = p.Results.noBfs;
+order = p.Results.order;
 
 %% Compute
 
-[P,dP] = dop(ls, noBfs);
+x = xTime(1 : ls);
 
-derMatrix = dP * P';
+[P,dP] = dop(x, noBfs);
+
+derMatrix = (dP * P')^order;
 
 derVec = compute1(derMatrix, input);
 
