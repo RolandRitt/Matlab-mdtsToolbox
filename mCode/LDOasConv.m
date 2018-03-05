@@ -83,7 +83,15 @@ x = xTime(1 : ls);
 
 [P,dP] = dop(x, noBfs);
 
-derMatrix = (dP * P')^order;
+if(order == 0)
+    
+    derMatrix = P * P';
+    
+else
+
+    derMatrix = (dP * P')^order;
+
+end
 
 derVec = compute1(derMatrix, input);
 

@@ -101,7 +101,7 @@ classdef LDOasConvTestClass < matlab.unittest.TestCase
             units = {'s', 'min'};
             
             theObject = mdtsObject(time, data, tags, 'units', units, 'ts', ts);
-            
+
             input1.object = theObject;
             input1.tag = 'Channel 1';
                            
@@ -123,6 +123,41 @@ classdef LDOasConvTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(output2(round(nPoints * cutOff) : end - round(nPoints * cutOff)), expectedReturn2(round(nPoints * cutOff) : end - round(nPoints * cutOff)), 'AbsTol', (2 / nPoints * 2 * pi / datenum(ts))^2 / 100);
             %testCase.verifyEqual(output3(round(nPoints * cutOff) : end - round(nPoints * cutOff)), expectedReturn2(round(nPoints * cutOff) : end - round(nPoints * cutOff)), 'AbsTol', (2 / nPoints * 2 * pi / datenum(ts))^2 / 100);
                        
+        end
+        
+        function testSmoothing(testCase)
+            
+            nPoints = 300;
+            
+            ts = duration(0, 0, 1);
+            time = datenum(datetime(2017, 7, 31, 14, 3, seconds(ts) * (1 : nPoints)'));
+            data(:, 1) = [zeros(100, 1);
+                          ones(100, 1);
+                          zeros(100, 1)];
+            data(:, 2) = [ones(100, 1);
+                          zeros(100, 1)
+                          ones(100, 1)];
+            tags = {'Channel 1', 'Channel 2'};
+            units = {'s', 'min'};
+            
+            theObject = mdtsObject(time, data, tags, 'units', units, 'ts', ts);
+            
+            ls = 15;
+            noBfs = 4;
+            
+            input1.object = theObject;
+            input1.tag = 'Channel 1';
+            
+            expectedReturn1 = [zeros(94, 1);
+                               linspace(0, 1, 12)';
+                               ones(88, 1);
+                               linspace(1, 0, 12)';
+                               zeros(94, 1)];
+            
+            output1 = LDOasConv(input1, 'ls', ls, 'noBfs', noBfs, 'order', 0);
+            
+            testCase.verifyEqual(output1, expectedReturn1, 'AbsTol', 2 / nPoints * 2 * pi / datenum(ts) / 100);
+            
         end
         
     end
