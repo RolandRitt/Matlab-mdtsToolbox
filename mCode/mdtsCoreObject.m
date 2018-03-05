@@ -465,6 +465,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.data = [obj.data, addData];
             obj.tags = [obj.tags, addTags];
             obj.units = [obj.units, addUnits];
+            obj.symbReps = [obj.symbReps, cell(1, 1)];
             
         end
         
