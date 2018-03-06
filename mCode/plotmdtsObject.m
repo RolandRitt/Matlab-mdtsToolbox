@@ -33,9 +33,6 @@ function [out, fM, ph] = plotmdtsObject(inputObject, varargin)
 p = inputParser();
 p.KeepUnmatched=true;
 addRequired(p, 'inputObject', @(x) isa(x, 'mdtsObject')); %check if input is mdtsObject
-addParameter(p, 'Range', [], @(x)isvector(x) && (isequal(size(x), [2,1])|| isequal(size(x), [1,2]))); %index range 2x1 array with start und end index
-addParameter(p, 'IndsSelected', [], @isnumeric); %
-addParameter(p, 'TagsSelected', [], @(x) isnumeric(x) || iscellstr(x) || ischar(x));
 addParameter(p, 'Size', [8.8,11.7], @(x)isnumeric(x)&&isvector(x)); %higth and width
 addParameter(p, 'FontSize', 10, @isnumeric);
 addParameter(p, 'bUseDatetime', true, @islogical);
@@ -46,33 +43,7 @@ parse(p, inputObject, varargin{:});
 tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
 UnmatchedArgs = reshape(tmp',[],1)';
 
-inds = p.Results.IndsSelected;
-indsTags = p.Results.TagsSelected;
 bDatetime = p.Results.bUseDatetime;
-
-if ~isempty(indsTags)
-    
-    inds = inputObject.getTagIndices(indsTags);
-    
-end
-
-if isempty(inds)
-    
-    inds = 1 : numel(inputObject.tags);
-    
-end
-
-if isempty(p.Results.Range)
-    
-    Range = 1 : numel(inputObject.time);
-    
-else
-    
-    [Startind, Stopind] = getTimeRangeInds(inputObject,  p.Results.Range(1), p.Results.Range(2));
-    Range = Startind:Stopind;
-    
-end
-
 plotSymbolNameMinLength = numel(inputObject.time) * p.Results.plotSymbolNameMinLengthRelative;
 
 %% Plot data
@@ -83,11 +54,11 @@ fM = FigureManager;
 
 if bDatetime
     
-    [out, ph] = plotMulti(inputObject.timeDateTime(Range), inputObject.data(Range,inds), 'time', inputObject.tags(inds), UnmatchedArgs{:});
+    [out, ph] = plotMulti(inputObject.timeDateTime, inputObject.data, 'time', inputObject.tags, UnmatchedArgs{:});
     
 else
     
-    [out, ph] = plotMulti(inputObject.time(Range), inputObject.data(Range,inds), 'time', inputObject.tags(inds), UnmatchedArgs{:});
+    [out, ph] = plotMulti(inputObject.time, inputObject.data, 'time', inputObject.tags, UnmatchedArgs{:});
     
 end
 
@@ -196,7 +167,7 @@ for i = 1 : nEvents
     
     eventInfo = inputObject.tsEvents(eventKeys{i});
     
-    if(eventInfo.eventTime >= inputObject.time(Range(1)) && eventInfo.eventTime <= inputObject.time(Range(end)))
+    if(eventInfo.eventTime >= inputObject.time(1) && eventInfo.eventTime <= inputObject.time(end))
         
         if bDatetime
             
