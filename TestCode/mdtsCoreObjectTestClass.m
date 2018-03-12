@@ -62,6 +62,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.fs, 1 / seconds(ts));
             testCase.verifyEqual(returns.timeRelative, time - time(1));
             testCase.verifyEqual(returns.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
+            testCase.verifyEqual(returns.timeDateTimeRelative, datetime(time - time(1), 'ConvertFrom', 'datenum'));
             
         end
         
@@ -103,6 +104,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
             testCase.verifyEqual(returns.timeRelative, time - time(1));
             testCase.verifyEqual(returns.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
+            testCase.verifyEqual(returns.timeDateTimeRelative, datetime(time - time(1), 'ConvertFrom', 'datenum'));
             
             testCase.verifyError(@()returns.fs, 'fs:dataNotUniform');
 

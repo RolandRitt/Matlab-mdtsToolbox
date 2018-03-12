@@ -49,6 +49,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         fs
         timeRelative
         timeDateTime
+        timeDateTimeRelative
         
     end
     
@@ -135,6 +136,21 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             %   which starts with time 0
             
             timeRelative = obj.time - obj.time(1);
+            
+        end
+        
+        function timeDateTimeRelative = get.timeDateTimeRelative(obj)
+            % Purpose : return dependent variable timeDateTimeRelative
+            %
+            % Syntax : timeDateTimeRelative = mdtsObject.timeDateTimeRelative
+            %
+            % Input Parameters :
+            %
+            % Return Parameters :
+            %   timeDateTimeRelative : time stamps relative to first time stamp,
+            %   which starts with time 0, in 'datetime' format
+            
+            timeDateTimeRelative = datetime(obj.timeRelative, 'ConvertFrom', 'datenum'); 
             
         end
         
