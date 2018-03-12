@@ -131,7 +131,12 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            durations = [3; 3];
+            symbols = categorical({'a'; 'b'}, 'Ordinal', true);
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
+            symbReps{3} = segObj;
             
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
@@ -152,37 +157,59 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(when, extraction1.when);
             testCase.verifyEqual(description, extraction1.description);
             testCase.verifyEqual(comment, extraction1.comment);
-            testCase.verifyEqual(returns.symbReps, symbReps);
+            testCase.verifyEqual(extraction1.symbReps, {[]});
             
             testCase.verifyEqual(data(3, 2), extraction2.data);
             testCase.verifyEqual(time(3), extraction2.time);
             testCase.verifyEqual(tags(2), extraction2.tags);
             testCase.verifyEqual(units(2), extraction2.units);
+            testCase.verifyEqual(numel(extraction2.symbReps{:}), 1);
+            testCase.verifyEqual(extraction2.symbReps{1}.symbols, categorical({'a'}));
+            testCase.verifyEqual(extraction2.symbReps{1}.durations, [1]);
                
             testCase.verifyEqual(data(:, 4), extraction3.data);
             testCase.verifyEqual(time, extraction3.time);
             testCase.verifyEqual(tags(4), extraction3.tags);
             testCase.verifyEqual(units(4), extraction3.units);
+            testCase.verifyEqual(numel(extraction3.symbReps{:}), 0);
             
             testCase.verifyEqual(data(3, :), extraction4.data);
             testCase.verifyEqual(time(3), extraction4.time);
             testCase.verifyEqual(tags, extraction4.tags);
             testCase.verifyEqual(units, extraction4.units);
+            testCase.verifyEqual(size(extraction4.symbReps, 2), 4);
+            testCase.verifyEqual(extraction4.symbReps{2}.symbols, categorical({'a'}));
+            testCase.verifyEqual(extraction4.symbReps{2}.durations, [1]);
+            testCase.verifyEqual(extraction4.symbReps{3}.symbols, categorical({'a'}));
+            testCase.verifyEqual(extraction4.symbReps{3}.durations, [1]);
             
             testCase.verifyEqual(data(2 : 4, 2 : 3), extraction5.data);
             testCase.verifyEqual(time(2 : 4), extraction5.time);
             testCase.verifyEqual(tags(2 : 3), extraction5.tags);
             testCase.verifyEqual(units(2 : 3), extraction5.units);
+            testCase.verifyEqual(size(extraction5.symbReps, 2), 2);
+            testCase.verifyEqual(extraction5.symbReps{1}.symbols, categorical({'a'; 'b'}));
+            testCase.verifyEqual(extraction5.symbReps{1}.durations, [2; 1]);            
+            testCase.verifyEqual(extraction5.symbReps{2}.symbols, categorical({'a'; 'b'}));
+            testCase.verifyEqual(extraction5.symbReps{2}.durations, [2; 1]);
             
             testCase.verifyEqual(data(2 : 4, 2), extraction6.data);
             testCase.verifyEqual(time(2 : 4), extraction6.time);
             testCase.verifyEqual(tags(2), extraction6.tags);
             testCase.verifyEqual(units(2), extraction6.units);
+            testCase.verifyEqual(size(extraction6.symbReps, 2), 1);
+            testCase.verifyEqual(extraction6.symbReps{1}.symbols, categorical({'a'; 'b'}));
+            testCase.verifyEqual(extraction6.symbReps{1}.durations, [2; 1]);            
             
             testCase.verifyEqual(data(3 : 5, 2 : 3), extraction7.data);
             testCase.verifyEqual(time(3 : 5), extraction7.time);
             testCase.verifyEqual(tags(2 : 3), extraction7.tags);
-            testCase.verifyEqual(units(2 : 3), extraction7.units);
+            testCase.verifyEqual(units(2 : 3), extraction7.units);           
+            testCase.verifyEqual(size(extraction7.symbReps, 2), 2);
+            testCase.verifyEqual(extraction7.symbReps{1}.symbols, categorical({'a'; 'b'}));
+            testCase.verifyEqual(extraction7.symbReps{1}.durations, [1; 2]);            
+            testCase.verifyEqual(extraction7.symbReps{2}.symbols, categorical({'a'; 'b'}));
+            testCase.verifyEqual(extraction7.symbReps{2}.durations, [1; 2]);
             
         end
         
@@ -205,7 +232,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
             
             columnsToExtract = [2, 4];
             tagsToExtract = tags(columnsToExtract);
@@ -244,7 +271,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
             
             columnsToExtract = [2, 4];
             linesToExtract1 = [2 : 3];
@@ -301,7 +328,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
             
             columnsToExtract1 = [2, 4];
             tagsToExtract1 = tags(columnsToExtract1);
@@ -342,7 +369,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
             
             linesToExtract = [2; 4];
             timeInterval = time(linesToExtract);
@@ -377,7 +404,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
             
             tagListCorrect = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
             tagListInCorrect1 = {'Channel 1', 'Channel 2', 'Channel 3', 'SomeChannel'};
@@ -414,7 +441,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
             
 %             date1 = '2017_7_25_14_3';
 %             date2 = '2017_7_25_14';
@@ -470,7 +497,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
             
             addData = [2, 3;
                        3, 4;
@@ -523,7 +550,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
             
             addData = [2, 3;
                        3, 4;
@@ -584,7 +611,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
                       
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
@@ -620,7 +647,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
             tsEvents = containers.Map;
-            symbReps = {};
+            symbReps = cell(1, numel(tags));
                       
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             

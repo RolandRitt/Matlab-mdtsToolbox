@@ -234,6 +234,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     
                     returnObject.keepRowsOfData(intervalI);
                     returnObject.keepTagsOfData(tagsIndices);
+                    returnObject.extractRowsOfSymbReps(intervalI);
                     
                 elseif extractTags && ~extractRows
                     
@@ -242,6 +243,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                 elseif ~extractTags && extractRows
                     
                     returnObject.keepRowsOfData(intervalI);
+                    returnObject.extractRowsOfSymbReps(intervalI);
                     
                 end
                 
@@ -465,7 +467,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.data = [obj.data, addData];
             obj.tags = [obj.tags, addTags];
             obj.units = [obj.units, addUnits];
-            obj.symbReps = [obj.symbReps, cell(1, 1)];
+            obj.symbReps = [obj.symbReps, cell(1, numel(addTags))];
             
         end
         
@@ -550,7 +552,33 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.data = obj.data(:, tagsI);
             obj.tags = obj.tags(tagsI);
             obj.units = obj.units(tagsI);
+            obj.symbReps = obj.symbReps(tagsI);
         
+        end
+        
+        function extractRowsOfSymbReps(obj, intervalIndices)
+            % Purpose : Extract all symbols and druations from the
+            % symbRepObjects of all channels, according to the input
+            %
+            % Syntax :
+            %   extractRowsOfSymbReps(intervalIndices)
+            %
+            % Input Parameters :
+            %   intervalIndices : All indices of the time stamps which have
+            %   to be extracted
+            %
+            % Return Parameters :
+            
+            for i = 1 : numel(obj.symbReps)
+                
+                if ~isempty(obj.symbReps{i})
+                    
+                    obj.symbReps{i} = obj.symbReps{i}.getTimeInterval(intervalIndices);
+                    
+                end
+                
+            end
+            
         end
         
     end
