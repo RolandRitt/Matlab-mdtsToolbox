@@ -653,6 +653,40 @@ classdef SymbRepObject
 
         end
         
+        function newObj = getTimeInterval(obj, intervalIndices)
+                        
+            endInds = cumsum(obj.durations);
+            startInds = endInds - obj.durations + 1;
+            
+            firstElementInd = find(startInds <= intervalIndices(1), 1, 'last');
+            lastElementInd = find(endInds >= intervalIndices(2), 1, 'first');
+            middleElementsInds = firstElementInd + 1 : lastElementInd - 1;
+            
+            firstSymbol = obj.symbols(firstElementInd);
+            firstDuration = endInds(firstElementInd) - intervalIndices(1) + 1;
+            
+            lastSymbol = obj.symbols(lastElementInd);
+            lastDuration = intervalIndices(2) - startInds(lastElementInd) + 1;
+            
+            middleSymbols = obj.symbols(middleElementsInds);
+            middleDurations = obj.durations(middleElementsInds);
+            
+            if(isempty(middleSymbols) && firstSymbol == lastSymbol)
+                
+                newSymbols = firstSymbol;
+                newDurations = intervalIndices(2) - intervalIndices(1) + 1;
+                
+            else
+                
+                newSymbols = [firstSymbol; middleSymbols; lastSymbol];
+                newDurations = [firstDuration; middleDurations; lastDuration];
+                
+            end                       
+            
+            newObj = SymbRepObject(newDurations, newSymbols);
+            
+        end
+        
     end
     
 end

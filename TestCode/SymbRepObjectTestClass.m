@@ -300,6 +300,49 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testGetTimeInterval(testCase)
+            
+            durations1 = [10];
+            symbols1 = categorical({'a'})';
+            durations2 = [10; 8];
+            symbols2 = categorical({'a', 'b'})';
+            durations3 = [10; 8; 5];
+            symbols3 = categorical({'a', 'b', 'c'})';
+            
+            intervalIndices1 = [3, 7];
+            intervalIndices2 = [7, 14];
+            intervalIndices3a = [7, 19];
+            intervalIndices3b = [11, 19];
+            
+            expectedReturn1.durations = [5];
+            expectedReturn1.symbols = categorical({'a'})';
+            expectedReturn2.durations = [4; 4];
+            expectedReturn2.symbols = categorical({'a', 'b'})';
+            expectedReturn3a.durations = [4; 8; 1];
+            expectedReturn3a.symbols = categorical({'a', 'b', 'c'})';
+            expectedReturn3b.durations = [8; 1];
+            expectedReturn3b.symbols = categorical({'b', 'c'})';
+            
+            symbObj1 = SymbRepObject(durations1, symbols1);
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            symbObj3 = SymbRepObject(durations3, symbols3);
+            
+            output1 = symbObj1.getTimeInterval(intervalIndices1);
+            output2 = symbObj2.getTimeInterval(intervalIndices2);
+            output3a = symbObj3.getTimeInterval(intervalIndices3a);
+            output3b = symbObj3.getTimeInterval(intervalIndices3b);
+            
+            testCase.verifyEqual(output1.durations, expectedReturn1.durations);
+            testCase.verifyEqual(output1.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(output2.durations, expectedReturn2.durations);
+            testCase.verifyEqual(output2.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(output3a.durations, expectedReturn3a.durations);
+            testCase.verifyEqual(output3a.symbols, expectedReturn3a.symbols);
+            testCase.verifyEqual(output3b.durations, expectedReturn3b.durations);
+            testCase.verifyEqual(output3b.symbols, expectedReturn3b.symbols);
+            
+        end
+        
     end
     
 end
