@@ -36,6 +36,7 @@ addRequired(p, 'inputObject', @(x) isa(x, 'mdtsObject')); %check if input is mdt
 addParameter(p, 'Size', [8.8,11.7], @(x)isnumeric(x)&&isvector(x)); %higth and width
 addParameter(p, 'FontSize', 10, @isnumeric);
 addParameter(p, 'bUseDatetime', true, @islogical);
+addParameter(p, 'bUseTimeRelative', false, @islogical);
 addParameter(p, 'plotSymbolName', false, @islogical);
 addParameter(p, 'plotSymbolDuration', false, @islogical);
 addParameter(p, 'plotSymbolNameMinLengthRelative', 0.05, @isnumeric);
@@ -44,7 +45,34 @@ tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
 UnmatchedArgs = reshape(tmp',[],1)';
 
 bDatetime = p.Results.bUseDatetime;
+bTimeRelative = p.Results.bUseTimeRelative;
 plotSymbolNameMinLength = numel(inputObject.time) * p.Results.plotSymbolNameMinLengthRelative;
+
+%% Interpret options
+
+xTime = inputObject.time;
+
+if(bTimeRelative)
+    
+    if(bDatetime)
+    
+        xTime = inputObject.timeDateTimeRelative;
+        
+    else
+        
+        xTime = inputObject.timeRelative;
+        
+    end
+    
+else
+    
+    if(bDatetime)
+    
+        xTime = inputObject.timeDateTime;
+        
+    end
+    
+end
 
 %% Plot data
 
@@ -52,15 +80,7 @@ figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
 
 fM = FigureManager;
 
-if bDatetime
-    
-    [out, ph] = plotMulti(inputObject.timeDateTime, inputObject.data, 'time', inputObject.tags, UnmatchedArgs{:});
-    
-else
-    
-    [out, ph] = plotMulti(inputObject.time, inputObject.data, 'time', inputObject.tags, UnmatchedArgs{:});
-    
-end
+[out, ph] = plotMulti(xTime, inputObject.data, 'time', inputObject.tags, UnmatchedArgs{:});
 
 shouldAddold = fM.shouldAdd;
 fM.shouldAdd = false; %% otherwise it is too slow!!!
@@ -101,17 +121,8 @@ for i = 1 : numel(out)
             
             for k = 1 : numel(startInds)
                 
-                if bDatetime
-                    
-                    xStart = inputObject.timeDateTime(startInds(k));
-                    xEnd = inputObject.timeDateTime(startInds(k) + durations(k) - 1);
-                    
-                else
-                    
-                    xStart = inputObject.time(startInds(k));
-                    xEnd = inputObject.time(startInds(k) + durations(k) - 1);
-                    
-                end
+                xStart = xTime(startInds(k));
+                xEnd = xTime(startInds(k) + durations(k) - 1);
                 
                 fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', out(i));
                 
@@ -131,16 +142,8 @@ for i = 1 : numel(out)
                         symbRepText = ['\begin{tabular}{c} ', symbolText, '\\', num2str(durations(k)), ' \end{tabular}'];
                         
                     end
-                    
-                    if bDatetime
-                        
-                        xSymbol = inputObject.timeDateTime(startInds(k) + round(durations(k) / 2));
-                        
-                    else
-                        
-                        xSymbol = inputObject.time(startInds(k) + round(durations(k) / 2));
-                        
-                    end
+
+                    xSymbol = xTime(startInds(k) + round(durations(k) / 2));
                     
                     text(out(i), xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
                 
@@ -171,11 +174,27 @@ for i = 1 : nEvents
         
         if bDatetime
             
-            xev = [xev; datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum')];
+            if bTimeRelative
+                
+                xev = [xev; datetime(eventInfo.eventTime - inputObject.time(1), 'ConvertFrom', 'datenum')];
+                
+            else
+            
+                xev = [xev; datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum')];
+            
+            end
             
         else
             
-            xev = [xev; eventInfo.eventTime];
+            if bTimeRelative
+                
+                xev = [xev; eventInfo.eventTime - inputObject.time(1)];
+                
+            else
+            
+                xev = [xev; eventInfo.eventTime];
+            
+            end
             
         end       
                 

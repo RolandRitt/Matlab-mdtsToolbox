@@ -93,6 +93,12 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             returns = returns.addSymbRepToChannel(returns.getTagIndices(input4.tag), symbObj4);
             
             [~, ~, ~] = plotmdtsObject(returns, 'plotSymbolName', true, 'plotSymbolDuration', true);
+            
+            [~, ~, ~] = plotmdtsObject(returns, 'bUseDateTime', false);
+            
+            [~, ~, ~] = plotmdtsObject(returns, 'bUseTimeRelative', true);
+            
+            [~, ~, ~] = plotmdtsObject(returns, 'bUseDateTime', false, 'bUseTimeRelative', true);
                         
         end
         
