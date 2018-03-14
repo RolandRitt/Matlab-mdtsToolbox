@@ -1,7 +1,8 @@
 function derVec = LDOasConv(input, varargin)
 % vector operations, convolution
 %
-% Purpose : compute the first derivative of the input using convolution
+% Purpose : compute approximated values for derivatives of the input using 
+%           convolution. Default first derivative is returned.
 %
 % Syntax :
 %   derVec = LDOasConv(input)
@@ -18,7 +19,8 @@ function derVec = LDOasConv(input, varargin)
 %
 %   noBfs : number of basis functions as name value pair
 %
-%   order : order of the derivative as name value pair. Default is 1.
+%   order : order of the derivative as name value pair. Default is 1. A
+%   value of 0 can be used for reconstruction of the input (smooth).
 %
 % Return Parameters :
 %   derVec : result (derivative) as vector
