@@ -78,16 +78,16 @@ classdef symbRepChannelTestClass < matlab.unittest.TestCase
             edges4 = [-inf, 2, 10, inf];
             
             expectedReturn1.durations = [1; 1; 3; 1; 2; 1];
-            expectedReturn1.symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c'}, {'a', 'b', 'c'}, 'Ordinal', true)';
+            expectedReturn1.symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c'}, {'a', 'b', 'c'})';
             
             expectedReturn2.durations = [1; 1; 1; 1; 5];
-            expectedReturn2.symbols = categorical({'c', 'b', 'c', 'b', 'a'}, {'a', 'b', 'c'}, 'Ordinal', true)';
+            expectedReturn2.symbols = categorical({'c', 'b', 'c', 'b', 'a'}, {'a', 'b', 'c'})';
             
             expectedReturn3.durations = [1; 4; 4];
-            expectedReturn3.symbols = categorical({'a', 'b', 'c'}, {'a', 'b', 'c'}, 'Ordinal', true)';
+            expectedReturn3.symbols = categorical({'a', 'b', 'c'}, {'a', 'b', 'c'})';
             
             expectedReturn4.durations = [4; 5];
-            expectedReturn4.symbols = categorical({'b', 'a'}, {'a', 'b', 'c'}, 'Ordinal', true)';
+            expectedReturn4.symbols = categorical({'b', 'a'}, {'a', 'b', 'c'})';
             
             symbObj1 = symbRepChannel(input1, edges1, alphabet1);    
             symbObj2 = symbRepChannel(input2, edges2, alphabet2);  
