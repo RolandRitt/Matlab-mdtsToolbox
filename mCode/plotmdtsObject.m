@@ -74,6 +74,12 @@ else
     
 end
 
+if(~inputObject.absoluteTS)
+    
+    xTime = (0 : datetime(datestr(inputObject.time(2))) - datetime(datestr(inputObject.time(1))) : datetime(datestr(inputObject.time(end))) - datetime(datestr(inputObject.time(1))))';
+    
+end
+
 %% Plot data
 
 figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
@@ -172,7 +178,11 @@ for i = 1 : nEvents
     
     if(eventInfo.eventTime >= inputObject.time(1) && eventInfo.eventTime <= inputObject.time(end))
         
-        if bDatetime
+        if(~inputObject.absoluteTS)
+            
+            xev = [xev; datetime(datestr(eventInfo.eventTime)) - datetime(datestr(inputObject.time(1)))];
+            
+        elseif bDatetime
             
             if bTimeRelative
                 
