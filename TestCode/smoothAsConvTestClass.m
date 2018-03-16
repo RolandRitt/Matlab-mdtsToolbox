@@ -62,11 +62,15 @@ classdef smoothAsConvTestClass < matlab.unittest.TestCase
                                1/11;
                                zeros(44, 1)];
             
-            output1 = smoothAsConv(input1);
-            output2 = smoothAsConv(input2);
+            output1a = smoothAsConv(input1);
+            output1b = smoothAsConv(input1, 'ls', 11, 'noBfs', 2);
+            output2a = smoothAsConv(input2);
+            output2b = smoothAsConv(input2, 'ls', 11, 'noBfs', 2);
             
-            testCase.verifyEqual(output1, expectedReturn1);
-            testCase.verifyEqual(output2, expectedReturn2);
+            testCase.verifyEqual(output1a, expectedReturn1);
+            testCase.verifyEqual(output1b, expectedReturn1);
+            testCase.verifyEqual(output2a, expectedReturn2);
+            testCase.verifyEqual(output2b, expectedReturn2);
             
         end
         
