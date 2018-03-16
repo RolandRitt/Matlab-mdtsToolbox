@@ -527,10 +527,10 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             edges3 = [-inf, 0, 1.5, inf];
             
             expectedReturn1.durations = [1; 1; 3; 1; 2; 1];
-            expectedReturn1.symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c'}, 'Ordinal', true)';
+            expectedReturn1.symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c'})';
             
             expectedReturn3.durations = [1; 4; 4];
-            expectedReturn3.symbols = categorical({'a', 'b', 'c'}, 'Ordinal', true)';
+            expectedReturn3.symbols = categorical({'a', 'b', 'c'})';
             
             symbObj1 = symbRepChannel(input1, edges1, alphabet1);     
             symbObj3 = symbRepChannel(input3, edges3, alphabet3); 
