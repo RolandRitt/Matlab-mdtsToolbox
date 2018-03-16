@@ -35,6 +35,7 @@ classdef mdtsObject < mdtsCoreObject
             defaultWhen = 'Now';
             defaultDescription = 'No description available';
             defaultComment = 'No comment available';
+            defaultAbsoluteTS = true;
             defaulttsEvents = containers.Map;
             defaultSegmentations = cell(1, numel(tags));
             
@@ -49,12 +50,13 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'when', defaultWhen, @(x)validateattributes(x, {'char'}, {'nonempty'}));
             addParameter(p, 'description', defaultDescription, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'comment', defaultComment, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
+            addParameter(p, 'absoluteTS', defaultAbsoluteTS, @(x)validateattributes(x, {'logical', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'tsEvents', defaulttsEvents, @(x)validateattributes(x, {'containers.Map'}, {'nonempty'}));
             addParameter(p, 'symbReps', defaultSegmentations, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             
             parse(p, time, data, tags, varargin{:});
             
-            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.symbReps);
+            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.absoluteTS, p.Results.tsEvents, p.Results.symbReps);
             
         end
         
