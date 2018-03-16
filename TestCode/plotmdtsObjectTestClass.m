@@ -70,8 +70,8 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             
             input2.object = returns;
             input2.tag = 'Channel 2';
-            alphabet2 = {'a', 'b', 'c'};
-            edges2 = [-inf, -4, 4, inf];
+            alphabet2 = {'b'};
+            edges2 = [-4, 4];
             
             input3.object = returns;
             input3.tag = 'Channel 3';
