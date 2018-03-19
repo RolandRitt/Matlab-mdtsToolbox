@@ -75,9 +75,8 @@ else
 end
 
 if(~inputObject.absoluteTS)
-    
-    xTime = (0 : datetime(datestr(inputObject.time(2))) - datetime(datestr(inputObject.time(1))) : datetime(datestr(inputObject.time(end))) - datetime(datestr(inputObject.time(1))))';
-    
+      xTime = (0 : datetime(inputObject.time(2), 'ConvertFrom', 'datenum') - datetime(inputObject.time(1),'ConvertFrom', 'datenum') : datetime(inputObject.time(end),'ConvertFrom', 'datenum') - datetime(inputObject.time(1),'ConvertFrom', 'datenum'))'; 
+     
 end
 
 %% Plot data
