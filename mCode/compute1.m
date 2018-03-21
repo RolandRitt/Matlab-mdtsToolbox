@@ -109,7 +109,17 @@ elseif(m == n)
     
 elseif(m == 1 || n == 1)
     
-    output = conv(y, matrix, 'same');
+    if(m == 1)
+        
+        vector = fliplr(matrix);
+        output = conv(y, vector, 'same');
+        
+    else
+        
+        vector = flipud(matrix);
+        output = conv(y, vector, 'same');
+        
+    end
     
 else
     
