@@ -50,34 +50,35 @@ plotSymbolNameMinLength = numel(inputObject.time) * p.Results.plotSymbolNameMinL
 
 %% Interpret options
 
-xTime = inputObject.time;
+xTime = inputObject.timeInFormat;
 
-if(bTimeRelative)
-    
-    if(bDatetime)
-    
-        xTime = inputObject.timeDateTimeRelative;
-        
-    else
-        
-        xTime = inputObject.timeRelative;
-        
-    end
-    
-else
-    
-    if(bDatetime)
-    
-        xTime = inputObject.timeDateTime;
-        
-    end
-    
-end
-
-if(~inputObject.absoluteTS)
-      xTime = (0 : datetime(inputObject.time(2), 'ConvertFrom', 'datenum') - datetime(inputObject.time(1),'ConvertFrom', 'datenum') : datetime(inputObject.time(end),'ConvertFrom', 'datenum') - datetime(inputObject.time(1),'ConvertFrom', 'datenum'))'; 
-     
-end
+% if(bTimeRelative)
+%     
+%     if(bDatetime)
+%     
+%         xTime = inputObject.timeDateTimeRelative;
+%         
+%     else
+%         
+%         xTime = inputObject.timeRelative;
+%         
+%     end
+%     
+% else
+%     
+%     if(bDatetime)
+%     
+%         xTime = inputObject.timeDateTime;
+%         
+%     end
+%     
+% end
+% 
+% if(~inputObject.absoluteTS)
+%     
+%     xTime = (0 : datetime(datestr(inputObject.time(2))) - datetime(datestr(inputObject.time(1))) : datetime(datestr(inputObject.time(end))) - datetime(datestr(inputObject.time(1))))';
+%     
+% end
 
 %% Plot data
 
@@ -174,38 +175,41 @@ xev = [];
 for i = 1 : nEvents
     
     eventInfo = inputObject.tsEvents(eventKeys{i});
+    eventTimeDatenum = inputObject.convert2Datenum(eventInfo.eventTime);
     
-    if(eventInfo.eventTime >= inputObject.time(1) && eventInfo.eventTime <= inputObject.time(end))
+    if(eventTimeDatenum >= inputObject.time(1) && eventTimeDatenum <= inputObject.time(end))
         
-        if(~inputObject.absoluteTS)
-            
-            xev = [xev; datetime(datestr(eventInfo.eventTime)) - datetime(datestr(inputObject.time(1)))];
-            
-        elseif bDatetime
-            
-            if bTimeRelative
-                
-                xev = [xev; datetime(eventInfo.eventTime - inputObject.time(1), 'ConvertFrom', 'datenum')];
-                
-            else
-            
-                xev = [xev; datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum')];
-            
-            end
-            
-        else
-            
-            if bTimeRelative
-                
-                xev = [xev; eventInfo.eventTime - inputObject.time(1)];
-                
-            else
-            
-                xev = [xev; eventInfo.eventTime];
-            
-            end
-            
-        end       
+         xev = [xev; inputObject.timeInFormat(inputObject.time == eventTimeDatenum)];
+        
+%         if(~inputObject.absoluteTS)
+%             
+%             xev = [xev; datetime(datestr(eventInfo.eventTime)) - datetime(datestr(inputObject.time(1)))];
+%             
+%         elseif bDatetime
+%             
+%             if bTimeRelative
+%                 
+%                 xev = [xev; datetime(eventInfo.eventTime - inputObject.time(1), 'ConvertFrom', 'datenum')];
+%                 
+%             else
+%             
+%                 xev = [xev; datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum')];
+%             
+%             end
+%             
+%         else
+%             
+%             if bTimeRelative
+%                 
+%                 xev = [xev; eventInfo.eventTime - inputObject.time(1)];
+%                 
+%             else
+%             
+%                 xev = [xev; eventInfo.eventTime];
+%             
+%             end
+%             
+%         end       
                 
         legendEntries = [legendEntries, eventKeys(i)];
         
