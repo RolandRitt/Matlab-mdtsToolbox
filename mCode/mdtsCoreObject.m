@@ -39,7 +39,6 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         units
         uniform
         ts
-        absoluteTS
         isSubset = false;
         
         
@@ -56,7 +55,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
     
     methods
         
-        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps)
+        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps)
             
             % Core data
             
@@ -83,7 +82,6 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.when = when;
             obj.description = description;
             obj.comment = comment;  
-            obj.absoluteTS = absoluteTS;
             
         end
         

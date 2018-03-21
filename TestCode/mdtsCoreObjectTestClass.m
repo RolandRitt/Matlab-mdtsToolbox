@@ -41,11 +41,10 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = {};
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -85,11 +84,10 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = {};
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -134,7 +132,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             durations = [3; 3];
             symbols = categorical({'a'; 'b'}, 'Ordinal', true);
@@ -143,7 +140,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             symbReps{2} = segObj;
             symbReps{3} = segObj;
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -236,7 +233,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             
@@ -245,7 +241,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             dataToExtract = data(:, columnsToExtract);
             unitsToExtract = units(:, columnsToExtract);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             returnObject = returns.getData(tagsToExtract);
             
             testCase.verifyEqual(returnObject.time, time);
@@ -276,7 +272,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             
@@ -292,7 +287,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             dataToExtract2 = data(linesToExtract2, columnsToExtract);
             unitsToExtract = units(:, columnsToExtract);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             returnObject1 = returns.getData(tagsToExtract, timeToExtract1);
             returnObject2 = returns.getData(tagsToExtract, timeToExtract2);
             returnObject3 = returns.getData(tagsToExtract, timeToExtract2StartEnd);
@@ -334,7 +329,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             
@@ -344,7 +338,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             columnsToExtract2 = [4, 3];
             tagsToExtract2 = tags(columnsToExtract2);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
             tagIndices1 = returns.getTagIndices(tagsToExtract1);
             tagIndices2 = returns.getTagIndices(tagsToExtract2);
@@ -376,14 +370,13 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             
             linesToExtract = [2; 4];
             timeInterval = time(linesToExtract);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             timeIndices = returns.getIntervalIndices(timeInterval);
             
             testCase.verifyEqual(timeIndices, linesToExtract);   
@@ -412,7 +405,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             
@@ -420,7 +412,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             tagListInCorrect1 = {'Channel 1', 'Channel 2', 'Channel 3', 'SomeChannel'};
             tagListInCorrect2 = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 5'};
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
                         
             testCase.verifyEqual(true, returns.checkTags(tagListCorrect));   
             testCase.verifyEqual(false, returns.checkTags(tagListInCorrect1));   
@@ -450,7 +442,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             
@@ -464,7 +455,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             date3 = '25-Jul-2017';
             date4 = 'Aug-2017';
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             extractedReturns = returns.getData(tags, date4);    
             
             [start1, end1] = returns.startEndOfDate(date1);
@@ -507,7 +498,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             
@@ -520,8 +510,8 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             addTags1 = {'AddedTag1', 'AddedTag2'};
             addTags2 = {'AddedTag3', 'AddedTag4'};
 
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
-            returns2 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
+            returns2 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
             returns.expandDataSet(addData, addTags1);
             returns2.expandDataSet(addData, addTags1).expandDataSet(addData, addTags2);
@@ -561,7 +551,6 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             
@@ -573,7 +562,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                        7, 8];
             addTags = {'AddedTag1', 'AddedTag2'};
                       
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             returns.expandDataSet(addData, addTags);
             
             extraction1 = returns(:, :);
@@ -623,11 +612,10 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
                       
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
             eventInfo.eventTime = time(2);
             eventInfo.eventDuration = 5 * ts;
@@ -660,11 +648,10 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
                       
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, absoluteTS, tsEvents, symbReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps);
             
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, {'a'; 'b'});
