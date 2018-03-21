@@ -20,6 +20,15 @@ classdef mdtsObject < mdtsCoreObject
     %
     
     properties
+        
+        timeType
+        
+    end
+    
+    properties(Dependent)
+        
+        timeInFormat
+        
     end
     
     methods
@@ -35,11 +44,42 @@ classdef mdtsObject < mdtsCoreObject
             defaultWhen = 'Now';
             defaultDescription = 'No description available';
             defaultComment = 'No comment available';
-            defaultAbsoluteTS = true;
             defaulttsEvents = containers.Map;
             defaultSegmentations = cell(1, numel(tags));
             
-            addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(data, 1), 1]}));            
+            if(isa(time, 'numeric'))
+                
+                if(time(1) <= 1)
+                    
+                    timeType = 0;
+                    
+                else
+                    
+                    timeType = 1;
+                    
+                end
+            
+                addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(data, 1), 1]}));            
+                
+                
+            elseif(isa(time, 'datetime'))                
+                
+                addRequired(p, 'timeIn', @(x)validateattributes(x, {'datetime', 'nonempty'}, {'size', [size(data, 1), 1]}));            
+                timeType = 2;
+                
+            elseif(isa(time, 'duration'))                
+                
+                addRequired(p, 'timeIn', @(x)validateattributes(x, {'duration', 'nonempty'}, {'size', [size(data, 1), 1]}));            
+                timeType = 3;
+                
+            else
+                
+                errID = 'mdtsObject:InvalidTimeFormat';
+                errMsg = 'Invalid format of time vector! Time vector must be given as numeric, datenum, datetime or duration!';
+                error(errID, errMsg);
+                
+            end
+                
             addRequired(p, 'dataIn', @(x)validateattributes(x, {'numeric'}, {'nonempty'}));
             addRequired(p, 'tagsIn', @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             
@@ -50,13 +90,55 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'when', defaultWhen, @(x)validateattributes(x, {'char'}, {'nonempty'}));
             addParameter(p, 'description', defaultDescription, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'comment', defaultComment, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
-            addParameter(p, 'absoluteTS', defaultAbsoluteTS, @(x)validateattributes(x, {'logical', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'tsEvents', defaulttsEvents, @(x)validateattributes(x, {'containers.Map'}, {'nonempty'}));
             addParameter(p, 'symbReps', defaultSegmentations, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             
             parse(p, time, data, tags, varargin{:});
             
-            obj@mdtsCoreObject(p.Results.timeIn, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.absoluteTS, p.Results.tsEvents, p.Results.symbReps);
+            if(timeType == 0 || timeType == 1)
+                
+                timeVector = p.Results.timeIn;
+                
+            elseif(timeType == 2)
+                
+                timeVector = datenum(p.Results.timeIn);
+                
+            elseif(timeType == 3)
+                
+                timeVector = seconds(p.Results.timeIn);
+                
+            end
+            
+            obj@mdtsCoreObject(timeVector, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.symbReps);
+            
+            obj.timeType = timeType;
+            
+        end
+        
+        function timeInFormat = get.timeInFormat(obj)
+            % Purpose : convert time of the core object into the correct
+            % format (according to the input given to the construtctor)
+            %
+            % Syntax : timeInFormat = mdtsObject.timeInFormat
+            %
+            % Input Parameters :
+            %
+            % Return Parameters :
+            %   timeInFormat : time vector in correct format
+            
+            if(obj.timeType == 0 || obj.timeType == 1)
+                
+                timeInFormat = obj.time;
+                
+            elseif(obj.timeType == 2)
+                
+                timeInFormat = datetime(datestr(obj.time));
+                
+            elseif(obj.timeType == 3)
+
+                timeInFormat = duration(0, 0, obj.time);
+                
+            end
             
         end
         
@@ -88,9 +170,18 @@ classdef mdtsObject < mdtsCoreObject
                     errMsg = 'Invalid number of input arguments!';
                     error(errID, errMsg);
                     
-            else
+            elseif(nArguments == 2)
                 
-                returnObject = getData@mdtsCoreObject(obj, varargin{:}); 
+                tags = varargin{1};
+                timeInterval = obj.convert2Datenum(varargin{2});
+                
+                returnObject = getData@mdtsCoreObject(obj, tags, timeInterval); 
+                
+            elseif(nArguments == 1)
+                
+                tags = varargin{1};
+                
+                returnObject = getData@mdtsCoreObject(obj, tags); 
                 
             end
             
@@ -149,15 +240,11 @@ classdef mdtsObject < mdtsCoreObject
             %   intervalIndices : Indices of the required time interval.
             %   The returned indices include the given interval.
             
-            if(~isa(timeInterval, 'double'))
-                
-                errID = 'getIntervalIndices:InputNoDatenum';
-                errMsg = 'Given input is not a datenum vector!';
-                error(errID, errMsg);
+            timeIntervalDatenum = obj.convert2Datenum(timeInterval);
             
-            elseif(timeInterval(1) >= obj.time(1) && timeInterval(end) <= obj.time(end))
+            if(timeIntervalDatenum(1) >= obj.time(1) && timeIntervalDatenum(end) <= obj.time(end))
                 
-                intervalIndices = getIntervalIndices@mdtsCoreObject(obj, timeInterval); 
+                intervalIndices = getIntervalIndices@mdtsCoreObject(obj, timeIntervalDatenum); 
                 
             else
                 
@@ -250,22 +337,18 @@ classdef mdtsObject < mdtsCoreObject
             % Return Parameters :
             %   mdtsObject : Original object with the added event
             
+            eventTimeDatenum = obj.convert2Datenum(eventTime);
+            
             if~isa(eventID, 'char')
                 
                 errID = 'addEvent:InvalidEventID';
                 errMsg = 'Variable eventID must be a string!';
                 error(errID, errMsg);
                 
-            elseif~(numel(eventTime) == numel(eventDuration))
+            elseif~(numel(eventTimeDatenum) == numel(eventDuration))
                 
                 errID = 'addEvent:TimesInconsistent';
                 errMsg = 'eventTime and eventDuration must have the same number of elements!';
-                error(errID, errMsg);
-                
-            elseif~isa(eventTime, 'numeric')
-                
-                errID = 'addEvent:InvalidEventTime';
-                errMsg = 'Event time must be a datenum (array)!';
                 error(errID, errMsg);
                 
             elseif~isa(eventDuration, 'integer')
@@ -274,7 +357,7 @@ classdef mdtsObject < mdtsCoreObject
                 errMsg = 'Event duration must be an integer (array)!';
                 error(errID, errMsg);
                 
-            elseif~prod(ismember(eventTime, obj.time))
+            elseif~prod(ismember(eventTimeDatenum, obj.time))
                 
                 errID = 'addEvent:EventTimeNotAvailable';
                 errMsg = 'Only time stemps available within the data set are permitted as eventTime!';
@@ -282,7 +365,7 @@ classdef mdtsObject < mdtsCoreObject
                 
             end
             
-            obj = addEvent@mdtsCoreObject(obj, eventID, eventTime, eventDuration);
+            obj = addEvent@mdtsCoreObject(obj, eventID, eventTimeDatenum, eventDuration);
             
         end
         
@@ -318,6 +401,42 @@ classdef mdtsObject < mdtsCoreObject
             end
                                    
             obj = addSymbRepToChannel@mdtsCoreObject(obj, channelNumber, symbObj);
+            
+        end
+        
+        function timeDateNum = convert2Datenum(obj, timeInput)
+            % Purpose : Convert timeInput to datenum
+            %
+            % Syntax :
+            %   timeDateNum = mdtsObject.convert2Datenum(timeInput)
+            %
+            % Input Parameters :
+            %   timeInput : time in input format
+            %
+            % Return Parameters :
+            %   timeDateNum : Time in datenum format
+            %
+            
+            if(isa(timeInput, 'numeric'))
+            
+                timeDateNum = timeInput;            
+                
+                
+            elseif(isa(timeInput, 'datetime'))                
+                
+                timeDateNum = datenum(timeInput);
+                
+            elseif(isa(timeInput, 'duration'))                
+                
+                timeDateNum = seconds(timeInput);
+                
+            else
+                
+                errID = 'convert2Datenum:InvalidTimeFormat';
+                errMsg = 'Invalid format of time vector! Time vector must be given as numeric, datenum, datetime or duration!';
+                error(errID, errMsg);
+                
+            end
             
         end
         

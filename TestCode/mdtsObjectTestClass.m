@@ -41,7 +41,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -51,7 +50,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             symbReps = cell(1, numel(tags));
             symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             returns2 = mdtsObject(time, data, tags);
             
             testCase.verifyEqual(returns.time, time);
@@ -109,7 +108,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -119,7 +117,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             symbReps = cell(1, numel(tags));
             symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -161,7 +159,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -171,7 +168,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             symbReps = cell(1, numel(tags));
             symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -241,7 +238,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -251,9 +247,109 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             symbReps = cell(1, numel(tags));
             symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             testCase.verifyError(@()returns.getData(), 'getData:InvalidNumberOfInputs');  
+
+        end
+        
+        function testgetDataNargin1(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            symbReps = cell(1, numel(tags));
+            
+            columnsToExtract = [2, 4];
+            tagsToExtract = tags(columnsToExtract);
+            dataToExtract = data(:, columnsToExtract);
+            unitsToExtract = units(:, columnsToExtract);
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returnObject = returns.getData(tagsToExtract);
+            
+            testCase.verifyEqual(returnObject.time, time);
+            testCase.verifyEqual(returnObject.data, dataToExtract);
+            testCase.verifyEqual(returnObject.tags, tagsToExtract);
+            testCase.verifyEqual(returnObject.units, unitsToExtract);
+            testCase.verifyEqual(returnObject.isSubset, true);
+            
+            testCase.verifyEqual(returns.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
+
+        end
+        
+        function testgetDataNargin2(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            symbReps = cell(1, numel(tags));
+            
+            columnsToExtract = [2, 4];
+            linesToExtract1 = [2 : 3];
+            linesToExtract2 = [2 : 4];
+            linesToExtract2StartEnd = [linesToExtract2(1); linesToExtract2(end)];
+            timeToExtract1 = time(linesToExtract1);
+            timeToExtract2 = time(linesToExtract2);
+            timeToExtract2StartEnd = time(linesToExtract2StartEnd);
+            tagsToExtract = tags(columnsToExtract);
+            dataToExtract1 = data(linesToExtract1, columnsToExtract);
+            dataToExtract2 = data(linesToExtract2, columnsToExtract);
+            unitsToExtract = units(:, columnsToExtract);
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returnObject1 = returns.getData(tagsToExtract, timeToExtract1);
+            returnObject2 = returns.getData(tagsToExtract, timeToExtract2);
+            returnObject3 = returns.getData(tagsToExtract, timeToExtract2StartEnd);
+            
+            testCase.verifyEqual(returnObject1.time, timeToExtract1);
+            testCase.verifyEqual(returnObject1.data, dataToExtract1);
+            testCase.verifyEqual(returnObject1.tags, tagsToExtract);
+            testCase.verifyEqual(returnObject1.units, unitsToExtract);
+            testCase.verifyEqual(returnObject1.isSubset, true);
+            testCase.verifyEqual(returnObject1.timeDateTime, datetime(timeToExtract1, 'ConvertFrom', 'datenum'));
+
+            testCase.verifyEqual(returnObject2.time, timeToExtract2);
+            testCase.verifyEqual(returnObject2.data, dataToExtract2);
+            testCase.verifyEqual(returnObject2.isSubset, true);
+            testCase.verifyEqual(returnObject2.timeDateTime, datetime(timeToExtract2, 'ConvertFrom', 'datenum'));
+
+            testCase.verifyEqual(returnObject3.time, timeToExtract2);
+            testCase.verifyEqual(returnObject3.data, dataToExtract2);
+            testCase.verifyEqual(returnObject3.isSubset, true);
+            testCase.verifyEqual(returnObject3.timeDateTime, datetime(timeToExtract2, 'ConvertFrom', 'datenum'));
 
         end
         
@@ -275,7 +371,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -285,7 +380,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             symbReps = cell(1, numel(tags));
             symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             testCase.verifyError(@()returns.getData(1, 2, 3), 'getData:InvalidNumberOfInputs');
             
@@ -309,7 +404,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -319,7 +413,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             symbReps = cell(1, numel(tags));
             symbReps{2} = segObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
 
             testCase.verifyError(@()returns.getTagIndices({'Channel 5'}), 'getTagIndices:TagNotAvailable');    
         
@@ -347,7 +441,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -359,7 +452,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             tooLargeInterval = [time(2); time(end) + 1 / (60 * 60 * 24)];
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);            
  
             testCase.verifyError(@()returns.getIntervalIndices(tooLargeInterval), 'getIntervalIndices:IntervalOutOfBoundaries');
             
@@ -387,7 +480,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -406,7 +498,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             addTags1 = {'AddedTag1', 'AddedTag2'};
             addTags2 = {'AddedTag3', 'AddedTag4'};
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             returns.expandDataSet(addData, addTags1);
             
             testCase.verifyEqual(returns.data(:, end - 1 : end), addData);
@@ -447,7 +539,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -472,7 +563,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             eventInfo4.eventDuration = 3;
             eventInfo5.eventDuration = int32(3);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             returns.addEvent(eventName1, eventInfo1.eventTime, eventInfo1.eventDuration);
             
@@ -480,7 +571,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             testCase.verifyError(@()returns.addEvent(eventName2, eventInfo1.eventTime, eventInfo1.eventDuration), 'addEvent:InvalidEventID');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo2.eventTime, eventInfo2.eventDuration), 'addEvent:TimesInconsistent');
-            testCase.verifyError(@()returns.addEvent(eventName1, eventInfo3.eventTime, eventInfo3.eventDuration), 'addEvent:InvalidEventTime');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo4.eventTime, eventInfo4.eventDuration), 'addEvent:InvalidEventDuration');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo5.eventTime, eventInfo5.eventDuration), 'addEvent:EventTimeNotAvailable');
           
@@ -514,7 +604,6 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             when = 'Now';
             description = {'This is a TS-Test'; 'with two text lines'};
             comment = {'This is'; 'a comment'};
-            absoluteTS = false;
             eventInfo.eventTime = datenum('09/01/2018 16:05:06');
             eventInfo.eventDuration = int32(0);
             tsEvents = containers.Map('key1', eventInfo);
@@ -524,7 +613,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             symbReps = cell(1, numel(tags));
             symbReps{2} = symbObj;
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'absoluteTS', absoluteTS, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             input1.object = returns;
             input1.tag = 'Channel 1';
@@ -555,5 +644,88 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.symbReps{3}.symbols, expectedReturn3.symbols);
             
         end        
+        
+        function testDifferentTimeInputs(testCase)
+            
+            ts = duration(0, 0, 1);
+            time0 = (0 : 8)';
+            time1 = [datetime(2017, 7, 31, 14, 3, 0 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 1 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 2 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 3 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 4 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 5 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 6 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 7 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 8 * seconds(ts))];
+            time2 = [datenum(datetime(2017, 7, 31, 14, 3, 0 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 1 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 2 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 3 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 4 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 5 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 6 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 7 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 8 * seconds(ts)))];
+            time3 = (0 : 8)' * ts;
+            data = [1, 8, -1;
+                    2, 6, 1;
+                    3, 7, 1;
+                    3, 5, 1;
+                    3, 1, 1;
+                    2, 1, 2;
+                    1, 1, 2;
+                    1, 1, 2;
+                    3, 1, 2];
+            tags = {'Channel 1', 'Channel2', 'Channel 3'};
+            units = {'s', 'min', 'elephants'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            durations = [4; 5];
+            symbols = categorical({'a'; 'b'}, 'Ordinal', true);
+            symbObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = symbObj;
+            
+            returns0 = mdtsObject(time0, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns1 = mdtsObject(time1, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns2 = mdtsObject(time2, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns3 = mdtsObject(time3, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+              
+            expectedReturn0 = time0;
+            expectedReturn1 = time1;
+            expectedReturn2 = time2;
+            expectedReturn3 = time3;
+            
+            linesToExtract = [2; 4];
+            timeInterval0 = time0(linesToExtract);
+            timeInterval1 = time1(linesToExtract);
+            timeInterval2 = time2(linesToExtract);
+            timeInterval3 = time3(linesToExtract);
+            
+            testCase.verifyEqual(returns0.timeInFormat, expectedReturn0);
+            testCase.verifyEqual(returns1.timeInFormat, expectedReturn1);
+            testCase.verifyEqual(returns2.timeInFormat, expectedReturn2);
+            testCase.verifyEqual(returns3.timeInFormat, expectedReturn3);
+            
+            testCase.verifyError(@()mdtsObject('test1', data, tags), 'mdtsObject:InvalidTimeFormat');
+            
+            testCase.verifyEqual(returns0.convert2Datenum(time0), time0);
+            testCase.verifyEqual(returns0.convert2Datenum(time1), datenum(time1));
+            testCase.verifyEqual(returns0.convert2Datenum(time2), time2);
+            testCase.verifyEqual(returns0.convert2Datenum(time3), seconds(time3));
+            
+            testCase.verifyEqual(returns0.getIntervalIndices(timeInterval0), linesToExtract);
+            testCase.verifyEqual(returns1.getIntervalIndices(timeInterval1), linesToExtract);
+            testCase.verifyEqual(returns2.getIntervalIndices(timeInterval2), linesToExtract);
+            testCase.verifyEqual(returns3.getIntervalIndices(timeInterval3), linesToExtract);
+          
+        end
     end
 end
