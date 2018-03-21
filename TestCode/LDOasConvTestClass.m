@@ -160,6 +160,28 @@ classdef LDOasConvTestClass < matlab.unittest.TestCase
             
         end
         
+        function testInvalidInputs(testCase)
+            
+            nPoints = 500;
+            
+            ts = duration(0, 0, 1);
+            time = datenum(datetime(2017, 7, 31, 14, 3, seconds(ts) * (1 : nPoints)'));
+            data(:, 1) = sin((1 : nPoints) * 2 / nPoints * 2 * pi)';
+            data(:, 2) = cos((1 : nPoints) * 2 / nPoints * 2 * pi)';
+            tags = {'Channel 1', 'Channel 2'};
+            units = {'s', 'min'};
+            
+            theObject = mdtsObject(time, data, tags, 'units', units, 'ts', ts);
+
+            input1.object = theObject;
+            input1.tag = 'Channel 1';                           
+            
+            testCase.verifyError(@()LDOasConv(input1, 'ls', 5, 'noBfs', 6), 'LDOasConv:lsTooSmall');
+            testCase.verifyError(@()LDOasConv(input1, 'order', 3, 'noBfs', 2), 'LDOasConv:OrderToLarge');
+            testCase.verifyError(@()LDOasConv(input1, 'ls', 4), 'LDOasConv:lsMustBeOdd');
+            
+        end
+        
     end
     
 end

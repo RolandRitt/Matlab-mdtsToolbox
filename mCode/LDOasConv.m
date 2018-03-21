@@ -79,6 +79,30 @@ ls = p.Results.ls;
 noBfs = p.Results.noBfs;
 order = p.Results.order;
 
+if(noBfs > ls)
+    
+    errID = 'LDOasConv:lsTooSmall';
+    errMsg = 'Input ls must be greater than or equal to noBfs!';
+    error(errID, errMsg);
+    
+end
+
+if(noBfs < order)
+    
+    errID = 'LDOasConv:OrderToLarge';
+    errMsg = 'Input order must be smaller than or equal to noBfs!';
+    error(errID, errMsg);
+    
+end
+
+if~isOdd(ls)
+    
+    errID = 'LDOasConv:lsMustBeOdd';
+    errMsg = 'Input ls must be odd!';
+    error(errID, errMsg);
+    
+end
+
 %% Compute
 
 x = xTime(1 : ls);
