@@ -91,11 +91,15 @@ if(order == 0)
     
 else
 
-    derMatrix = (dP * P')^order;
+    derMatrix = dP * P';
 
 end
 
 derVec = compute1(derMatrix, input);
+
+for i = 2 : order
+
+    derVec = compute1(derMatrix, derVec);
 
 end
 

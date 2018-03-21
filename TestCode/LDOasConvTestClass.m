@@ -116,12 +116,12 @@ classdef LDOasConvTestClass < matlab.unittest.TestCase
             
             output2 = LDOasConv(input2);
             
-            %output3 = LDOasConv(input1, 'order', 2);
+            output3 = LDOasConv(input1, 'order', 2);
             
             cutOff = 2 / 100;
             testCase.verifyEqual(output1(round(nPoints * cutOff) : end - round(nPoints * cutOff)), expectedReturn1(round(nPoints * cutOff) : end - round(nPoints * cutOff)), 'AbsTol', 2 / nPoints * 2 * pi / datenum(ts) / 100);
             testCase.verifyEqual(output2(round(nPoints * cutOff) : end - round(nPoints * cutOff)), expectedReturn2(round(nPoints * cutOff) : end - round(nPoints * cutOff)), 'AbsTol', (2 / nPoints * 2 * pi / datenum(ts))^2 / 100);
-            %testCase.verifyEqual(output3(round(nPoints * cutOff) : end - round(nPoints * cutOff)), expectedReturn2(round(nPoints * cutOff) : end - round(nPoints * cutOff)), 'AbsTol', (2 / nPoints * 2 * pi / datenum(ts))^2 / 100);
+            testCase.verifyEqual(output3(round(nPoints * cutOff) : end - round(nPoints * cutOff)), expectedReturn2(round(nPoints * cutOff) : end - round(nPoints * cutOff)), 'AbsTol', (2 / nPoints * 2 * pi / datenum(ts))^2 / 100);
                        
         end
         
