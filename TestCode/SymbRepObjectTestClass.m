@@ -169,6 +169,31 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testMergeCats(testCase)
+            
+            durations1 = [1; 1; 3; 1; 2; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
+
+            symbSequence1 = {'c', 'b'};
+            
+            expectedReturn1.symbols = categorical({'Word1', 'b', 'Word1'}, {'Word1', 'b'})';
+            expectedReturn1.durations = [1; 1; 16];
+            
+            symbObj1 = SymbRepObject(durations1, symbols1); 
+            
+            symbObj1 = symbObj1.mergeSequence(symbSequence1);
+            
+            symbObj1 = symbObj1.mergeSymbols({'[{c}{b}]', 'a'}, 'Word1');
+            
+            testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
+            testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(categories(symbObj1.symbols), categories(expectedReturn1.symbols));
+            
+            testCase.verifyError(@()symbObj1.renameSymbol('b', 123), 'renameSymbol:NonStringInputs');
+            testCase.verifyError(@()symbObj1.renameSymbol(123, 'Word3'), 'renameSymbol:NonStringInputs');
+            
+        end
+        
         function testSetSymbolsInRange(testCase)
             
             durations1 = [1; 1; 3; 1; 2; 1; 1; 2; 3; 4];

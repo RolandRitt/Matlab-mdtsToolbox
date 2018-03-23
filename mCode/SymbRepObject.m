@@ -249,6 +249,49 @@ classdef SymbRepObject
             
         end
         
+        function obj = mergeSymbols(obj, oldSymbols, newSymbol)
+            % Purpose : Merge given symbols in the symbolic representation
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.mergeSymbols(oldSymbols, newSymbol)
+            %
+            % Input Parameters :
+            %   oldSymbols : Symbols existent in the symbolic representation,
+            %   which have to be merged. Input given as cell array of strings.
+            %
+            %   newSymbol : New symbol name for the old symbols, given as
+            %   string
+            %
+            % Return Parameters :
+            %   SymbRepObject : Original object with merged symbols
+            
+            if ~(isa(oldSymbols, 'cell') && ischar(newSymbol))
+                
+                errID = 'renameSymbol:NonStringInputs';
+                errMsg = 'The inputs oldSymbol and newSymbol must be given as strings!';
+                error(errID, errMsg);
+                
+            else
+                
+                obj.symbols = mergecats(obj.symbols, oldSymbols, newSymbol);
+                
+                for i = numel(obj.symbols) : -1 : 2
+                    
+                    if(isequal(obj.symbols(i), obj.symbols(i - 1)))
+                       
+                        obj.durations(i - 1) = obj.durations(i) + obj.durations(i - 1);
+                        
+                        obj.durations(i) = [];
+                        obj.symbols(i) = [];
+                        
+                    end
+                    
+                end
+                
+            end
+            
+        end
+        
         function obj = setSymbolsInRange(obj, newSymbol, range)
             % Purpose : Set symbols in the given range manually
             %
