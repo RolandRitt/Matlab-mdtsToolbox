@@ -530,12 +530,10 @@ classdef SymbRepObject
             tempWildcard = 'NotDefined'; % Wildcard - will be removed from the categorical at the end of the method
             
             for i = 1 : numel(allStartInd)
-                
-                if~(shortLongSeparation(i))
                     
-                    tempSymbol = tempWildcard; % Wildcard - will be removed from the categorical at the end of the method
-                    
-                end
+                % Wildcard - will be removed from the categorical at the end of the method
+                % Used for all short and undefined symbols
+                tempSymbol = tempWildcard; 
                 
                 if(allStartInd(i) == 1)
                     
@@ -563,7 +561,35 @@ classdef SymbRepObject
                     
                 else
                     
-                    if(shortLongSeparation(i))
+                    if(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>') && strcmp(allSymbols{allEndInd(i) + 1}, '<undefined>'))
+                        
+                        tempRange = [cumStartInd(allStartInd(i)), cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
+                        
+                        obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+                        
+                    elseif(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>')) 
+                        
+                        tempSymbol = allSymbols{allEndInd(i) + 1};
+                        
+                        startPoint = cumStartInd(allStartInd(i));
+                        endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+                        
+                        tempRange = [startPoint, endPoint];
+                        
+                        obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+                        
+                    elseif(shortLongSeparation(i) && strcmp(allSymbols{allEndInd(i) + 1}, '<undefined>'))
+                        
+                        tempSymbol = allSymbols{allStartInd(i) - 1};
+                        
+                        startPoint = cumStartInd(allStartInd(i));
+                        endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+                        
+                        tempRange = [startPoint, endPoint];
+                        
+                        obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+                    
+                    elseif(shortLongSeparation(i))
                         
                         tempSymbol1 = allSymbols{allStartInd(i) - 1};
                         tempSymbol2 = allSymbols{allEndInd(i) + 1};
