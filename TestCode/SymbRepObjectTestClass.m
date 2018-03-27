@@ -145,6 +145,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             expectedReturn1.durations = [1; 1; 4; 2; 10];
             expectedReturn2.symbols = categorical({'Word1', 'Word2', 'y', 'Word2', 'Word1', 'x', 'Word2'}, {'x', 'y', 'Word2', 'Word1'})';
             expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
+            expectedReturn2b.symbols = categorical({'CombinedWord', 'x', 'CombinedWord'}, {'x', 'CombinedWord'})';
             
             symbObj1 = SymbRepObject(durations1, symbols1); 
             symbObj2 = SymbRepObject(durations2, symbols2);
@@ -163,9 +164,9 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
             testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
             testCase.verifyEqual(categories(symbObj2.symbols), categories(expectedReturn2.symbols));
-            
-            testCase.verifyError(@()symbObj1.renameSymbol('b', 123), 'renameSymbol:NonStringInputs');
-            testCase.verifyError(@()symbObj2.renameSymbol(123, 'Word3'), 'renameSymbol:NonStringInputs');
+                        
+            testCase.verifyError(@()symbObj2.renameSymbol(123, 'Word3'), 'renameSymbol:InvalidInputs');
+            testCase.verifyError(@()symbObj1.renameSymbol('b', 123), 'renameSymbol:InvalidInputs');
             
         end
         
@@ -189,8 +190,8 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
             testCase.verifyEqual(categories(symbObj1.symbols), categories(expectedReturn1.symbols));
             
-            testCase.verifyError(@()symbObj1.renameSymbol('b', 123), 'renameSymbol:NonStringInputs');
-            testCase.verifyError(@()symbObj1.renameSymbol(123, 'Word3'), 'renameSymbol:NonStringInputs');
+            testCase.verifyError(@()symbObj1.mergeSymbols('b', 123), 'mergeSymbols:InvalidInputs');
+            testCase.verifyError(@()symbObj1.mergeSymbols(123, 'Word3'), 'mergeSymbols:InvalidInputs');
             
         end
         

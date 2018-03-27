@@ -235,17 +235,15 @@ classdef SymbRepObject
             % Return Parameters :
             %   SymbRepObject : Original object with renamed symbol
             
-            if ~(ischar(oldSymbol) && ischar(newSymbol))
+            if~(ischar(oldSymbol) && ischar(newSymbol))
                 
-                errID = 'renameSymbol:NonStringInputs';
+                errID = 'renameSymbol:InvalidInputs';
                 errMsg = 'The inputs oldSymbol and newSymbol must be given as strings!';
                 error(errID, errMsg);
                 
-            else
+            end
                 
                 obj.symbols = renamecats(obj.symbols, oldSymbol, newSymbol);
-                
-            end
             
         end
         
@@ -267,8 +265,8 @@ classdef SymbRepObject
             
             if ~(isa(oldSymbols, 'cell') && ischar(newSymbol))
                 
-                errID = 'renameSymbol:NonStringInputs';
-                errMsg = 'The inputs oldSymbol and newSymbol must be given as strings!';
+                errID = 'mergeSymbols:InvalidInputs';
+                errMsg = 'Input oldSymbols must be given as cell array of strings and newSymbol must be given as string!';
                 error(errID, errMsg);
                 
             else
