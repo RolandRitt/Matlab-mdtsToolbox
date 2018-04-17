@@ -86,7 +86,7 @@ figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
 
 fM = FigureManager;
 
-[out, ph] = plotMulti(xTime, inputObject.data, 'time', inputObject.tags, UnmatchedArgs{:});
+[out, ph] = plotMulti(xTime, inputObject.data, 'time', inputObject.tags,'yLabelsLatex',false, UnmatchedArgs{:});
 
 shouldAddold = fM.shouldAdd;
 fM.shouldAdd = false; %% otherwise it is too slow!!!
