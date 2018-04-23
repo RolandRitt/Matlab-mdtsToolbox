@@ -49,21 +49,31 @@ classdef computeFindTestClass < matlab.unittest.TestCase
             value3 = 7;
             operator4 = '~=';
             value4 = 7;
+            operator5 = '>=';
+            value5 = 7;
+            operator6 = '<=';
+            value6 = 7;
             
             expectedReturn1 = data(:, 1) > value1;
             expectedReturn2 = data(:, 1) < value2;
             expectedReturn3 = data(:, 1) == value3;
             expectedReturn4 = data(:, 1) ~= value4;
+            expectedReturn5 = data(:, 1) >= value5;
+            expectedReturn6 = data(:, 1) <= value6;
             
             output1 = computeFind(operator1, input1, value1);
             output2 = computeFind(operator2, input1, value2);
             output3 = computeFind(operator3, input1, value3);
             output4 = computeFind(operator4, input1, value4);
+            output5 = computeFind(operator5, input1, value5);
+            output6 = computeFind(operator6, input1, value6);
             
             testCase.verifyEqual(output1, expectedReturn1);  
             testCase.verifyEqual(output2, expectedReturn2);
             testCase.verifyEqual(output3, expectedReturn3);
             testCase.verifyEqual(output4, expectedReturn4);
+            testCase.verifyEqual(output5, expectedReturn5);
+            testCase.verifyEqual(output6, expectedReturn6);
             
         end
         

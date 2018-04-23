@@ -74,6 +74,10 @@ switch operator
         conformElements = vector1 == value;
     case '~='
         conformElements = vector1 ~= value;
+    case '>='
+        conformElements = vector1 >= value;
+    case '<='
+        conformElements = vector1 <= value;
     otherwise
         errID = 'computeFind:InvalidOperator';
         errMsg = 'Invalid operator!';
