@@ -179,7 +179,21 @@ for i = 1 : nEvents
     
     if(eventTimeDatenum >= inputObject.time(1) && eventTimeDatenum <= inputObject.time(end))
         
-         xev = [xev; inputObject.timeInFormat(inputObject.time == eventTimeDatenum)];
+        if(inputObject.timeType == 2)
+            
+            eventTime = datetime(datestr(eventTimeDatenum));
+            
+        elseif(inputObject.timeType == 3)
+            
+            eventTime = seconds(eventTimeDatenum);
+            
+        else
+            
+            eventTime = eventTimeDatenum;
+            
+        end
+        
+         xev = [xev; eventTime];
         
 %         if(~inputObject.absoluteTS)
 %             
