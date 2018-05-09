@@ -49,8 +49,9 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             segObj = SymbRepObject(durations, symbols);
             symbReps = cell(1, numel(tags));
             symbReps{2} = segObj;
+            segments = segmentsObject(100);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps, 'segments', segments);
             returns2 = mdtsObject(time, data, tags);
             
             testCase.verifyEqual(returns.time, time);
@@ -66,6 +67,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.comment, comment);
             testCase.verifyEqual(returns.tsEvents, tsEvents);
             testCase.verifyEqual(returns.symbReps, symbReps);
+            testCase.verifyEqual(returns.segments, segments);
             
             testCase.verifyEqual(returns.fs, 1 / seconds(ts));
             testCase.verifyEqual(returns.timeRelative, time - time(1));
@@ -84,6 +86,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns2.comment, 'No comment available');
             testCase.verifyEqual(returns2.tsEvents, containers.Map);
             testCase.verifyEqual(returns2.symbReps, cell(1, numel(tags)));
+            testCase.verifyEqual(returns2.segments, {});
             
             testCase.verifyEqual(returns2.timeRelative, time - time(1));
             testCase.verifyEqual(returns2.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
@@ -167,8 +170,18 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             segObj = SymbRepObject(durations, symbols);
             symbReps = cell(1, numel(tags));
             symbReps{2} = segObj;
+            nTimestamps = numel(time);
+            tagName1 = 'newChannel';
+            bVec1 = false(nTimestamps, 1);
+            bVec1(4 : 5) = true;            
+            tagName2 = 'secondChannel';
+            bVec2 = false(nTimestamps, 1);
+            bVec2(2 : 6) = true;
+            segments = segmentsObject(nTimestamps);
+            segments = segments.addSegmentVector(tagName1, bVec1);
+            segments = segments.addSegmentVector(tagName2, bVec2);
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps, 'segments', segments);
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -187,36 +200,50 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(when, extraction1.when);
             testCase.verifyEqual(description, extraction1.description);
             testCase.verifyEqual(comment, extraction1.comment);
+            testCase.verifyEqual(extraction1.segments.starts{1}, zeros(1, 0));
+            testCase.verifyEqual(extraction1.segments.durations{1}, zeros(1, 0));
             
             testCase.verifyEqual(data(3, 2), extraction2.data);
             testCase.verifyEqual(time(3), extraction2.time);
             testCase.verifyEqual(tags(2), extraction2.tags);
             testCase.verifyEqual(units(2), extraction2.units);
+            testCase.verifyEqual(extraction2.segments.starts{1}, zeros(1, 0));
+            testCase.verifyEqual(extraction2.segments.durations{1}, zeros(1, 0));
                
             testCase.verifyEqual(data(:, 4), extraction3.data);
             testCase.verifyEqual(time, extraction3.time);
             testCase.verifyEqual(tags(4), extraction3.tags);
             testCase.verifyEqual(units(4), extraction3.units);
+            testCase.verifyEqual(extraction3.segments.starts{1}, 4);
+            testCase.verifyEqual(extraction3.segments.durations{1}, 2);
             
             testCase.verifyEqual(data(3, :), extraction4.data);
             testCase.verifyEqual(time(3), extraction4.time);
             testCase.verifyEqual(tags, extraction4.tags);
             testCase.verifyEqual(units, extraction4.units);
+            testCase.verifyEqual(extraction4.segments.starts{1}, zeros(1, 0));
+            testCase.verifyEqual(extraction4.segments.durations{1}, zeros(1, 0));
             
             testCase.verifyEqual(data(2 : 4, 2 : 3), extraction5.data);
             testCase.verifyEqual(time(2 : 4), extraction5.time);
             testCase.verifyEqual(tags(2 : 3), extraction5.tags);
             testCase.verifyEqual(units(2 : 3), extraction5.units);
+            testCase.verifyEqual(extraction5.segments.starts{1}, 3);
+            testCase.verifyEqual(extraction5.segments.durations{1}, 1);
             
             testCase.verifyEqual(data(2 : 4, 2), extraction6.data);
             testCase.verifyEqual(time(2 : 4), extraction6.time);
             testCase.verifyEqual(tags(2), extraction6.tags);
             testCase.verifyEqual(units(2), extraction6.units);
+            testCase.verifyEqual(extraction6.segments.starts{1}, 3);
+            testCase.verifyEqual(extraction6.segments.durations{1}, 1);
             
             testCase.verifyEqual(data(3 : 5, 2 : 3), extraction7.data);
             testCase.verifyEqual(time(3 : 5), extraction7.time);
             testCase.verifyEqual(tags(2 : 3), extraction7.tags);
             testCase.verifyEqual(units(2 : 3), extraction7.units);
+            testCase.verifyEqual(extraction7.segments.starts{1}, 2);
+            testCase.verifyEqual(extraction7.segments.durations{1}, 2);
             
         end
         
@@ -643,6 +670,72 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.symbReps{3}.durations, expectedReturn3.durations);
             testCase.verifyEqual(returns.symbReps{3}.symbols, expectedReturn3.symbols);
             
+        end        
+        
+        function testAddSegments(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 6 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 7 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 8 * seconds(ts)))];
+            data = [1, 8, -1;
+                    2, 6, 1;
+                    3, 7, 1;
+                    3, 5, 1;
+                    3, 1, 1;
+                    2, 1, 2;
+                    1, 1, 2;
+                    1, 1, 2;
+                    3, 1, 2];
+            tags = {'Channel 1', 'Channel2', 'Channel 3'};
+            units = {'s', 'min', 'elephants'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            durations = [4; 5];
+            symbols = categorical({'a'; 'b'}, 'Ordinal', true);
+            symbObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = symbObj;
+            nTimestamps = numel(time);
+            segments1 = segmentsObject(nTimestamps);
+            tagName1 = 'newChannel';
+            bVec1 = false(nTimestamps, 1);
+            tagName2 = 'secondChannel';
+            bVec2 = true(nTimestamps, 1);
+            segments1 = segments1.addSegmentVector(tagName1, bVec1);
+            segments1 = segments1.addSegmentVector(tagName2, bVec2);
+            segments2 = segmentsObject(123);
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns2 = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            
+            returns.addSegments(segments1);
+            
+            retSegments = returns.segments;
+            
+            testCase.verifyEqual(retSegments.tags{1}, tagName1);
+            testCase.verifyEqual(retSegments.tags{2}, tagName2);
+            testCase.verifyEqual(retSegments.starts{1}, zeros(0, 1));
+            testCase.verifyEqual(retSegments.starts{2}, [1]);
+            testCase.verifyEqual(retSegments.durations{1}, zeros(1, 0));
+            testCase.verifyEqual(retSegments.durations{2}, [nTimestamps]);
+            
+            testCase.verifyError(@()returns2.addSegments('test1'), 'addSegments:NotASegmentsObject');
+            testCase.verifyError(@()returns.addSegments(segments1), 'addSegments:SegmentsAlreadyAdded');
+            testCase.verifyError(@()returns2.addSegments(segments2), 'addSegments:InvalidNumberOfTimestamps');
+          
         end        
         
         function testDifferentTimeInputs(testCase)

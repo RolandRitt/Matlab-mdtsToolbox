@@ -45,7 +45,8 @@ classdef mdtsObject < mdtsCoreObject
             defaultDescription = 'No description available';
             defaultComment = 'No comment available';
             defaulttsEvents = containers.Map;
-            defaultSegmentations = cell(1, numel(tags));
+            defaultSymbRep = cell(1, numel(tags));
+            defaultSegments = {};
             
             if(isa(time, 'numeric'))
                 
@@ -91,7 +92,8 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'description', defaultDescription, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'comment', defaultComment, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'tsEvents', defaulttsEvents, @(x)validateattributes(x, {'containers.Map'}, {'nonempty'}));
-            addParameter(p, 'symbReps', defaultSegmentations, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
+            addParameter(p, 'symbReps', defaultSymbRep, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
+            addParameter(p, 'segments', defaultSegments, @(x)validateattributes(x, {'segmentsObject'}, {'nonempty'}));
             
             parse(p, time, data, tags, varargin{:});
             
@@ -109,7 +111,7 @@ classdef mdtsObject < mdtsCoreObject
                 
             end
             
-            obj@mdtsCoreObject(timeVector, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.symbReps);
+            obj@mdtsCoreObject(timeVector, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.symbReps, p.Results.segments);
             
             obj.timeType = timeType;
             
@@ -401,6 +403,42 @@ classdef mdtsObject < mdtsCoreObject
             end
                                    
             obj = addSymbRepToChannel@mdtsCoreObject(obj, channelNumber, symbObj);
+            
+        end
+        
+        function obj = addSegments(obj, segmentsObj)
+            % Purpose : Add segmentsObject to mdtsObject
+            %
+            % Syntax :
+            %   mdtsObject = mdtsObject.addSegments(segmentsObj)
+            %
+            % Input Parameters :
+            %   segmentsObj : segmentsObject to be added to the mdtsObject
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added segmentsObject
+            
+            if~isa(segmentsObj, 'segmentsObject')
+                
+                errID = 'addSegments:NotASegmentsObject';
+                errMsg = 'The input segmentsObj must be of class segmentsObject!';
+                error(errID, errMsg);
+                
+            elseif~isempty(obj.segments)
+                
+                errID = 'addSegments:SegmentsAlreadyAdded';
+                errMsg = 'A segmentsObject was already added to the mdtsObject!';
+                error(errID, errMsg);
+                
+            elseif~(segmentsObj.nTimestamps == numel(obj.time))
+                
+                errID = 'addSegments:InvalidNumberOfTimestamps';
+                errMsg = 'The input segmentsObj must be of the same size as the time vector of the mdtsObject!';
+                error(errID, errMsg);
+                
+            end
+            
+            obj = addSegments@mdtsCoreObject(obj, segmentsObj);
             
         end
         
