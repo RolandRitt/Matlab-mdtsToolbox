@@ -107,6 +107,8 @@ end
 
 x = xTime(1 : ls);
 
+x = x - x((ls + 1) / 2);
+
 [P,dP] = dop(x, noBfs);
 
 if(order == 0)
