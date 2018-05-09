@@ -28,6 +28,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         tags
         tsEvents
         symbReps
+        segments
         
         %Meta data
         
@@ -55,7 +56,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
     
     methods
         
-        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps)
+        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments)
             
             % Core data
             
@@ -64,6 +65,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.tags = tags;
             obj.tsEvents = tsEvents;
             obj.symbReps = symbReps;
+            obj.segments = segments;
             
             % Meta data            
             
@@ -252,6 +254,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     returnObject.keepTagsOfData(tagsIndices);
                     returnObject.extractRowsOfSymbReps(intervalI);
                     
+                    if~isempty(returnObject.segments)
+                        
+                        returnObject.segments = returnObject.segments.extractRows(intervalI);
+                        
+                    end
+                    
                 elseif extractTags && ~extractRows
                     
                     returnObject.keepTagsOfData(tagsIndices);
@@ -260,6 +268,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     
                     returnObject.keepRowsOfData(intervalI);
                     returnObject.extractRowsOfSymbReps(intervalI);
+                    
+                    if~isempty(returnObject.segments)
+                        
+                        returnObject.segments = returnObject.segments.extractRows(intervalI);
+                        
+                    end
                     
                 end
                 
@@ -515,7 +529,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             % Purpose : Add symbolic representation to channel
             %
             % Syntax :
-            %   mdtsObject = mdtsObject.addSymbRepToChannel(channelNumber, symbObj)
+            %   mdtsCoreObject = mdtsCoreObject.addSymbRepToChannel(channelNumber, symbObj)
             %
             % Input Parameters :
             %   channelNumber : channel number or tag indices of the
@@ -529,6 +543,22 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             %   representation
             
             obj.symbReps{channelNumber} = symbObj;
+            
+        end
+        
+        function obj = addSegments(obj, segmentsObj)
+            % Purpose : Add segmentsObject to mdtsCoreObject
+            %
+            % Syntax :
+            %   mdtsCoreObject = mdtsCoreObject.addSegments(segmentsObj)
+            %
+            % Input Parameters :
+            %   segmentsObj : segmentsObject to be added to the mdtsObject
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added segmentsObject
+            
+            obj.segments = segmentsObj;
             
         end
                 
