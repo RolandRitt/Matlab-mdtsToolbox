@@ -93,78 +93,89 @@ fM.shouldAdd = false; %% otherwise it is too slow!!!
 title(out(1), inputObject.name, 'Interpreter', 'none');
 
 %% Plot Symbolic Representation
+gObjArr = plotSymRepObjectOnAxes(out, inputObject.symbReps, xTime, p.Results.plotSymbolName, p.Results.plotSymbolDuration, plotSymbolNameMinLength, get(ph(1), 'Color'));
+ for i=1:numel(ph)
+         uistack(ph(i), 'top');
+         set(out(i), 'Layer', 'top');
+ end
 
-allSymbols = {};
 
-for i = 1 : numel(inputObject.symbReps)
-    
-    if~isempty(inputObject.symbReps{i})
-        
-        addSymbols = categories(inputObject.symbReps{i}.symbols);
-        allSymbols = [allSymbols; addSymbols];
-        
-    end
-    
-end
+% allSymbols = {};
+% 
+% for i = 1 : numel(inputObject.symbReps)
+%     
+%     if~isempty(inputObject.symbReps{i})
+%         
+%         addSymbols = categories(inputObject.symbReps{i}.symbols);
+%         allSymbols = [allSymbols; addSymbols];
+%         
+%     end
+%     
+% end
+% 
+% uniqueSymbols = unique(allSymbols);
+% nSymbols = numel(uniqueSymbols);
+% symbolColors = distinguishable_colors(nSymbols, {'w', get(ph(1), 'Color')});
+% alphCol = 0.3;
+% 
+% for i = 1 : numel(out)
+%     
+%     hold(out(i), 'on');
+%     
+%     ymin = min(min(ph(i).YData), -1);
+%     ymax = max(max(ph(i).YData), 1);
+%     
+%     if~isempty(inputObject.symbReps{i})
+%         
+%         for j = 1 : nSymbols
+%             
+%             [startInds, durations] = inputObject.symbReps{i}.findSymbol(uniqueSymbols{j});
+%             
+%             for k = 1 : numel(startInds)
+%                 
+%                 xStart = xTime(startInds(k));
+%                 xEnd = xTime(startInds(k) + durations(k) - 1);
+%                 
+%                 fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', out(i));
+%                 
+%                 if(p.Results.plotSymbolName && durations(k) > plotSymbolNameMinLength)
+%                     
+%                     yText = ymin + (ymax - ymin) * 0.25;
+%                     symbolText = uniqueSymbols{j};
+%                     symbolText = strrep(symbolText, '{', '\{');
+%                     symbolText = strrep(symbolText, '}', '\}');
+%                     
+%                     if(~p.Results.plotSymbolDuration)
+%                         
+%                         symbRepText = symbolText;
+%                         
+%                     else
+%                         
+%                         symbRepText = ['\begin{tabular}{c} ', symbolText, '\\', num2str(durations(k)), ' \end{tabular}'];
+%                         
+%                     end
+% 
+%                     xSymbol = xTime(startInds(k) + round(durations(k) / 2));
+%                     
+%                     text(out(i), xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+%                 
+%                 end
+%                 
+%             end
+%             
+%         end
+%         
+%         uistack(ph(i), 'top');
+%         set(out(i), 'Layer', 'top')
+%         
+%     end
+%     
+% end
 
-uniqueSymbols = unique(allSymbols);
-nSymbols = numel(uniqueSymbols);
-symbolColors = distinguishable_colors(nSymbols, {'w', get(ph(1), 'Color')});
-alphCol = 0.3;
-
-for i = 1 : numel(out)
-    
-    hold(out(i), 'on');
-    
-    ymin = min(min(ph(i).YData), -1);
-    ymax = max(max(ph(i).YData), 1);
-    
-    if~isempty(inputObject.symbReps{i})
-        
-        for j = 1 : nSymbols
-            
-            [startInds, durations] = inputObject.symbReps{i}.findSymbol(uniqueSymbols{j});
-            
-            for k = 1 : numel(startInds)
-                
-                xStart = xTime(startInds(k));
-                xEnd = xTime(startInds(k) + durations(k) - 1);
-                
-                fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', out(i));
-                
-                if(p.Results.plotSymbolName && durations(k) > plotSymbolNameMinLength)
-                    
-                    yText = ymin + (ymax - ymin) * 0.25;
-                    symbolText = uniqueSymbols{j};
-                    symbolText = strrep(symbolText, '{', '\{');
-                    symbolText = strrep(symbolText, '}', '\}');
-                    
-                    if(~p.Results.plotSymbolDuration)
-                        
-                        symbRepText = symbolText;
-                        
-                    else
-                        
-                        symbRepText = ['\begin{tabular}{c} ', symbolText, '\\', num2str(durations(k)), ' \end{tabular}'];
-                        
-                    end
-
-                    xSymbol = xTime(startInds(k) + round(durations(k) / 2));
-                    
-                    text(out(i), xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
-                
-                end
-                
-            end
-            
-        end
-        
-        uistack(ph(i), 'top');
-        set(out(i), 'Layer', 'top')
-        
-    end
-    
-end
+% for i=1:numel(ph)
+%         uistack(ph(i), 'top');
+%         set(out(i), 'Layer', 'top');
+% end
 
 %% Plot Events
 eventKeys = keys(inputObject.tsEvents);

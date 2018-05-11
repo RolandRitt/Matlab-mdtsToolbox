@@ -69,7 +69,7 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             returns1 = mdtsObject(time1, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             returns2 = mdtsObject(time2, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             returns3 = mdtsObject(time3, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
-            
+            returns4 = mdtsObject(time1, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents);
             input1.object = returns0;
             input1.tag = 'Channel 1';
             alphabet1 = {'a', 'b'};
@@ -99,6 +99,11 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             returns0 = returns0.addSymbRepToChannel(returns0.getTagIndices(input3.tag), symbObj3);
             returns0 = returns0.addSymbRepToChannel(returns0.getTagIndices(input4.tag), symbObj4);
             
+             returns4 = returns4.addSymbRepToChannel(returns4.getTagIndices(input1.tag), symbObj1);
+             returns4 = returns4.addSymbRepToChannel(returns4.getTagIndices(input2.tag), symbObj2);
+            returns4 = returns4.addSymbRepToChannel(returns4.getTagIndices(input3.tag), symbObj3);
+             returns4 = returns4.addSymbRepToChannel(returns4.getTagIndices(input4.tag), symbObj4);
+             
             [~, ~, ~] = plotmdtsObject(returns0, 'plotSymbolName', true, 'plotSymbolDuration', true);
             
             [~, ~, ~] = plotmdtsObject(returns1, 'plotSymbolName', true, 'plotSymbolDuration', true);
@@ -106,7 +111,13 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             [~, ~, ~] = plotmdtsObject(returns2, 'plotSymbolName', true, 'plotSymbolDuration', true);
             
             [~, ~, ~] = plotmdtsObject(returns3, 'plotSymbolName', true, 'plotSymbolDuration', true);
+            [~, ~, ~] = plotmdtsObject(returns4, 'plotSymbolName', true, 'plotSymbolDuration', true);
+       
             
+%             [~, ~, ~] = plotmdtsObject(returns5, 'plotSymbolName', true, 'plotSymbolDuration', true);
+%             
+            
+%       
             %[~, ~, ~] = plotmdtsObject(returns, 'bUseDateTime', false);
             
             %[~, ~, ~] = plotmdtsObject(returns, 'bUseTimeRelative', true);
