@@ -670,6 +670,75 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.symbReps{3}.durations, expectedReturn3.durations);
             testCase.verifyEqual(returns.symbReps{3}.symbols, expectedReturn3.symbols);
             
+            testCase.verifyError(@()returns.addSymbRepToChannel(2, 'test1'), 'addSymbRepToChannel:NotASymbRepObject');
+            testCase.verifyError(@()returns.addSymbRepToChannel('abc', symbObj1), 'addSymbRepToChannel:InvalidChannelNumber');
+            
+        end        
+        
+        function testAddSymbRepToAllChannels(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 6 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 7 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 8 * seconds(ts)))];
+            data = [1, 8, -1, 5;
+                    2, 6, 1, 5;
+                    3, 7, 1, 5;
+                    3, 5, 1, 5;
+                    3, 1, 1, 5;
+                    2, 1, 2, 5;
+                    1, 1, 2, 5;
+                    1, 1, 2, 5;
+                    3, 1, 2, 5];
+            tags = {'Channel 1', 'Channel2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffs'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            symbReps = cell(1, numel(tags));
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            
+            durations1 = [4; 5];
+            symbols1 = categorical({'a'; 'b'}, {'a'; 'b'});
+            symbObj1 = SymbRepObject(durations1, symbols1);
+            
+            durations2 = [4; 5];
+            symbols2 = categorical({'a'; 'b'}, {'a'; 'b'});
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            
+            returns.addSymbRepToChannel(2, symbObj1);
+            returns.addSymbRepToChannel(4, symbObj2);
+            
+            returns.addSymbRepToAllChannels(symbObj1);
+            
+            retSymbObj1a = returns.symbReps{2};
+            retSymbObj1b = returns.symbReps{4};
+            retSymbObj2a = returns.symbReps{1};
+            retSymbObj2b = returns.symbReps{3};
+            
+            testCase.verifyEqual(retSymbObj1a.durations, durations1);
+            testCase.verifyEqual(retSymbObj1a.symbols, symbols1);
+            testCase.verifyEqual(retSymbObj1b.durations, durations1);
+            testCase.verifyEqual(retSymbObj1b.symbols, symbols1);
+            testCase.verifyEqual(retSymbObj2a.durations, durations2);
+            testCase.verifyEqual(retSymbObj2a.symbols, symbols2);
+            testCase.verifyEqual(retSymbObj2b.durations, durations2);
+            testCase.verifyEqual(retSymbObj2b.symbols, symbols2);
+            
+            testCase.verifyError(@()returns.addSymbRepToAllChannels('test1'), 'addSymbRepToAllChannels:NotASymbRepObject');
+            
         end        
         
         function testAddSegments(testCase)

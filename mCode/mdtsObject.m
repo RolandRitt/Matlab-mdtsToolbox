@@ -406,6 +406,33 @@ classdef mdtsObject < mdtsCoreObject
             
         end
         
+        function obj = addSymbRepToAllChannels(obj, symbObj)
+            % Purpose : Add symbolic representation to all channels which
+            % do not have a symbolic representation assigned
+            %
+            % Syntax :
+            %   mdtsCoreObject = mdtsObject.addSymbRepToAllChannels(symbObj)
+            %
+            % Input Parameters :
+            %   symbObj : symbolicObject with the corresponding symbolic
+            %   representation
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added symbolic
+            %   representations
+            
+            if~isa(symbObj, 'SymbRepObject')
+                
+                errID = 'addSymbRepToAllChannels:NotASymbRepObject';
+                errMsg = 'The input symbObj must be of class SymbRepObject!';
+                error(errID, errMsg);
+                
+            end
+                                   
+            obj = addSymbRepToAllChannels@mdtsCoreObject(obj, symbObj);
+            
+        end
+        
         function obj = addSegments(obj, segmentsObj)
             % Purpose : Add segmentsObject to mdtsObject
             %
