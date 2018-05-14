@@ -716,6 +716,64 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testAddSymbRepToAllChannels(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 25, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 30, 14, 3, 3, 123));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 5, 14, 3, 3, 123));
+                    datenum(datetime(2017, 8, 15, 14, 3, 3, 123));
+                    datenum(datetime(2017, 9, 5, 14, 3, 3, 123))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3;
+                    4, 3, 2, 1;
+                    5, 4, 3, 2];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            tsEvents = containers.Map;
+            symbReps = cell(1, numel(tags));
+            nTimestamps = numel(time);
+            segments = segmentsObject(nTimestamps);
+                      
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            
+            durations1 = [4; 5];
+            symbols1 = categorical({'a'; 'b'}, {'a'; 'b'});
+            symbObj1 = SymbRepObject(durations1, symbols1);
+            
+            durations2 = [4; 5];
+            symbols2 = categorical({'a'; 'b'}, {'a'; 'b'});
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            
+            returns.addSymbRepToChannel(2, symbObj1);
+            returns.addSymbRepToChannel(4, symbObj2);
+            
+            returns.addSymbRepToAllChannels(symbObj1);
+            
+            retSymbObj1a = returns.symbReps{2};
+            retSymbObj1b = returns.symbReps{4};
+            retSymbObj2a = returns.symbReps{1};
+            retSymbObj2b = returns.symbReps{3};
+            
+            testCase.verifyEqual(retSymbObj1a.durations, durations1);
+            testCase.verifyEqual(retSymbObj1a.symbols, symbols1);
+            testCase.verifyEqual(retSymbObj1b.durations, durations1);
+            testCase.verifyEqual(retSymbObj1b.symbols, symbols1);
+            testCase.verifyEqual(retSymbObj2a.durations, durations2);
+            testCase.verifyEqual(retSymbObj2a.symbols, symbols2);
+            testCase.verifyEqual(retSymbObj2b.durations, durations2);
+            testCase.verifyEqual(retSymbObj2b.symbols, symbols2);
+            
+        end
+        
         function testAddSegments(testCase)
             
             ts = duration(0, 0, 0, 50);

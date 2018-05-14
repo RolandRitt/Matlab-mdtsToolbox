@@ -546,6 +546,31 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             
         end
         
+        function obj = addSymbRepToAllChannels(obj, symbObj)
+            % Purpose : Add symbolic representation to all channels which
+            % do not have a symbolic representation assigned
+            %
+            % Syntax :
+            %   mdtsCoreObject = mdtsCoreObject.addSymbRepToAllChannels(symbObj)
+            %
+            % Input Parameters :
+            %   symbObj : symbolicObject with the corresponding symbolic
+            %   representation
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added symbolic
+            %   representations
+            
+            nonEmtpySymbReps = find(cellfun(@isempty, obj.symbReps));
+            
+            for i = nonEmtpySymbReps
+            
+                obj.symbReps{i} = symbObj;
+            
+            end
+            
+        end
+        
         function obj = addSegments(obj, segmentsObj)
             % Purpose : Add segmentsObject to mdtsCoreObject
             %
