@@ -47,10 +47,6 @@ if (isValidInput(input) == 1)
     tag1 = input.tag;
     vector1 = object1.data(:, object1.getTagIndices(tag1));
     
-elseif(isValidInput(input) == 2)
-    
-    vector1 = input;
-    
 else
     
     errID = 'computeFind:IllegalInputFormat';
