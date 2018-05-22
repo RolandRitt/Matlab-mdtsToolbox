@@ -40,12 +40,11 @@ addParameter(p, 'bUseTimeRelative', false, @islogical);
 addParameter(p, 'plotSymbolName', false, @islogical);
 addParameter(p, 'plotSymbolDuration', false, @islogical);
 addParameter(p, 'plotSymbolNameMinLengthRelative', 0.05, @isnumeric);
+addParameter(p, 'figureH', [], @(x) isgraphics(x,'figure'));
 parse(p, inputObject, varargin{:});
 tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
 UnmatchedArgs = reshape(tmp',[],1)';
 
-bDatetime = p.Results.bUseDatetime;
-bTimeRelative = p.Results.bUseTimeRelative;
 plotSymbolNameMinLength = numel(inputObject.time) * p.Results.plotSymbolNameMinLengthRelative;
 
 %% Interpret options
@@ -82,9 +81,22 @@ xTime = inputObject.timeInFormat;
 
 %% Plot data
 
-figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
-
-fM = FigureManager;
+if isempty(p.Results.figureH)
+    figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
+    set(figH,'defaultLegendAutoUpdate','off'); %prevent outo updating legend;
+    fM = FigureManager;
+else
+    figH = p.Results.figureH;
+    if isempty(figH.UserData)
+        fM = FigureManager(figH);
+    else
+        fM = figH.UserData;
+    end
+end
+% 
+% figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
+% 
+% fM = FigureManager;
 
 [out, ph] = plotMulti(xTime, inputObject.data, 'time', inputObject.tags,'yLabelsLatex',false, UnmatchedArgs{:});
 
@@ -93,6 +105,9 @@ fM.shouldAdd = false; %% otherwise it is too slow!!!
 title(out(1), inputObject.name, 'Interpreter', 'none');
 
 %% Plot Symbolic Representation
+
+% gObjArr = plotSymRepObjectOnAllAxes(out, inputObject.symbReps{1}, xTime, p.Results.plotSymbolName, p.Results.plotSymbolDuration, plotSymbolNameMinLength, get(ph(1), 'Color'));
+
 gObjArr = plotSymRepObjectOnAxes(out, inputObject.symbReps, xTime, p.Results.plotSymbolName, p.Results.plotSymbolDuration, plotSymbolNameMinLength, get(ph(1), 'Color'));
  for i=1:numel(ph)
          uistack(ph(i), 'top');
