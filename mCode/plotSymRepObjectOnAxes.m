@@ -42,8 +42,8 @@ function gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, plotSymbol
 %
 %%
 
-% if ~isa(SymbRepObj, 'SymbRepObject')
-%     error('the second input argument must be a SymbRepObject');
+% if ~isHierarchicalSymRep(SymbRepObj)
+%     error('the second input argument must be a HierarchicalSymRep (cell of SymbRepObjects). See function isHierarchicalSymRep');
 % end
 
 allSymbols = {};
@@ -52,6 +52,9 @@ for i = 1 : numel(SymbRepObj)
     
     if~isempty(SymbRepObj{i})
         
+            if ~isa(SymbRepObj{i}, 'SymbRepObject')
+                error('the second input argument must be a SymbRepObject. See function isHierarchicalSymRep');
+            end
         addSymbols = categories(SymbRepObj{i}.symbols);
         allSymbols = [allSymbols; addSymbols];
         
