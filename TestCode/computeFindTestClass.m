@@ -132,11 +132,20 @@ classdef computeFindTestClass < matlab.unittest.TestCase
             value1 = 5;
             preAppliedFunction1 = 'abs';
             
+            input2.object = returnObject;
+            input2.tag = tags{1};            
+            operator2 = '>';
+            value2 = 5;
+            preAppliedFunction2 = [];
+            
             expectedReturn1 = abs(data(:, 2)) > value1;
+            expectedReturn2 = abs(data(:, 1)) > value2;
             
             output1 = computeFind(operator1, input1, value1, preAppliedFunction1);
+            output2 = computeFind(operator2, input2, value2, preAppliedFunction2);
             
             testCase.verifyEqual(output1, expectedReturn1);  
+            testCase.verifyEqual(output2, expectedReturn2);  
             
             testCase.verifyError(@()computeFind(operator1, input1, value1, 123), 'computeFind:IllegalPreAppliedFunctionFormat'); 
             testCase.verifyError(@()computeFind(operator1, input1, value1, 'test'), 'computeFind:InvalidPreAppliedFunction'); 

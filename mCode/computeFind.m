@@ -18,8 +18,9 @@ function conformElements = computeFind(operator, input, value, preAppliedFunctio
 %   value : reference value for the condition
 %
 %   preAppliedFunction : Function which is applied on the data vector
-%   before the condition is evaluated (optional input). Available options:
-%   abs (absolute value)
+%   before the condition is evaluated (optional input). Can be given as
+%   empty vector in case no function has to be pre-applied. Available
+%   options: abs (absolute value)
 %
 % Return Parameters :
 %   conformElements : logical array which indicates the elements of 'input'
@@ -73,9 +74,17 @@ end
 
 if (nargin > 3 && ~isa(preAppliedFunction, 'char'))
     
-    errID = 'computeFind:IllegalPreAppliedFunctionFormat';
-    errMsg = 'Illegal format of the input preAppliedFunction! preAppliedFunction must be a character vector (string)!';
-    error(errID, errMsg);
+    if(isempty(preAppliedFunction))
+        
+        preAppliedFunction = 'NoPreAppliedFunction';
+        
+    else
+        
+        errID = 'computeFind:IllegalPreAppliedFunctionFormat';
+        errMsg = 'Illegal format of the input preAppliedFunction! preAppliedFunction must be a character vector (string)!';
+        error(errID, errMsg);
+        
+    end
     
 end
 
@@ -86,6 +95,8 @@ if(nargin > 3)
     switch preAppliedFunction
         case 'abs'
             vector1 = abs(vector1);
+        case 'NoPreAppliedFunction'
+            % Do nothing
         otherwise
             errID = 'computeFind:InvalidPreAppliedFunction';
             errMsg = 'Invalid PreAppliedFunction!';
