@@ -1,10 +1,11 @@
-function conformElements = computeFind(operator, input, value)
+function conformElements = computeFind(operator, input, value, preAppliedFunction)
 % boolean operations, segmentation
 %
 % Purpose : find all elements of an input which fulfil a condition
 %
 % Syntax :
 %   conformElements = computeFind(operator, input, value)
+%   conformElements = computeFind(operator, input, value, preAppliedFunction)
 %
 % Input Parameters :
 %   operator : condition operator as string. Available options: >, <, ==,
@@ -16,13 +17,19 @@ function conformElements = computeFind(operator, input, value)
 %
 %   value : reference value for the condition
 %
+%   preAppliedFunction : Function which is applied on the data vector
+%   before the condition is evaluated (optional input). Available options:
+%   abs (absolute value)
+%
 % Return Parameters :
 %   conformElements : logical array which indicates the elements of 'input'
 %   which fulfil the condition
 %
 % Description : 
 %   Finds all elements of 'input' which fulfil the condition according to the
-%   operator and the value.
+%   operator and the value. If the input 'preAppliedFunction' is specified,
+%   the specified function will be applied on the data vector, before the
+%   condition is evaluated.
 %
 % Author : 
 %   Paul O'Leary
@@ -64,7 +71,29 @@ if ~(isa(value, 'numeric') && ...
     
 end
 
-%% Compute
+if (nargin > 3 && ~isa(preAppliedFunction, 'char'))
+    
+    errID = 'computeFind:IllegalPreAppliedFunctionFormat';
+    errMsg = 'Illegal format of the input preAppliedFunction! preAppliedFunction must be a character vector (string)!';
+    error(errID, errMsg);
+    
+end
+
+%% Apply Function on Input
+
+if(nargin > 3)
+    
+    switch preAppliedFunction
+        case 'abs'
+            vector1 = abs(vector1);
+        otherwise
+            errID = 'computeFind:InvalidPreAppliedFunction';
+            errMsg = 'Invalid PreAppliedFunction!';
+            error(errID, errMsg);
+    end
+end
+
+%% Evaluate Condition
 
 switch operator
     case '>'

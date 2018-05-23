@@ -109,6 +109,40 @@ classdef computeFindTestClass < matlab.unittest.TestCase
             testCase.verifyError(@()computeFind(operator0, input0, value1), 'computeFind:IllegalValueFormat'); 
             
         end
+        
+        function testPreAppliedFunction(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, -8;
+                    7, 6;
+                    8, -7;
+                    6, 5];
+            tags = {'Channel 1', 'Channel 2'};
+            units = {'s', 'min'};
+            
+            returnObject = mdtsObject(time, data, tags, 'units', units, 'ts', ts);
+            
+            input1.object = returnObject;
+            input1.tag = tags{2};            
+            operator1 = '>';
+            value1 = 5;
+            preAppliedFunction1 = 'abs';
+            
+            expectedReturn1 = abs(data(:, 2)) > value1;
+            
+            output1 = computeFind(operator1, input1, value1, preAppliedFunction1);
+            
+            testCase.verifyEqual(output1, expectedReturn1);  
+            
+            testCase.verifyError(@()computeFind(operator1, input1, value1, 123), 'computeFind:IllegalPreAppliedFunctionFormat'); 
+            testCase.verifyError(@()computeFind(operator1, input1, value1, 'test'), 'computeFind:InvalidPreAppliedFunction'); 
+            
+        end
+        
     end
     
 end
