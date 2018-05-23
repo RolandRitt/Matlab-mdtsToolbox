@@ -74,7 +74,7 @@ end
 
 if (nargin > 3 && ~isa(preAppliedFunction, 'char'))
     
-    if(isempty(preAppliedFunction))
+    if(isempty(preAppliedFunction) || isnan(preAppliedFunction))
         
         preAppliedFunction = 'NoPreAppliedFunction';
         
