@@ -406,7 +406,7 @@ classdef mdtsObject < mdtsCoreObject
             
         end
         
-        function obj = addSymbRepToAllChannels(obj, symbObj)
+        function obj = addSymbRepToAllChannels(obj, symbObj, varargin)
             % Purpose : Add symbolic representation to all channels which
             % do not have a symbolic representation assigned
             %
@@ -417,9 +417,21 @@ classdef mdtsObject < mdtsCoreObject
             %   symbObj : symbolicObject with the corresponding symbolic
             %   representation
             %
+            %   keepExistentSymbReps : Flag to indicate if existent
+            %   symbolic representations in the mdtsObject shall be
+            %   preserved. All existen symbolic representations are
+            %   overwritten when false and preserved when true.
+            %
             % Return Parameters :
             %   mdtsObject : Original object with the added symbolic
             %   representations
+            
+            p = inputParser;
+            defaultKeepExistentSymbReps = false;
+            addParameter(p, 'keepExistentSymbReps', defaultKeepExistentSymbReps, @(x)validateattributes(x, {'logical'}, {'nonempty'}));
+            parse(p, varargin{:});
+            
+            keepExistentSymbReps = p.Results.keepExistentSymbReps;
             
             if~isa(symbObj, 'SymbRepObject')
                 
@@ -429,7 +441,7 @@ classdef mdtsObject < mdtsCoreObject
                 
             end
                                    
-            obj = addSymbRepToAllChannels@mdtsCoreObject(obj, symbObj);
+            obj = addSymbRepToAllChannels@mdtsCoreObject(obj, symbObj, keepExistentSymbReps);
             
         end
         

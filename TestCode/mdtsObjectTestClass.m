@@ -708,36 +708,63 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map('key1', eventInfo);
             symbReps = cell(1, numel(tags));
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns1 = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns2 = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
             durations1 = [4; 5];
             symbols1 = categorical({'a'; 'b'}, {'a'; 'b'});
             symbObj1 = SymbRepObject(durations1, symbols1);
             
-            durations2 = [4; 5];
-            symbols2 = categorical({'a'; 'b'}, {'a'; 'b'});
+            durations2 = [8; 1];
+            symbols2 = categorical({'c'; 'd'}, {'c'; 'd'});
             symbObj2 = SymbRepObject(durations2, symbols2);
             
-            returns.addSymbRepToChannel(2, symbObj1);
-            returns.addSymbRepToChannel(4, symbObj2);
+            durations3 = [3; 6];
+            symbols3 = categorical({'e'; 'f'}, {'e'; 'f'});
+            symbObj3 = SymbRepObject(durations3, symbols3);
             
-            returns.addSymbRepToAllChannels(symbObj1);
+            keepExistentSymbReps1 = true;
+            keepExistentSymbReps2 = false;
             
-            retSymbObj1a = returns.symbReps{2};
-            retSymbObj1b = returns.symbReps{4};
-            retSymbObj2a = returns.symbReps{1};
-            retSymbObj2b = returns.symbReps{3};
+            returns1.addSymbRepToChannel(2, symbObj1);
+            returns1.addSymbRepToChannel(4, symbObj2);
+            
+            returns1.addSymbRepToAllChannels(symbObj3, 'keepExistentSymbReps', keepExistentSymbReps1);                       
+            
+            retSymbObj1a = returns1.symbReps{2};
+            retSymbObj1b = returns1.symbReps{4};
+            retSymbObj2a = returns1.symbReps{1};
+            retSymbObj2b = returns1.symbReps{3};
+            
+            returns2.addSymbRepToChannel(2, symbObj1);
+            returns2.addSymbRepToChannel(4, symbObj2);
+            
+            returns2.addSymbRepToAllChannels(symbObj3, 'keepExistentSymbReps', keepExistentSymbReps2);
+            
+            retSymbObj3a = returns2.symbReps{1};
+            retSymbObj3b = returns2.symbReps{2};
+            retSymbObj3c = returns2.symbReps{3};
+            retSymbObj3d = returns2.symbReps{4};
             
             testCase.verifyEqual(retSymbObj1a.durations, durations1);
             testCase.verifyEqual(retSymbObj1a.symbols, symbols1);
-            testCase.verifyEqual(retSymbObj1b.durations, durations1);
-            testCase.verifyEqual(retSymbObj1b.symbols, symbols1);
-            testCase.verifyEqual(retSymbObj2a.durations, durations2);
-            testCase.verifyEqual(retSymbObj2a.symbols, symbols2);
-            testCase.verifyEqual(retSymbObj2b.durations, durations2);
-            testCase.verifyEqual(retSymbObj2b.symbols, symbols2);
+            testCase.verifyEqual(retSymbObj1b.durations, durations2);
+            testCase.verifyEqual(retSymbObj1b.symbols, symbols2);
+            testCase.verifyEqual(retSymbObj2a.durations, durations3);
+            testCase.verifyEqual(retSymbObj2a.symbols, symbols3);
+            testCase.verifyEqual(retSymbObj2b.durations, durations3);
+            testCase.verifyEqual(retSymbObj2b.symbols, symbols3);
             
-            testCase.verifyError(@()returns.addSymbRepToAllChannels('test1'), 'addSymbRepToAllChannels:NotASymbRepObject');
+            testCase.verifyEqual(retSymbObj3a.durations, durations3);
+            testCase.verifyEqual(retSymbObj3a.symbols, symbols3);
+            testCase.verifyEqual(retSymbObj3b.durations, durations3);
+            testCase.verifyEqual(retSymbObj3b.symbols, symbols3);
+            testCase.verifyEqual(retSymbObj3c.durations, durations3);
+            testCase.verifyEqual(retSymbObj3c.symbols, symbols3);
+            testCase.verifyEqual(retSymbObj3d.durations, durations3);
+            testCase.verifyEqual(retSymbObj3d.symbols, symbols3);
+            
+            testCase.verifyError(@()returns1.addSymbRepToAllChannels('test1'), 'addSymbRepToAllChannels:NotASymbRepObject');
             
         end        
         
