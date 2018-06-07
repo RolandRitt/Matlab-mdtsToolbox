@@ -95,42 +95,70 @@ end
 for j = 1 : nSymbols
     
     [startInds, durations] = SymbRepObj.findSymbol(allSymbols{j});
+    if isempty(startInds)
+        continue;
+    end
+    if isdatetime(xTime(1))
+        XStart = NaT(4,numel(startInds));
+    else
+        XStart = nam(4,numel(startInds));
+    end
     
     for k = 1 : numel(startInds)
         
         xStart = xTime(startInds(k));
         xEnd = xTime(startInds(k) + durations(k) - 1);
-        %                  evInds = [xStart, xEnd];
-        %                 visuRanges([startInds(k), startInds(k) + durations(k) - 1], gObjArr, xTime, symbolColors(j,:));
-        
-        for i=1:nAxes
-            pa = fill([xStart, xEnd, xEnd, xStart], [ymin(i), ymin(i), ymax(i), ymax(i)], symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', gObjArr(i));
-            if bishggroup
-                set(pa, 'Parent', gObjArr(i));
-            end
-            if(plotSymbolName && durations(k) > plotSymbolNameMinLength)
+        XStart(:,k) = [xStart, xEnd, xEnd, xStart];
 
-                yText = ymin + (ymax - ymin) * 0.25;
+        for i=1:nAxes
+
+        end
+        
+    end
+    
+
+    
+    if(plotSymbolName || plotSymbolDuration)
+        bTextPrint = durations > plotSymbolNameMinLength;
+        xSymbol = xTime(startInds(bTextPrint) + round(durations(bTextPrint) ./ 2));
+        
+        if (plotSymbolName)
                 symbolText = allSymbols{j};
                 symbolText = strrep(symbolText, '{', '\{');
                 symbolText = strrep(symbolText, '}', '\}');
-
-                if(~plotSymbolDuration)
-
-                    symbRepText = symbolText;
-
-                else
-
-                    symbRepText = ['\begin{tabular}{c} ', symbolText, '\\', num2str(durations(k)), ' \end{tabular}'];
-
-                end
-
-                xSymbol = xTime(startInds(k) + round(durations(k) / 2));
-
-                text(axes_in(i), xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
-
-            end
+        end
+        if (plotSymbolDuration&&plotSymbolName)
+            symbRepText = cellstr(strcat('\begin{tabular}{c} ', symbolText, '\\', num2str(durations(bTextPrint)), ' \end{tabular}'));
+        elseif(plotSymbolDuration)
+            symbRepText = cellstr(num2str(durations(bTextPrint)));
+        elseif(plotSymbolName)
+            symbRepText = symbolText;
+        end
+%         
+%         if(~plotSymbolDuration)
+%             
+%             symbRepText = symbolText;
+%         else
+%             symbRepText = cellstr(strcat('\begin{tabular}{c} ', symbolText, '\\', num2str(durations(bTextPrint)), ' \end{tabular}'));
+%         end
+    end
+    
+    
+    for i=1:nAxes
+        pa = fill(XStart, [ymin(i), ymin(i), ymax(i), ymax(i)]',...
+            symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', gObjArr(i));
         
+        if plotSymbolName||plotSymbolDuration
+            yText = (ymin(i) + (ymax(i) - ymin(i)) * 0.25) * ones(size(xSymbol));
+            
+            tHandle = text(tempAx{i}, xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+            if bishggroup
+                set(tHandle, 'Parent', gObjArr(i));
+            end
+        end
+        
+        if bishggroup
+                set(pa, 'Parent', gObjArr(i));  
         end
         
     end
