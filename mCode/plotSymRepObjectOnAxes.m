@@ -67,16 +67,20 @@ nSymbols = numel(uniqueSymbols);
 symbolColors = distinguishable_colors(nSymbols, {'w', colorDismiss});
 alphCol = 0.3;
 
-nAxes = numel(axes_in);
-gObjArr = gobjects(nAxes,1);
-for j = 1:nAxes
-    gObjArr(j)   = hggroup(axes_in(j));
-end
 
+    
+nAxes = numel(axes_in);
+% 
+% gObjArr = gobjects(nAxes,1);
+% for j = 1:nAxes
+%     gObjArr(j)   = hggroup(axes_in(j));
+% end
+gObjArr = axes_in;
 
 for i = 1 : nAxes
     if  isa( gObjArr(i), 'matlab.graphics.axis.Axes')
         tempAx = gObjArr(i);
+        bishggroup = false;
     elseif ishghandle(gObjArr(i))
         bishggroup = true;
         tempAx = ancestor(gObjArr(i), {'axes'});
