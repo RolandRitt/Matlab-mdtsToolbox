@@ -43,7 +43,7 @@ function gObjArr = plotSymRepObjectOnAllAxes(axes_in, SymbRepObj, xTime, varargi
 %%
 p = inputParser();
 p.KeepUnmatched=true;
-addRequired(p, 'axes_in', @(x) isa(x, 'matlab.graphics.axis.Axes')||ishghandle(x)); %check if input is axes or handle object
+addRequired(p, 'axes_in', @(x)isa(x, 'matlab.graphics.axis.Axes')|| all(ishghandle(x))); %check if input is axes or handle object
 addRequired(p, 'SymbRepObj', @(x) isa(x, 'SymbRepObject')); %check if input is SymbRepObject
 addRequired(p, 'xTime', @(x) isdatetime(x)|| isreal(x)); %check if input is SymbRepObject
 addParameter(p, 'plotSymbolName', false, @islogical);
