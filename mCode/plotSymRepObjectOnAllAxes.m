@@ -1,4 +1,5 @@
-function gObjArr = plotSymRepObjectOnAllAxes(axes_in, SymbRepObj, xTime, plotSymbolName, plotSymbolDuration, plotSymbolNameMinLength, colorDismiss)
+function gObjArr = plotSymRepObjectOnAllAxes(axes_in, SymbRepObj, xTime, varargin)
+% plotSymbolName, plotSymbolDuration, plotSymbolNameMinLength, colorDismiss)
 % This function plots the symbolic representation onto given axes (using
 % shaded patches).
 %
@@ -41,6 +42,28 @@ function gObjArr = plotSymRepObjectOnAllAxes(axes_in, SymbRepObj, xTime, plotSym
 % --------------------------------------------------
 %
 %%
+p = inputParser();
+p.KeepUnmatched=true;
+addRequired(p, 'axes_in', @(x) isa(x, 'matlab.graphics.axis.Axes')||ishghandle(x)); %check if input is axes or handle object
+addRequired(p, 'SymbRepObj', @(x) isa(x, 'SymbRepObject')); %check if input is SymbRepObject
+addRequired(p, 'xTime', @(x) isdatetime(x)|| isreal(x)); %check if input is SymbRepObject
+addParameter(p, 'plotSymbolName', false, @islogical);
+addParameter(p, 'plotSymbolDuration', false, @islogical);
+addParameter(p, 'plotSymbolNameMinLength', 0, @(x)isreal(x)&& isequal(size(x),[1,1]));
+addParameter(p, 'colorDismiss', [], @(x)(isreal(x)&& isequal(size(x),[1,3]))|| ischar(x));
+
+parse(p, axes_in, SymbRepObj, xTime, varargin{:});
+
+tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
+UnmatchedArgs = reshape(tmp',[],1)';
+
+plotSymbolName = p.Results.plotSymbolName;
+plotSymbolNameMinLength = p.Results.plotSymbolNameMinLength;
+plotSymbolDuration = p.Results.plotSymbolDuration;
+xTime = p.Results.xTime;
+SymbRepObj = p.Results.SymbRepObj;
+axes_in = p.Results.axes_in;
+
 
 if ~isa(SymbRepObj, 'SymbRepObject')
     error('the second input argument must be a SymbRepObject');
@@ -50,7 +73,12 @@ end
 allSymbols = categories(SymbRepObj.symbols);
 
 nSymbols = numel(allSymbols);
-symbolColors = distinguishable_colors(nSymbols, {'w', colorDismiss});
+if isempty(p.Results.colorDismiss)
+    symbolColors = distinguishable_colors(nSymbols, {'w'});
+else
+    symbolColors = distinguishable_colors(nSymbols, {'w', p.Results.colorDismiss});
+end
+
 alphCol = 0.3;
 
 nAxes = numel(axes_in);
@@ -146,7 +174,7 @@ for j = 1 : nSymbols
     
     for i=1:nAxes
         pa = fill(XStart, [ymin(i), ymin(i), ymax(i), ymax(i)]',...
-            symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', gObjArr(i));
+            symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', gObjArr(i), UnmatchedArgs{:});
         
         if plotSymbolName||plotSymbolDuration
             yText = (ymin(i) + (ymax(i) - ymin(i)) * 0.25) * ones(size(xSymbol));
