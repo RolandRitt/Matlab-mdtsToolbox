@@ -1,25 +1,24 @@
 function gObjArr = plotSymRepObjectOnAllAxes(axes_in, SymbRepObj, xTime, varargin)
-% plotSymbolName, plotSymbolDuration, plotSymbolNameMinLength, colorDismiss)
 % This function plots the symbolic representation onto given axes (using
 % shaded patches).
 %
 % Purpose :
 %
 % Syntax :
-%   gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, plotSymbolName, plotSymbolDuration, plotSymbolNameMinLength, colorDismiss)
+%   gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, varargin)
 %
 % Input Parameters :
 %   axes_in:= the axes, on which the symbolic representation should be
 %               plotted (they have to be in the same order as the SymbRepObj);
 %   axes_in:= a SymbRepObject;
 %   xTime:= the original time axes where the SymbRepObject refers to;
-%   plotSymbolName:= a boolean indicating if the Symbol name should be
+%   plotSymbolName:= (optional key-value)a boolean indicating if the Symbol name should be
 %                   shown in the plot;
-%   plotSymbolDuration:= a boolean indicating if the Symbol duration should be
+%   plotSymbolDuration:= (optional key-value)a boolean indicating if the Symbol duration should be
 %                   shown in the plot;
-%   plotSymbolNameMinLength:= an integer, symbols with a length less than
+%   plotSymbolNameMinLength:= (optional key-value)an integer, symbols with a length less than
 %   this value are not annotated with symbol name and/or duration;
-%   colorDismiss:= a color string or color triplet which should not be in
+%   colorDismiss:= (optional key-value) a color string or color triplet which should not be in
 %   the colors used for shading the plots
 %
 % Return Parameters :
@@ -65,11 +64,6 @@ SymbRepObj = p.Results.SymbRepObj;
 axes_in = p.Results.axes_in;
 
 
-if ~isa(SymbRepObj, 'SymbRepObject')
-    error('the second input argument must be a SymbRepObject');
-end
-
-
 allSymbols = categories(SymbRepObj.symbols);
 
 nSymbols = numel(allSymbols);
@@ -82,10 +76,6 @@ end
 alphCol = 0.3;
 
 nAxes = numel(axes_in);
-% gObjArr = gobjects(nAxes,1);
-% for j = 1:nAxes
-%     gObjArr(j)   = hggroup(axes_in(j));
-% end
 gObjArr = axes_in;
 
 for i = 1 : nAxes
@@ -113,12 +103,6 @@ for i = 1 : nAxes
     
 end
 
-%     ymin = min(min(ph(i).YData), -1);
-%     ymax = max(max(ph(i).YData), 1);
-
-
-
-
 
 for j = 1 : nSymbols
     
@@ -138,10 +122,7 @@ for j = 1 : nSymbols
         xEnd = xTime(startInds(k) + durations(k) - 1);
         XStart(:,k) = [xStart, xEnd, xEnd, xStart];
 
-        for i=1:nAxes
 
-        end
-        
     end
     
 
@@ -162,13 +143,7 @@ for j = 1 : nSymbols
         elseif(plotSymbolName)
             symbRepText = symbolText;
         end
-%         
-%         if(~plotSymbolDuration)
-%             
-%             symbRepText = symbolText;
-%         else
-%             symbRepText = cellstr(strcat('\begin{tabular}{c} ', symbolText, '\\', num2str(durations(bTextPrint)), ' \end{tabular}'));
-%         end
+
     end
     
     
