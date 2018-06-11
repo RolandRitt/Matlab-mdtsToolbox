@@ -122,7 +122,7 @@ for i = 1 : nAxes
             if isdatetime(xTime(1))
                 XStart = NaT(4,numel(startInds));
             else
-                XStart = nam(4,numel(startInds));
+                XStart = nan(4,numel(startInds));
             end
             
             for k = 1 : numel(startInds)
