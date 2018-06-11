@@ -244,10 +244,13 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbols4 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
             durations5 = [4; 3; 4; 2; 2; 12; 2; 1; 2; 6];
             symbols5 = categorical({'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'}, {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'})';
+            durations6 = [10; 15; 20; 12];
+            symbols6 = categorical({'a', 'b', 'c', 'd'}, {'a', 'b', 'c', 'd'})';
             
             shortSymbolLength1 = 1;
             shortSymbolLength4 = 7;
             shortSymbolLength5 = 3;
+            shortSymbolLength6 = 5;
             maxNumberShortSymbols1 = 5;
             maxNumberShortSymbols2 = 2;
             maxNumberShortSymbols4 = 100;
@@ -264,18 +267,22 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             expectedReturn4.durations = [19; 18; 50; 17; 17; 50; 15];
             expectedReturn5.symbols = categorical({'a', 'c', 'f', 'NotDefined', 'j'}, {'a', 'c', 'f', 'j'})';
             expectedReturn5.durations = [6; 6; 15; 5; 6];
+            expectedReturn6.symbols = categorical({'a', 'b', 'c', 'd'}, {'a', 'b', 'c', 'd'})';
+            expectedReturn6.durations = [10; 15; 20; 12];
                         
             symbObj1 = SymbRepObject(durations1, symbols1); 
             symbObj2 = SymbRepObject(durations2, symbols2);
             symbObj3 = SymbRepObject(durations3, symbols3);
             symbObj4 = SymbRepObject(durations4, symbols4);
             symbObj5 = SymbRepObject(durations5, symbols5);
+            symbObj6 = SymbRepObject(durations6, symbols6);
             
             symbObj1 = symbObj1.removeShortSymbols('shortSymbolLength', shortSymbolLength1, 'maxNumberShortSymbols', maxNumberShortSymbols1);
             symbObj2 = symbObj2.removeShortSymbols('shortSymbolLength', shortSymbolLength1, 'maxNumberShortSymbols', maxNumberShortSymbols1);                       
             symbObj3 = symbObj3.removeShortSymbols('shortSymbolLength', shortSymbolLength1, 'maxNumberShortSymbols', maxNumberShortSymbols2);                       
             symbObj4 = symbObj4.removeShortSymbols('shortSymbolLength', shortSymbolLength4, 'maxNumberShortSymbols', maxNumberShortSymbols4, 'SplittingMode', 'weighted');                       
             symbObj5 = symbObj5.removeShortSymbols('shortSymbolLength', shortSymbolLength5, 'maxNumberShortSymbols', maxNumberShortSymbols5, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength5, 'SplittingMode', 'weighted');                       
+            symbObj6 = symbObj6.removeShortSymbols('shortSymbolLength', shortSymbolLength6);                       
             
             testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
             testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
@@ -287,6 +294,8 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(symbObj4.durations, expectedReturn4.durations);
             testCase.verifyEqual(symbObj5.symbols, expectedReturn5.symbols);
             testCase.verifyEqual(symbObj5.durations, expectedReturn5.durations);
+            testCase.verifyEqual(symbObj6.symbols, expectedReturn6.symbols);
+            testCase.verifyEqual(symbObj6.durations, expectedReturn6.durations);
             
         end
         
