@@ -59,7 +59,7 @@ classdef SymbRepObject
                 
             end
             
-            obj.durations = durations;            
+            obj.durations = durations;
             
         end
         
@@ -136,7 +136,7 @@ classdef SymbRepObject
                 error(errID, errMsg);
                 
             end
-                        
+            
             newSymbols = categorical(obj.symbRepVec, 'Protected', false, 'Ordinal', false);
             symbInd = newSymbols == symbol;
             
@@ -171,7 +171,7 @@ classdef SymbRepObject
             end
             
             nSymbSequence = numel(symbSequence);
-                        
+            
             addedBrackets = cellfun(@(x) ['{', x, '}'], symbSequence, 'UniformOutput', false);
             removedBrackets = cellfun(@(x) strrep(x, '{[', '['), addedBrackets, 'UniformOutput', false);
             removedBrackets = cellfun(@(x) strrep(x, '{(', '('), removedBrackets, 'UniformOutput', false);
@@ -193,7 +193,7 @@ classdef SymbRepObject
             end
             
             sequenceInd = find(indArray) - nSymbSequence + 1;
-            newSequenceCat = categorical(newSequence);            
+            newSequenceCat = categorical(newSequence);
             
             for i = 1 : numel(sequenceInd)
                 
@@ -213,7 +213,7 @@ classdef SymbRepObject
             obj.symbols = removecats(obj.symbols, symbSequence(cats2remove));
             
             completeSymbVec = obj.symbRepVec;
-            numRepr = int32(completeSymbVec);            
+            numRepr = int32(completeSymbVec);
             symbolChange = [true; diff(numRepr) ~= 0];
             obj.symbols = completeSymbVec(symbolChange);
             obj.durations = diff(find([symbolChange; 1]));
@@ -242,8 +242,8 @@ classdef SymbRepObject
                 error(errID, errMsg);
                 
             end
-                
-                obj.symbols = renamecats(obj.symbols, oldSymbol, newSymbol);
+            
+            obj.symbols = renamecats(obj.symbols, oldSymbol, newSymbol);
             
         end
         
@@ -276,7 +276,7 @@ classdef SymbRepObject
                 for i = numel(obj.symbols) : -1 : 2
                     
                     if(isequal(obj.symbols(i), obj.symbols(i - 1)))
-                       
+                        
                         obj.durations(i - 1) = obj.durations(i) + obj.durations(i - 1);
                         
                         obj.durations(i) = [];
@@ -320,19 +320,19 @@ classdef SymbRepObject
                 
             else
                 
-%                 newSymbRepVec = cellstr(obj.symbRepVec);
-%                 newSymbRepVec(range(1) : range(2)) = {newSymbol};
-%                 
-%                 numRepr = grp2idx(newSymbRepVec);
-%                 symbolChange = [true; diff(numRepr) ~= 0];
-%                 compressedSymbols = newSymbRepVec(symbolChange);
-%                 symbolLength = diff(find([symbolChange; 1]));
-%                 
-%                 allCats = unique(compressedSymbols);
-%                 allCats(strcmp(allCats, '<undefined>')) = [];
-%                 obj.symbols = categorical(compressedSymbols, allCats, 'Protected', true);
-%                 obj.durations = symbolLength;
-
+                %                 newSymbRepVec = cellstr(obj.symbRepVec);
+                %                 newSymbRepVec(range(1) : range(2)) = {newSymbol};
+                %
+                %                 numRepr = grp2idx(newSymbRepVec);
+                %                 symbolChange = [true; diff(numRepr) ~= 0];
+                %                 compressedSymbols = newSymbRepVec(symbolChange);
+                %                 symbolLength = diff(find([symbolChange; 1]));
+                %
+                %                 allCats = unique(compressedSymbols);
+                %                 allCats(strcmp(allCats, '<undefined>')) = [];
+                %                 obj.symbols = categorical(compressedSymbols, allCats, 'Protected', true);
+                %                 obj.durations = symbolLength;
+                
                 cumDurations = cumsum(obj.durations);
                 
                 allEnds = cumDurations;
@@ -410,8 +410,8 @@ classdef SymbRepObject
                         firstSymbolPart = obj.symbols(1 : lowerStartInd - 1);
                         firstDurationsPart = obj.durations(1 : lowerStartInd - 1);
                         
-                    end                   
-                                        
+                    end
+                    
                 end
                 
                 if(upperEndInd == numel(allEnds))%allEnds(end))
@@ -433,8 +433,8 @@ classdef SymbRepObject
                         lastSymbolPart = obj.symbols(upperEndInd + 1 : end);
                         lastDurationsPart = obj.durations(upperEndInd + 1 : end);
                         
-                    end                         
-                                        
+                    end
+                    
                 end
                 
                 availableCats = unique([categories(obj.symbols); insertSymbol]);
@@ -444,7 +444,7 @@ classdef SymbRepObject
                 lastSymbolPart = addcats(lastSymbolPart, insertSymbol);
                 obj.symbols = [firstSymbolPart; categorical(completeInsertSymbol, availableCats); lastSymbolPart];
                 obj.durations = [firstDurationsPart; completeInsertDurations; lastDurationsPart];
-                                
+                
             end
             
         end
@@ -528,10 +528,10 @@ classdef SymbRepObject
             tempWildcard = 'NotDefined'; % Wildcard - will be removed from the categorical at the end of the method
             
             for i = 1 : numel(allStartInd)
-                    
+                
                 % Wildcard - will be removed from the categorical at the end of the method
                 % Used for all short and undefined symbols
-                tempSymbol = tempWildcard; 
+                tempSymbol = tempWildcard;
                 
                 if(allStartInd(i) == 1)
                     
@@ -551,7 +551,7 @@ classdef SymbRepObject
                         
                         tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1, 'last')};
                         
-                    end                    
+                    end
                     
                     tempRange = [cumStartInd(allStartInd(end)), cumStartInd(allEndInd(end)) + allDurations(allEndInd(end)) - 1];
                     
@@ -565,7 +565,7 @@ classdef SymbRepObject
                         
                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
                         
-                    elseif(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>')) 
+                    elseif(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>'))
                         
                         tempSymbol = allSymbols{allEndInd(i) + 1};
                         
@@ -586,7 +586,7 @@ classdef SymbRepObject
                         tempRange = [startPoint, endPoint];
                         
                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
-                    
+                        
                     elseif(shortLongSeparation(i))
                         
                         tempSymbol1 = allSymbols{allStartInd(i) - 1};
@@ -702,7 +702,7 @@ classdef SymbRepObject
                 
                 fromInd = find(strcmp(allCat, symbolsString{i}));
                 toInd = find(strcmp(allCat, symbolsString{i + 1}));
-                                
+                
                 symbMarkov(fromInd, toInd) = symbMarkov(fromInd, toInd) + 1;
                 
             end
@@ -717,11 +717,75 @@ classdef SymbRepObject
             % x0^T * P
             
             symbMarkov = symbMarkov';
-
+            
+        end
+        
+        
+        
+        function symbMarkov = genTrigramMatrix(obj, varargin)
+            % Purpose : Generate a markov matrix for all symbolic
+            % combinations
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.genSymbMarkov
+            %   SymbRepObject = SymbRepObject.genSymbMarkov('Absolute',
+            %   true);
+            %
+            % Input Parameters :
+            %   'Absolute' : Set to true if result shall represent the
+            %   absolute number of transitions from one state to another,
+            %   set to false (default) if matrix shall represent transition
+            %   probabilities
+            %
+            % Return Parameters :
+            %   symbMarkov : Markov transition matrix
+            
+            p = inputParser;
+            
+            defaultAbsolute = false;
+            
+            addParameter(p, 'Absolute', defaultAbsolute, @(x)validateattributes(x, {'logical'}, {'size', [1, 1]}));
+            
+            parse(p, varargin{:});
+            
+            abosluteOption = p.Results.Absolute;
+            
+            symbolsString = cellstr(obj.symbols);
+            nSymbols = numel(symbolsString);
+            
+            allCat = categories(obj.symbols);
+            nCat = numel(allCat);
+            %             symbolVec = cellstr(obj.symbols);
+            %             symbolVecString = [symbolVec{:}];
+            
+            symbMarkov = zeros(nCat*nCat, nCat);
+            
+            
+            
+            for i = 1 : nSymbols - 1
+                
+                fromInd = find(strcmp(allCat, symbolsString{i}));
+                toInd = find(strcmp(allCat, symbolsString{i + 1}));
+                
+                symbMarkov(fromInd, toInd) = symbMarkov(fromInd, toInd) + 1;
+                
+            end
+            
+            if(~abosluteOption)
+                
+                symbMarkov = symbMarkov ./ sum(symbMarkov, 2);
+                
+            end
+            
+            % Transpose result, such that x1 = P * x0 instead of x1^T =
+            % x0^T * P
+            
+            symbMarkov = symbMarkov';
+            
         end
         
         function newObj = getTimeInterval(obj, intervalIndices)
-                        
+            
             endInds = cumsum(obj.durations);
             startInds = endInds - obj.durations + 1;
             
@@ -748,7 +812,7 @@ classdef SymbRepObject
                 newSymbols = [firstSymbol; middleSymbols; lastSymbol];
                 newDurations = [firstDuration; middleDurations; lastDuration];
                 
-            end                       
+            end
             
             newObj = SymbRepObject(newDurations, newSymbols);
             
