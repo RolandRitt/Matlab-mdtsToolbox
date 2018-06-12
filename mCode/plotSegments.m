@@ -86,6 +86,10 @@ for i = 1 : numel(starts)
 
 end
 %%
+ for i=1:numel(ph)
+         uistack(ph(i), 'top');
+         set(out(i), 'Layer', 'top');
+ end
 
 fM.shouldAdd = shouldAddold;
 
