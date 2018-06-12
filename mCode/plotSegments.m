@@ -67,12 +67,10 @@ tagNo = find(ismember(segmentsObj.tags, segmentTag));
 starts = segmentsObj.starts{tagNo};
 durations = segmentsObj.durations{tagNo};
 
-for i = 1 : numel(starts)
-    
-    xStart = inputObject.timeInFormat(starts(i));
-    xEnd = inputObject.timeInFormat(starts(i) + durations(i) - 1);
-    
-    for j = 1 : numel(out)
+xStart = inputObject.timeInFormat(starts);
+xEnd = inputObject.timeInFormat(starts + durations - 1);
+XStart = [xStart';xEnd'; xEnd'; xStart'];
+for j = 1 : numel(out)
         
         yLim = out(j).YLim;
         yMin = yLim(1);
@@ -80,11 +78,12 @@ for i = 1 : numel(starts)
         
         hold(out(j), 'on');
         
-        pa = fill(out(j), [xStart, xEnd, xEnd, xStart], [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'r');   
+        pa = fill(out(j), XStart, [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'r');   
     
-    end
-
 end
+
+    
+    %%
 %%
  for i=1:numel(ph)
          uistack(ph(i), 'top');
