@@ -507,6 +507,13 @@ classdef SymbRepObject
             
             cumsumSymb = cumsum(allShortSymbolsInd');
             index  = strfind([allShortSymbolsInd', 0] ~= 0, [true, false]);
+            
+            if isempty(index)
+                
+                return;
+                
+            end
+            
             allNumberShortSymbols = [cumsumSymb(index(1)), diff(cumsumSymb(index))]';
             allEndInd = index';
             allStartInd = allEndInd - allNumberShortSymbols + 1;
