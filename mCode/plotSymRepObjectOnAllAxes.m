@@ -113,7 +113,7 @@ for j = 1 : nSymbols
     
     xStart = xTime(startInds);
     xEnd = xTime(startInds + durations - 1);
-    XStart = [xStart, xEnd, xEnd, xStart];
+    XStart = [xStart, xEnd, xEnd, xStart]';
     
    
     if(plotSymbolName || plotSymbolDuration)
