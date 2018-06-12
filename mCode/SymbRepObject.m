@@ -759,11 +759,9 @@ classdef SymbRepObject
                 ind2 = find(strcmp(allCat, symbolsString{i + 1}));
                 ind3 = find(strcmp(allCat, symbolsString{i + 2}));
                 
-                basicPermutation = sort([ind1, ind2, ind3]);
-                linIndex = sub2ind(size(symbMarkov3D), basicPermutation(1), basicPermutation(2), basicPermutation(3));
+                linIndex = sub2ind(size(symbMarkov3D), ind1, ind2, ind3);
                 
-                increaseCounter = min(i - symbMarkov3D(linIndex) + 2, 3);
-                symbMarkov3D(linIndex) = symbMarkov3D(linIndex) + increaseCounter;
+                symbMarkov3D(linIndex) = symbMarkov3D(linIndex) + 1;
                 
             end
             
