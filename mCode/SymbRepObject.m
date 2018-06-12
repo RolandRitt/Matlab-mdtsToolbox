@@ -697,7 +697,7 @@ classdef SymbRepObject
             %                 end
             %
             %             end
-            
+
             for i = 1 : nSymbols - 1
                 
                 fromInd = find(strcmp(allCat, symbolsString{i}));
@@ -706,7 +706,7 @@ classdef SymbRepObject
                 symbMarkov(fromInd, toInd) = symbMarkov(fromInd, toInd) + 1;
                 
             end
-            
+  
             if(~abosluteOption)
                 
                 symbMarkov = symbMarkov ./ sum(symbMarkov, 2);
@@ -722,9 +722,81 @@ classdef SymbRepObject
         
         
         
-        function symbMarkov = genTrigramMatrix(obj, varargin)
+        function [markovM] = genLengthWeightedMatrix(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
-            % combinations
+            % combinations with weighted length difference
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.genSymbMarkov
+            %   SymbRepObject = SymbRepObject.genSymbMarkov('Absolute',
+            %   true);
+            %
+            % Input Parameters :
+            %   'Absolute' : Set to true if result shall represent the
+            %   absolute number of transitions from one state to another,
+            %   set to false (default) if matrix shall represent transition
+            %   probabilities
+            %
+            % Return Parameters :
+            %   symbMarkov : Markov transition matrix
+            
+            p = inputParser;
+            
+            defaultAbsolute = false;
+            
+            addParameter(p, 'Absolute', defaultAbsolute, @(x)validateattributes(x, {'logical'}, {'size', [1, 1]}));
+            
+            parse(p, varargin{:});
+            
+            abosluteOption = p.Results.Absolute;
+            
+            symbolsString = cellstr(obj.symbols);
+            nSymbols = numel(symbolsString);
+            
+            allCat = categories(obj.symbols);
+            nCat = numel(allCat);
+
+            
+            symbMarkov = zeros(nCat, nCat);
+            symbMarkovLength1 = zeros(nCat, nCat);
+            symbMarkovLength2 = zeros(nCat, nCat);
+            
+
+            
+            for i = 1 : nSymbols - 1
+                
+                fromInd = find(strcmp(allCat, symbolsString{i}));
+                toInd = find(strcmp(allCat, symbolsString{i + 1}));
+                
+                symbMarkov(fromInd, toInd) = symbMarkov(fromInd, toInd) + 1;
+                symbMarkovLength1(fromInd, toInd) = symbMarkovLength1(fromInd, toInd) + obj.durations(i);
+                symbMarkovLength2(fromInd, toInd) = symbMarkovLength2(fromInd, toInd) + obj.durations(i+1);
+            end
+            
+            if(~abosluteOption)
+                
+                symbMarkov = symbMarkov ./ sum(symbMarkov, 2);
+                
+            end
+            
+            % Transpose result, such that x1 = P * x0 instead of x1^T =
+            % x0^T * P
+            
+            symbMarkov = symbMarkov';
+            symbMarkovLength1 = symbMarkovLength1';
+            symbMarkovLength2 = symbMarkovLength2';
+            
+            diffMat = abs( symbMarkovLength1 - symbMarkovLength2)./(symbMarkovLength1 + symbMarkovLength2 -2);
+    
+            markovM = symbMarkov./ diffMat;
+            
+        end
+        
+        
+        
+      function [markovM] = genWeightedMatrixChangedLength(obj, varargin)
+            % Purpose : Generate a markov matrix for all symbolic
+            % combinations with weighted change of length
             %
             % Syntax :
             %   SymbRepObject = SymbRepObject.genSymbMarkov
@@ -758,18 +830,27 @@ classdef SymbRepObject
             %             symbolVec = cellstr(obj.symbols);
             %             symbolVecString = [symbolVec{:}];
             
-            symbMarkov = zeros(nCat*nCat, nCat);
+            symbMarkov = zeros(nCat, nCat);
+            symbMarkovLength1 = zeros(nCat, nCat);
+            symbMarkovLength2 = zeros(nCat, nCat);
+            lengthSyms = zeros(nCat,1);
             
-            
-            
+            %%            
             for i = 1 : nSymbols - 1
                 
                 fromInd = find(strcmp(allCat, symbolsString{i}));
+                lengthSyms(fromInd) = lengthSyms(fromInd) +obj.durations(i);
                 toInd = find(strcmp(allCat, symbolsString{i + 1}));
                 
                 symbMarkov(fromInd, toInd) = symbMarkov(fromInd, toInd) + 1;
-                
+                symbMarkovLength1(fromInd, toInd) = symbMarkovLength1(fromInd, toInd) + obj.durations(i);
+                symbMarkovLength2(fromInd, toInd) = symbMarkovLength2(fromInd, toInd) + obj.durations(i+1);
             end
+            
+            lengthSyms(toInd) =  lengthSyms(toInd) + obj.durations(i+1);
+            symbMarkovLength1 = symbMarkovLength1./lengthSyms;
+            symbMarkovLength2 = symbMarkovLength2./lengthSyms;
+     
             
             if(~abosluteOption)
                 
@@ -781,6 +862,12 @@ classdef SymbRepObject
             % x0^T * P
             
             symbMarkov = symbMarkov';
+            symbMarkovLength1 = symbMarkovLength1';
+            symbMarkovLength2 = symbMarkovLength2';
+            
+
+    
+            markovM = symbMarkov.* symbMarkovLength1.*symbMarkovLength2;
             
         end
         
