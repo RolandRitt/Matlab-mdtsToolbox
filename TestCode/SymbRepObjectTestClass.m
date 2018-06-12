@@ -334,6 +334,22 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testGenTrigramMatrix(testCase)
+            
+            durations1 = [1; 1; 3; 1; 2; 1; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
+            durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
+            symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
+                       
+            symbObj1 = SymbRepObject(durations1, symbols1);
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            
+            output1 = symbObj1.genTrigramMatrix;          
+            
+            %testCase.verifyEqual(output1, expectedReturn1);
+            
+        end
+        
         function testGetTimeInterval(testCase)
             
             durations1 = [10];

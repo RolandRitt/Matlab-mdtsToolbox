@@ -727,7 +727,47 @@ classdef SymbRepObject
             
         end
         
-        
+        function symbMarkov3D = genTrigramMatrix(obj, varargin)
+            % Purpose : Generate a markov matrix for all symbolic
+            % combinations
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.genSymbMarkov
+            %   SymbRepObject = SymbRepObject.genSymbMarkov('Absolute',
+            %   true);
+            %
+            % Input Parameters :
+            %   'Absolute' : Set to true if result shall represent the
+            %   absolute number of transitions from one state to another,
+            %   set to false (default) if matrix shall represent transition
+            %   probabilities
+            %
+            % Return Parameters :
+            %   symbMarkov : Markov transition matrix
+                        
+            symbolsString = cellstr(obj.symbols);
+            nSymbols = numel(symbolsString);
+            
+            allCat = categories(obj.symbols);
+            nCat = numel(allCat);
+            
+            symbMarkov3D = zeros(nCat, nCat, nCat);          
+                        
+            for i = 1 : nSymbols - 2
+                
+                ind1 = find(strcmp(allCat, symbolsString{i}));
+                ind2 = find(strcmp(allCat, symbolsString{i + 1}));
+                ind3 = find(strcmp(allCat, symbolsString{i + 2}));
+                
+                basicPermutation = sort([ind1, ind2, ind3]);
+                linIndex = sub2ind(size(symbMarkov3D), basicPermutation(1), basicPermutation(2), basicPermutation(3));
+                
+                increaseCounter = min(i - symbMarkov3D(linIndex) + 2, 3);
+                symbMarkov3D(linIndex) = symbMarkov3D(linIndex) + increaseCounter;
+                
+            end
+            
+        end
         
         function [markovM] = genLengthWeightedMatrix(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
