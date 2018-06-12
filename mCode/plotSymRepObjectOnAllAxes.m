@@ -110,23 +110,12 @@ for j = 1 : nSymbols
     if isempty(startInds)
         continue;
     end
-    if isdatetime(xTime(1))
-        XStart = NaT(4,numel(startInds));
-    else
-        XStart = nam(4,numel(startInds));
-    end
     
-    for k = 1 : numel(startInds)
-        
-        xStart = xTime(startInds(k));
-        xEnd = xTime(startInds(k) + durations(k) - 1);
-        XStart(:,k) = [xStart, xEnd, xEnd, xStart];
-
-
-    end
+    xStart = xTime(startInds);
+    xEnd = xTime(startInds + durations - 1);
+    XStart = [xStart, xEnd, xEnd, xStart];
     
-
-    
+   
     if(plotSymbolName || plotSymbolDuration)
         bTextPrint = durations > plotSymbolNameMinLength;
         xSymbol = xTime(startInds(bTextPrint) + round(durations(bTextPrint) ./ 2));
