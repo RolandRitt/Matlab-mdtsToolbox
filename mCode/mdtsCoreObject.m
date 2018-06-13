@@ -358,6 +358,31 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
              
         end
         
+        function dataMat = getRawData(obj, varargin)
+            % Purpose : Extract data according to the given inputs
+            %
+            % Syntax :
+            %   dataMat = mdtsCoreObject.getRawData(tagList)
+            %   dataMat = mdtsCoreObject.getRawData(tagList, timeInterval)
+            %
+            % Input Parameters :
+            %   tagList : All tags of the required data subset as cell
+            %   array of strings
+            %
+            %   timeInterval : time interval of the required data subset as
+            %   vector with two elements, where the first element
+            %   represents the start of the interval and the second element
+            %   represents the end of the interval
+            %
+            % Return Parameters :
+            %   dataMat : matrix with the data
+            
+            extractedObject = getData(obj, varargin{:});
+            
+            dataMat = extractedObject.data;
+            
+        end
+        
         function tagIndices = getTagIndices(obj, tagList)
             % Purpose : Return the indices of the given tags
             %

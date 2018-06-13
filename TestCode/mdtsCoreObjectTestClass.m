@@ -345,6 +345,45 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
 
         end
         
+        function testgetRawData(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3];
+            tags = {'Channel 1'; 'Channel 2'; 'Channel 3'; 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            tsEvents = containers.Map;
+            symbReps = cell(1, numel(tags));
+            nTimestamps = numel(time);
+            segments = segmentsObject(nTimestamps);
+            
+            columnsToExtract = [2, 4];
+            rowsToExtract = [2, 3];
+            tagsToExtract = tags(columnsToExtract);
+            timeToExtract = time(rowsToExtract);
+            expectedReturn1 = data(:, columnsToExtract);
+            expectedReturn2 = data(rowsToExtract, columnsToExtract);
+            
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returnMat1 = returns.getRawData(tagsToExtract);
+            returnMat2 = returns.getRawData(tagsToExtract, timeToExtract);
+            
+            testCase.verifyEqual(returnMat1, expectedReturn1);
+            testCase.verifyEqual(returnMat2, expectedReturn2);
+            
+        end
+        
         function testgetTagIndices(testCase)
             
             ts = duration(0, 0, 0, 50);
