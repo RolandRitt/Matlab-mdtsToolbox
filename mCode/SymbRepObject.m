@@ -192,7 +192,18 @@ classdef SymbRepObject
                 
             end
             
-            sequenceInd = find(indArray) - nSymbSequence + 1;
+            allSequenceStarts = find(indArray) - nSymbSequence + 1;
+            symbolLengthClearance = ones(numel(obj.symbols), 1);            
+            for i = 1 : nSymbSequence - 1
+                
+                symbolLengthClearance(allSequenceStarts + i) = false;
+                
+            end            
+            symbolLengthClearance(allSequenceStarts + 1 : allSequenceStarts + nSymbSequence - 1) = false;
+            clearedIndArray = zeros(numel(obj.symbols), 1);
+            clearedIndArray(allSequenceStarts) = true;
+            clearedIndArray = clearedIndArray .* symbolLengthClearance;
+            sequenceInd = find(clearedIndArray);
             newSequenceCat = categorical(newSequence);
             
             for i = 1 : numel(sequenceInd)
