@@ -56,20 +56,34 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
             durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
             symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
+            durations3 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols3 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'c', 'b', 'c', 'a', 'b', 'c'})';
+            durations4 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols4 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'})';
             
             symbSequence1 = {'c', 'b'};
             symbSequence2 = {'x', 'y'};
+            symbSequence3 = {'a', 'b', 'c'};
+            symbSequence4 = {'a', 'b', 'c'};
             
             expectedReturn1.symbols = categorical({'a', 'b', '[{c}{b}]', 'a', '[{c}{b}]'}, {'a', 'b', '[{c}{b}]'})';
             expectedReturn1.durations = [1; 1; 4; 2; 10];
             expectedReturn2.symbols = categorical({'[{x}{y}]', 'z', 'y', 'z', '[{x}{y}]', 'x', 'z'}, {'x', 'y', 'z', '[{x}{y}]'})';
             expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
+            expectedReturn3.symbols = categorical({'[{a}{b}{c}]', 'a', 'c', 'b', 'c', '[{a}{b}{c}]'}, {'a', 'b', 'c', '[{a}{b}{c}]'})';
+            expectedReturn3.durations = [9; 2; 3; 4; 2; 6];
+            expectedReturn4.symbols = categorical({'[{a}{b}{c}]', 'a', 'b', 'a', 'b', '[{a}{b}{c}]'}, {'a', 'b', '[{a}{b}{c}]'})';
+            expectedReturn4.durations = [9; 2; 3; 4; 2; 6];
             
             symbObj1 = SymbRepObject(durations1, symbols1); 
             symbObj2 = SymbRepObject(durations2, symbols2);
+            symbObj3 = SymbRepObject(durations3, symbols3);
+            symbObj4 = SymbRepObject(durations4, symbols4);
             
             symbObj1 = symbObj1.mergeSequence(symbSequence1);
             symbObj2 = symbObj2.mergeSequence(symbSequence2);
+            symbObj3 = symbObj3.mergeSequence(symbSequence3);
+            symbObj4 = symbObj4.mergeSequence(symbSequence4);
             
             testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
             testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
@@ -77,9 +91,15 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
             testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
             testCase.verifyEqual(categories(symbObj2.symbols), categories(expectedReturn2.symbols));
+            testCase.verifyEqual(symbObj3.durations, expectedReturn3.durations);
+            testCase.verifyEqual(symbObj3.symbols, expectedReturn3.symbols);
+            testCase.verifyEqual(categories(symbObj3.symbols), categories(expectedReturn3.symbols));
+            testCase.verifyEqual(symbObj4.durations, expectedReturn4.durations);
+            testCase.verifyEqual(symbObj4.symbols, expectedReturn4.symbols);
+            testCase.verifyEqual(categories(symbObj4.symbols), categories(expectedReturn4.symbols));
             
-            testCase.verifyError(@()symbObj1.mergeSequence({'a', 'b', 'c'}), 'mergeSequence:InvalidInput');
             testCase.verifyError(@()symbObj1.mergeSequence('test1'), 'mergeSequence:InvalidInput');
+            testCase.verifyError(@()symbObj1.mergeSequence({'a', 'b'; 'c', 'd'}), 'mergeSequence:InvalidInput');
             
         end
         

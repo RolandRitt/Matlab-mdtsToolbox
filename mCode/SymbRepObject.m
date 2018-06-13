@@ -152,20 +152,20 @@ classdef SymbRepObject
             % Input Parameters :
             %   symbSequence : Sequence which is supposed to be merged to
             %   one new categorical. Must be given as one dimensional cell
-            %   array of strings with two elements
+            %   array of strings with an arbitrary number of elements
             %
             % Return Parameters :
             %   SymbRepObject : Original object with merged symbolic
             %   representation
             
-            if(isa(symbSequence, 'cell') && isequal(size(symbSequence), [2, 1]))
+            if(isa(symbSequence, 'cell') && size(symbSequence, 2) == 1)
                 
                 symbSequence = symbSequence';
                 
-            elseif~(isa(symbSequence, 'cell') && isequal(size(symbSequence), [1, 2]))
+            elseif~(isa(symbSequence, 'cell') && size(symbSequence, 1) == 1)
                 
                 errID = 'mergeSequence:InvalidInput';
-                errMsg = 'The input symbSeqence must be a 1 x 2 cell array of strings, contining the symbols which are to be merged in a sequence!';
+                errMsg = 'The input symbSeqence must be a 1 x n cell array of strings, contining the symbols which are to be merged in a sequence!';
                 error(errID, errMsg);
                 
             end
