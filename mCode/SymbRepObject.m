@@ -717,6 +717,7 @@ classdef SymbRepObject
             if(~abosluteOption)
                 
                 symbMarkov = symbMarkov ./ sum(symbMarkov, 2);
+                symbMarkov(isnan(symbMarkov)) = 0;
                 
             end
             
@@ -821,7 +822,7 @@ classdef SymbRepObject
             if(~abosluteOption)
                 
                 symbMarkov = symbMarkov ./ sum(symbMarkov, 2);
-                
+                symbMarkov(isnan(symbMarkov)) = 0;
             end
             
             % Transpose result, such that x1 = P * x0 instead of x1^T =
@@ -900,7 +901,7 @@ classdef SymbRepObject
             if(~abosluteOption)
                 
                 symbMarkov = symbMarkov ./ sum(symbMarkov, 2);
-                
+                symbMarkov(isnan(symbMarkov)) = 0;
             end
             
             % Transpose result, such that x1 = P * x0 instead of x1^T =
