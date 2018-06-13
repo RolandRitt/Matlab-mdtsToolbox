@@ -189,6 +189,50 @@ classdef mdtsObject < mdtsCoreObject
             
         end
         
+        function dataMat = getRawData(obj, varargin)
+            % Purpose : Extract data according to the given inputs
+            %
+            % Syntax :
+            %   dataMat = mdtsObject.getRawData(tagList)
+            %   dataMat = mdtsObject.getRawData(tagList, timeInterval)
+            %
+            % Input Parameters :
+            %   tagList : All tags of the required data subset as cell
+            %   array of strings
+            %
+            %   timeInterval : time interval of the required data subset as
+            %   vector with two elements, where the first element
+            %   represents the start of the interval and the second element
+            %   represents the end of the interval
+            %
+            % Return Parameters :
+            %   dataMat : matrix with the data
+            
+            nArguments = numel(varargin);
+    
+            if(nArguments > 2 || nArguments == 0)
+            
+                    errID = 'getRawData:InvalidNumberOfInputs';
+                    errMsg = 'Invalid number of input arguments!';
+                    error(errID, errMsg);
+                    
+            elseif(nArguments == 2)
+                
+                tags = varargin{1};
+                timeInterval = obj.convert2Datenum(varargin{2});
+                
+                dataMat = getRawData@mdtsCoreObject(obj, tags, timeInterval); 
+                
+            elseif(nArguments == 1)
+                
+                tags = varargin{1};
+                
+                dataMat = getRawData@mdtsCoreObject(obj, tags); 
+                
+            end
+            
+        end
+        
         function tagIndices = getTagIndices(obj, tagList)
             % Purpose : Return the indices of the given tags
             %

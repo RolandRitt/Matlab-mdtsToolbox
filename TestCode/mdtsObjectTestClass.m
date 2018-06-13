@@ -413,6 +413,60 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testgetRawData(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                    datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8, 7, 6;
+                    7, 6, 5, 4;
+                    8, 7, 6, 5;
+                    6, 5, 4, 3];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            durations = [4; 5];
+            symbols = categorical({'a'; 'b'}, 'Ordinal', true);
+            segObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = segObj;
+            
+            columnsToExtract = [2, 4];
+            linesToExtract1 = [2 : 3];
+            linesToExtract2 = [2 : 4];
+            linesToExtract2StartEnd = [linesToExtract2(1); linesToExtract2(end)];
+            timeToExtract1 = time(linesToExtract1);
+            timeToExtract2 = time(linesToExtract2);
+            timeToExtract2StartEnd = time(linesToExtract2StartEnd);
+            tagsToExtract = tags(columnsToExtract);
+            dataToExtract1 = data(linesToExtract1, columnsToExtract);
+            dataToExtract2 = data(linesToExtract2, columnsToExtract);
+            dataToExtract4 = data(:, columnsToExtract);
+                       
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returnMat1 = returns.getRawData(tagsToExtract, timeToExtract1);
+            returnMat2 = returns.getRawData(tagsToExtract, timeToExtract2);
+            returnMat3 = returns.getRawData(tagsToExtract, timeToExtract2StartEnd);
+            returnMat4 = returns.getRawData(tagsToExtract);
+            
+            testCase.verifyEqual(returnMat1, dataToExtract1);
+            testCase.verifyEqual(returnMat2, dataToExtract2);
+            testCase.verifyEqual(returnMat3, dataToExtract2);
+            testCase.verifyEqual(returnMat4, dataToExtract4);
+            
+            testCase.verifyError(@()returns.getRawData(1, 2, 3), 'getRawData:InvalidNumberOfInputs');
+            
+        end
+        
         function testgetTagIndices(testCase)
             
             ts = duration(0, 0, 0, 50);
