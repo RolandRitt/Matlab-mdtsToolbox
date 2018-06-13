@@ -42,7 +42,7 @@ p = inputParser();
 p.KeepUnmatched=true;
 addRequired(p, 'axes_in', @(x) isa(x, 'matlab.graphics.axis.Axes')||ishghandle(x)); %check if input is axes or handle object
 addRequired(p, 'SymbRepObj', @(x) iscell(x) && numel(x)== numel(axes_in)); %check if input is SymbRepObject
-addRequired(p, 'xTime', @(x) isdatetime(x)|| isreal(x)); %check if input is SymbRepObject
+addRequired(p, 'xTime', @(x) isdatetime(x)|| isreal(x) || isduration(x)); %check if input is SymbRepObject
 addParameter(p, 'plotSymbolName', false, @islogical);
 addParameter(p, 'plotSymbolDuration', false, @islogical);
 addParameter(p, 'plotSymbolNameMinLength', 0, @(x)isreal(x)&& isequal(size(x),[1,1]));
