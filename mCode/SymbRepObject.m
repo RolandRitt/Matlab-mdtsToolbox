@@ -954,6 +954,99 @@ classdef SymbRepObject
             
         end
         
+        function [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding(SymbObj, varargin)
+            
+            p = inputParser;
+            p.addRequired('SymbObj', @(x) isa(x, 'SymbRepObject'));
+            p.addOptional('maxLevel', 0, @(x) isnumeric(x)&& isequal(size(x), [1,1]));
+            
+            p.parse(SymbObj, varargin{:});
+            SymbObj = p.Results.SymbObj;
+            bLim = p.Results.maxLevel;     
+                        
+            imageMatrix = zeros(bLim, numel(SymbObj.symbRepVec));
+            imageMatrix(1, :) = grp2idx(SymbObj.symbRepVec);
+            
+            nSymbolsProgress = nan(bLim,1);
+            symbolReductionProgress = nan(bLim-1,1);
+            nCatsProgress = nan(bLim,1);
+            catsReductionProgress = nan(bLim-1,1);
+            symbolReductionRate = nan(bLim-1,1);
+            
+            nSymbolsProgress(1) = numel(SymbObj.symbols);
+            nCatsProgress(1) = numel(categories(SymbObj.symbols));
+            
+            allSymbRepObjects = cell(bLim, 1);
+            allSymbRepObjects{1} = SymbObj;
+            
+            evalRecord = table;
+            
+            i = 2;
+            bContinou = true;
+            
+            while bContinou
+                
+                if nSymbolsProgress(i-1) <= nCatsProgress(i-1)
+                    break;
+                end
+                
+                disp(['Run ', num2str(i), '/', num2str(bLim)]);
+                
+                markovM = SymbObj.genSymbMarkov('Absolute', true);
+                
+                [maxM, Ind] = max(markovM(:));
+                [I, J] = ind2sub(size(markovM), Ind);
+                
+                allCats = categories(SymbObj.symbols);                
+                
+                mostFrequentFrom = cellstr(allCats(J));
+                mostFrequentTo = cellstr(allCats(I));
+                
+                newWord = [mostFrequentFrom; mostFrequentTo];
+                
+                SymbObj = SymbObj.mergeSequence(newWord);
+                
+                nSymbols = numel(SymbObj.symbols);
+                nCats = numel(categories(SymbObj.symbols));
+                
+                nSymbolsProgress(i) = nSymbols;
+                symbolReductionProgress(i - 1) = nSymbolsProgress(i - 1) - nSymbolsProgress(i);
+                
+                nCatsProgress(i) = nCats;
+                catsReductionProgress(i - 1) = nCatsProgress(i - 1) - nCatsProgress(i);
+                
+                allSymbRepObjects{i} = SymbObj;
+                imageMatrix(i, :) = grp2idx(SymbObj.symbRepVec);
+                symbolReductionRate(i-1) = symbolReductionProgress(i-1)/ nSymbolsProgress(i-1);                
+                
+                compressionRate = symbolReductionRate(i-1);
+                nMergedSyms = symbolReductionProgress(i-1);
+                Run = i - 1;
+                nTransitions = maxM;
+                Word = {strjoin(newWord, '')};
+                recordLine = table(Run, nTransitions, nSymbols,nMergedSyms,compressionRate, Word);
+                evalRecord = [evalRecord; recordLine];
+                
+                if bLim
+                    
+                    if i>bLim
+                        
+                        bContinou = false;
+                        
+                    end
+                end
+                
+                i = i+1;
+                
+            end
+            
+            compressionData.nSymbols = nSymbolsProgress;
+            compressionData.nCats = nCatsProgress;
+            compressionData.nMergedSymbols = symbolReductionProgress;
+            compressionData.symbolReductionRate = symbolReductionRate;
+            
+        end
+        
     end
     
 end
