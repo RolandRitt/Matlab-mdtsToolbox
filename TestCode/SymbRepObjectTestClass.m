@@ -341,12 +341,31 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
             symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
                        
+            expectedReturn1 = zeros(3, 3, 3);
+            expectedReturn1(1, 2, 3) = 2;
+            expectedReturn1(2, 3, 2) = 2;
+            expectedReturn1(3, 2, 1) = 1;
+            expectedReturn1(2, 1, 3) = 1;
+            expectedReturn1(1, 3, 1) = 1;
+            expectedReturn1(3, 1, 2) = 1;
+            
+            expectedReturn2 = zeros(3, 3, 3);
+            expectedReturn2(1, 2, 3) = 1;
+            expectedReturn2(2, 3, 2) = 1;
+            expectedReturn2(3, 2, 3) = 1;
+            expectedReturn2(2, 3, 1) = 1;
+            expectedReturn2(3, 1, 2) = 1;
+            expectedReturn2(1, 2, 1) = 1;
+            expectedReturn2(2, 1, 3) = 1;
+            
             symbObj1 = SymbRepObject(durations1, symbols1);
             symbObj2 = SymbRepObject(durations2, symbols2);
             
-            output1 = symbObj1.genTrigramMatrix;          
+            output1 = symbObj1.genTrigramMatrix;  
+            output2 = symbObj2.genTrigramMatrix;  
             
-            %testCase.verifyEqual(output1, expectedReturn1);
+            testCase.verifyEqual(output1, expectedReturn1);
+            testCase.verifyEqual(output2, expectedReturn2);
             
         end
         
