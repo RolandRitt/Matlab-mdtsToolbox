@@ -31,6 +31,7 @@ addRequired(p, 'compressionData', @isstruct); %check if input is TS
 addRequired(p, 'imageMatrix', @isnumeric); %check if input is TS
 addParameter(p, 'size', [18,27], @(x)isnumeric(x)&&isvector(x)); %higth and width
 addParameter(p, 'figureH', [], @(x) isgraphics(x,'figure'));
+addParameter(p, 'FigTitle', [], @(x) ischar(x)||isstring(x));
 parse(p, compressionData,imageMatrix, varargin{:});
 
 tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
@@ -58,7 +59,9 @@ AData  = horizontalDevideAxes(A(2), 2, [1, 1], 0);
 hPlot = imagesc(A(1), p.Results.imageMatrix);
 xlabel(A(1), 'time');
 ylabel(A(1), 'hierarchical level');
-
+if ~isempty(p.Results.FigTitle)
+    title(A(1), p.Results.FigTitle);
+end
 plot(AData(1),  compressionData.nSymbols);
 xlim(AData(1), [0.5, numel(compressionData.nSymbols) + 0.5]);
 grid(AData(1), 'on');
