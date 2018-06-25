@@ -61,16 +61,16 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             durations4 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
             symbols4 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'})';
             durations5 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
-            symbols5 = categorical({'a', 'b', 'a', 'a', 'b', 'a', 'c', 'b', 'c', 'b', 'a', 'b', 'a'})';
+            symbols5 = categorical({'a', 'b', 'a', 'b', 'a', 'b', 'c', 'b', 'c', 'b', 'a', 'b', 'a'})';
             durations6 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
-            symbols6 = categorical({'a', 'b', 'b', 'a', 'b', 'b', 'a', 'b', 'c', 'b', 'a', 'b', 'b'})';
+            symbols6 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'})';
             
             symbSequence1 = {'c', 'b'};
             symbSequence2 = {'x', 'y'};
             symbSequence3 = {'a', 'b', 'c'};
             symbSequence4 = {'a', 'b', 'c'};
             symbSequence5 = {'a', 'b', 'a'};
-            symbSequence6 = {'a', 'b', 'b'};
+            symbSequence6 = {'a', 'b', 'c', 'a'};
             
             expectedReturn1.symbols = categorical({'a', 'b', '[{c}{b}]', 'a', '[{c}{b}]'}, {'a', 'b', '[{c}{b}]'})';
             expectedReturn1.durations = [1; 1; 4; 2; 10];
@@ -80,10 +80,10 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             expectedReturn3.durations = [9; 2; 3; 4; 2; 6];
             expectedReturn4.symbols = categorical({'[{a}{b}{c}]', 'a', 'b', 'a', 'b', '[{a}{b}{c}]'}, {'a', 'b', '[{a}{b}{c}]'})';
             expectedReturn4.durations = [9; 2; 3; 4; 2; 6];
-            expectedReturn5.symbols = categorical({'[{a}{b}{a}]', 'c', 'b', 'c', 'b', '[{a}{b}{a}]'}, {'b', 'c', '[{a}{b}{a}]'})';
-            expectedReturn5.durations = [9; 2; 3; 4; 2; 6];
-            expectedReturn6.symbols = categorical({'[{a}{b}{b}]', 'a', 'b', 'c', 'b', '[{a}{b}{b}]'}, {'a', 'b', 'c', '[{a}{b}{b}]'})';
-            expectedReturn6.durations = [9; 2; 3; 4; 2; 6];
+            expectedReturn5.symbols = categorical({'[{a}{b}{a}]', 'b', 'c', 'b', 'c', 'b', '[{a}{b}{a}]'}, {'b', 'c', '[{a}{b}{a}]'})';
+            expectedReturn5.durations = [8; 1; 2; 3; 4; 2; 6];
+            expectedReturn6.symbols = categorical({'[{a}{b}{c}{a}]', 'b', 'a', 'b', 'a', 'b', 'c'}, {'a', 'b', 'c', '[{a}{b}{c}{a}]'})';
+            expectedReturn6.durations = [11; 3; 4; 2; 3; 1; 2];
             
             symbObj1 = SymbRepObject(durations1, symbols1); 
             symbObj2 = SymbRepObject(durations2, symbols2);

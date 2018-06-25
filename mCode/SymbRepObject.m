@@ -206,26 +206,40 @@ classdef SymbRepObject
             end
             
             allSequenceStarts = find(indArray) - nSymbSequence + 1;
-            symbolLengthClearance = ones(numel(obj.symbols), 1);            
-            for i = 1 : nSymbSequence - 1
-                
-                symbolLengthClearance(allSequenceStarts + i) = false;
-                
-            end            
-            symbolLengthClearance(allSequenceStarts + 1 : allSequenceStarts + nSymbSequence - 1) = false;
-            clearedIndArray = zeros(numel(obj.symbols), 1);
-            clearedIndArray(allSequenceStarts) = true;
-            clearedIndArray = clearedIndArray .* symbolLengthClearance;
-            sequenceInd = find(clearedIndArray);
+%             symbolLengthClearance = ones(numel(obj.symbols), 1);            
+%             for i = 1 : nSymbSequence - 1
+%                 
+%                 symbolLengthClearance(allSequenceStarts + i) = false;
+%                 
+%             end            
+%             symbolLengthClearance(allSequenceStarts + 1 : allSequenceStarts + nSymbSequence - 1) = false;
+%             clearedIndArray = zeros(numel(obj.symbols), 1);
+%             clearedIndArray(allSequenceStarts) = true;
+%             clearedIndArray = clearedIndArray .* symbolLengthClearance;
+%             sequenceInd = find(clearedIndArray);
             newSequenceCat = categorical(newSequence);
             
-            for i = 1 : numel(sequenceInd)
+%             for i = 1 : numel(sequenceInd)
+%                 
+%                 obj.symbols(sequenceInd(i)) = newSequenceCat;
+%                 obj.symbols(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = tempRemovingCat;
+%                 
+%                 obj.durations(sequenceInd(i)) = sum(obj.durations(sequenceInd(i) : sequenceInd(i) + nSymbSequence - 1));
+%                 obj.durations(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = -1;
+%                 
+%             end
+
+            modSequenceStarts = [allSequenceStarts; inf];
+
+            for i = 1 : numel(allSequenceStarts)
                 
-                obj.symbols(sequenceInd(i)) = newSequenceCat;
-                obj.symbols(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = tempRemovingCat;
+                symbRange = min(nSymbSequence - 1, modSequenceStarts(i + 1) - modSequenceStarts(i) - 1);
                 
-                obj.durations(sequenceInd(i)) = sum(obj.durations(sequenceInd(i) : sequenceInd(i) + nSymbSequence - 1));
-                obj.durations(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = -1;
+                obj.symbols(allSequenceStarts(i)) = newSequenceCat;
+                obj.symbols(allSequenceStarts(i) + 1 : allSequenceStarts(i) + symbRange) = tempRemovingCat;
+                
+                obj.durations(allSequenceStarts(i)) = sum(obj.durations(allSequenceStarts(i) : allSequenceStarts(i) + symbRange));
+                obj.durations(allSequenceStarts(i) + 1 : allSequenceStarts(i) + symbRange) = -1;
                 
             end
             
