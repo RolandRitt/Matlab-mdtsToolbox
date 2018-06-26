@@ -1,4 +1,4 @@
-classdef SymbRepObject
+classdef SymbRepObject 
     %
     % Description : Represents one channel of an mdtsObject as symbols
     %
@@ -22,7 +22,7 @@ classdef SymbRepObject
         
         durations
         symbols
-        
+        name
     end
     
     properties(Dependent)
@@ -63,14 +63,22 @@ classdef SymbRepObject
             end
             
             obj.durations = durations;
-            
+            obj.name = [];
         end
         
+        function obj = setName(obj, name)
+            if ischar(name)||isstring(name)
+                obj.name = name;
+            else
+                error('InputChk:setName:notaString', 'input must be a String');
+            end
+
+        end
         function symbolDurations = get.symbolDurations(obj)
             allCat = categories(obj.symbols);
-            symbolDurations = NaT(size(allCat));
+            symbolDurations = NaN(size(allCat));
             for i=1:length(allCat)
-                symbolDurations(i) = sum(durations(obj.symbols==allCat{i}));
+                symbolDurations(i) = sum(obj.durations(obj.symbols==allCat{i}));
             end
         end
         
@@ -206,31 +214,31 @@ classdef SymbRepObject
             end
             
             allSequenceStarts = find(indArray) - nSymbSequence + 1;
-%             symbolLengthClearance = ones(numel(obj.symbols), 1);            
-%             for i = 1 : nSymbSequence - 1
-%                 
-%                 symbolLengthClearance(allSequenceStarts + i) = false;
-%                 
-%             end            
-%             symbolLengthClearance(allSequenceStarts + 1 : allSequenceStarts + nSymbSequence - 1) = false;
-%             clearedIndArray = zeros(numel(obj.symbols), 1);
-%             clearedIndArray(allSequenceStarts) = true;
-%             clearedIndArray = clearedIndArray .* symbolLengthClearance;
-%             sequenceInd = find(clearedIndArray);
+            %             symbolLengthClearance = ones(numel(obj.symbols), 1);
+            %             for i = 1 : nSymbSequence - 1
+            %
+            %                 symbolLengthClearance(allSequenceStarts + i) = false;
+            %
+            %             end
+            %             symbolLengthClearance(allSequenceStarts + 1 : allSequenceStarts + nSymbSequence - 1) = false;
+            %             clearedIndArray = zeros(numel(obj.symbols), 1);
+            %             clearedIndArray(allSequenceStarts) = true;
+            %             clearedIndArray = clearedIndArray .* symbolLengthClearance;
+            %             sequenceInd = find(clearedIndArray);
             newSequenceCat = categorical(newSequence);
             
-%             for i = 1 : numel(sequenceInd)
-%                 
-%                 obj.symbols(sequenceInd(i)) = newSequenceCat;
-%                 obj.symbols(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = tempRemovingCat;
-%                 
-%                 obj.durations(sequenceInd(i)) = sum(obj.durations(sequenceInd(i) : sequenceInd(i) + nSymbSequence - 1));
-%                 obj.durations(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = -1;
-%                 
-%             end
-
+            %             for i = 1 : numel(sequenceInd)
+            %
+            %                 obj.symbols(sequenceInd(i)) = newSequenceCat;
+            %                 obj.symbols(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = tempRemovingCat;
+            %
+            %                 obj.durations(sequenceInd(i)) = sum(obj.durations(sequenceInd(i) : sequenceInd(i) + nSymbSequence - 1));
+            %                 obj.durations(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = -1;
+            %
+            %             end
+            
             modSequenceStarts = [allSequenceStarts; inf];
-
+            
             for i = 1 : numel(allSequenceStarts)
                 
                 symbRange = min(nSymbSequence - 1, modSequenceStarts(i + 1) - modSequenceStarts(i) - 1);
@@ -690,8 +698,8 @@ classdef SymbRepObject
             % combinations
             %
             % Syntax :
-            %   SymbRepObject = SymbRepObject.genSymbMarkov
-            %   SymbRepObject = SymbRepObject.genSymbMarkov('Absolute',
+            %   [occurenceM, markovM] = SymbRepObject.genSymbMarkov
+            %   [occurenceM, markovM] = SymbRepObject.genSymbMarkov('Absolute',
             %   true);
             %
             % Input Parameters :
@@ -703,6 +711,8 @@ classdef SymbRepObject
             % Return Parameters :
             %   occurenceM : matrix, which counts the occurences of symbol i
             %   is followed by symbol j in the entry occurenceM(j,i)
+            %   markovM:= matrix cotaining a value for the occurence of two
+            %   symbols in a row
             
             p = inputParser;
             
@@ -719,31 +729,11 @@ classdef SymbRepObject
             
             allCat = categories(obj.symbols);
             nCat = numel(allCat);
-            %             symbolVec = cellstr(obj.symbols);
-            %             symbolVecString = [symbolVec{:}];
             
             occurenceM = zeros(nCat, nCat);
             
-            %             for i = 1 : nCat
-            %
-            %                 for j = 1 : nCat
-            %
-            %                     % Subtract '[word]' to avoid double counting of already merged
-            %                     % words
-            %                     symbMarkov(i, j) = numel(strfind(symbolVecString, [allCat{i}, allCat{j}])) - numel(strfind(symbolVecString, ['[', allCat{i}, allCat{j}, ']']));
-            %
-            %                 end
-            %
-            %                 totalChanges = sum(symbMarkov(i, :));
-            %
-            %                 if(totalChanges > 0 && ~abosluteOption)
-            %
-            %                     symbMarkov(i, :) = symbMarkov(i, :) / totalChanges;
-            %
-            %                 end
-            %
-            %             end
-
+            
+            
             for i = 1 : nSymbols - 1
                 
                 fromInd = find(strcmp(allCat, symbolsString{i}));
@@ -752,8 +742,11 @@ classdef SymbRepObject
                 occurenceM(fromInd, toInd) = occurenceM(fromInd, toInd) + 1;
                 
             end
-  
+            
             occurenceM = occurenceM';
+            
+            % Transpose result, such that x1 = P * x0 instead of x1^T =
+            % x0^T * P
             
             markovM = occurenceM;
             
@@ -763,10 +756,7 @@ classdef SymbRepObject
                 markovM = SymbRepObject.clearMarkovM(markovM,occurenceM);
             end
             
-            % Transpose result, such that x1 = P * x0 instead of x1^T =
-            % x0^T * P
             
-
             
         end
         
@@ -781,21 +771,21 @@ classdef SymbRepObject
             %
             % Return Parameters :
             %   symbMarkov3D : 3d markov transition matrix
-                        
+            
             symbolsString = cellstr(obj.symbols);
             nSymbols = numel(symbolsString);
             
             allCat = categories(obj.symbols);
             nCat = numel(allCat);
             
-            symbMarkov3D = zeros(nCat, nCat, nCat);          
-                        
+            symbMarkov3D = zeros(nCat, nCat, nCat);
+            
             for i = 1 : nSymbols - 2
                 
                 ind1 = find(strcmp(allCat, symbolsString{i}));
                 ind2 = find(strcmp(allCat, symbolsString{i + 1}));
                 ind3 = find(strcmp(allCat, symbolsString{i + 2}));
-                                
+                
                 symbMarkov3D(ind1, ind2, ind3) = symbMarkov3D(ind1, ind2, ind3) + 1;
                 
             end
@@ -836,13 +826,13 @@ classdef SymbRepObject
             
             allCat = categories(obj.symbols);
             nCat = numel(allCat);
-
+            
             
             occurenceM = zeros(nCat, nCat);
             SumLength1M = zeros(nCat, nCat);
             sumLength2M = zeros(nCat, nCat);
             
-
+            
             
             for i = 1 : nSymbols - 1
                 
@@ -854,27 +844,32 @@ classdef SymbRepObject
                 sumLength2M(fromInd, toInd) = sumLength2M(fromInd, toInd) + obj.durations(i+1);
             end
             
-            if(~abosluteOption)
-                
-                occurenceM = occurenceM ./ sum(occurenceM, 2);
-                occurenceM(isnan(occurenceM)) = 0;
-            end
-            
-            % Transpose result, such that x1 = P * x0 instead of x1^T =
-            % x0^T * P
             
             occurenceM = occurenceM';
             SumLength1M = SumLength1M';
             sumLength2M = sumLength2M';
-%             
-%             diffMat = abs( SumLength1M - sumLength2M)./(SumLength1M + sumLength2M -2);
-%             markovM = occurenceM./ diffMat;
+            % Transpose result, such that x1 = P * x0 instead of x1^T =
+            % x0^T * P
+            
+            markovM = occurenceM;
+            
+            %% if absolut option is given
+            if(~abosluteOption)
+                markovM = SymbRepObject.occurenceM2markovM(markovM);
+                markovM = SymbRepObject.clearMarkovM(markovM,occurenceM);
+            end
+            
+            
+            %
+            %              diffMat = abs( SumLength1M - sumLength2M)./(SumLength1M + sumLength2M -2);
+            diffMat = 1 - abs( SumLength1M - sumLength2M)./(SumLength1M + sumLength2M);
+            markovM = markovM.* diffMat;
             
         end
         
         
         
-      function [occurenceM, sumLength1M, sumLength2M,lengthSyms] = genWeightedMatrixChangedLength(obj, varargin)
+        function [occurenceM, markovM, sumLength1M, sumLength2M,lengthSyms] = genWeightedMatrixChangedLength(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
             % combinations with weighted change of length
             %
@@ -913,13 +908,13 @@ classdef SymbRepObject
             occurenceM = zeros(nCat, nCat);
             sumLength1M = zeros(nCat, nCat);
             sumLength2M = zeros(nCat, nCat);
-            lengthSyms = zeros(nCat,1);
+            %             lengthSyms = zeros(nCat,1);
             
-            %%            
+            %%
             for i = 1 : nSymbols - 1
                 
                 fromInd = find(strcmp(allCat, symbolsString{i}));
-                lengthSyms(fromInd) = lengthSyms(fromInd) +obj.durations(i);
+                %                 lengthSyms(fromInd) = lengthSyms(fromInd) +obj.durations(i);
                 toInd = find(strcmp(allCat, symbolsString{i + 1}));
                 
                 occurenceM(fromInd, toInd) = occurenceM(fromInd, toInd) + 1;
@@ -927,16 +922,10 @@ classdef SymbRepObject
                 sumLength2M(fromInd, toInd) = sumLength2M(fromInd, toInd) + obj.durations(i+1);
             end
             
-            lengthSyms(toInd) =  lengthSyms(toInd) + obj.durations(i+1);
+            %             lengthSyms(toInd) =  lengthSyms(toInd) + obj.durations(i+1);
+            lengthSyms = obj.symbolDurations;
             sumLength1M = sumLength1M./lengthSyms;
             sumLength2M = sumLength2M./lengthSyms;
-     
-            
-            if(~abosluteOption)
-                
-                occurenceM = occurenceM ./ sum(occurenceM, 2);
-                occurenceM(isnan(occurenceM)) = 0;
-            end
             
             % Transpose result, such that x1 = P * x0 instead of x1^T =
             % x0^T * P
@@ -945,9 +934,17 @@ classdef SymbRepObject
             sumLength1M = sumLength1M';
             sumLength2M = sumLength2M';
             
-
-    
-%             markovM = occurenceM.* sumLength1M.*sumLength2M;
+            
+            markovM = occurenceM;
+            
+            %% if absolut option is given
+            if(~abosluteOption)
+                markovM = SymbRepObject.occurenceM2markovM(markovM);
+                markovM = SymbRepObject.clearMarkovM(markovM,occurenceM);
+            end
+            
+            
+            markovM = markovM.* sumLength1M.*sumLength2M;
             
         end
         
@@ -993,8 +990,8 @@ classdef SymbRepObject
             
             p.parse(SymbObj, varargin{:});
             SymbObj = p.Results.SymbObj;
-            bLim = p.Results.maxLevel;     
-                        
+            bLim = p.Results.maxLevel;
+            
             imageMatrix = zeros(bLim, numel(SymbObj.symbRepVec));
             imageMatrix(1, :) = grp2idx(SymbObj.symbRepVec);
             
@@ -1028,7 +1025,7 @@ classdef SymbRepObject
                 [maxM, Ind] = max(markovM(:));
                 [I, J] = ind2sub(size(markovM), Ind);
                 
-                allCats = categories(SymbObj.symbols);                
+                allCats = categories(SymbObj.symbols);
                 
                 mostFrequentFrom = cellstr(allCats(J));
                 mostFrequentTo = cellstr(allCats(I));
@@ -1048,7 +1045,7 @@ classdef SymbRepObject
                 
                 allSymbRepObjects{i} = SymbObj;
                 imageMatrix(i, :) = grp2idx(SymbObj.symbRepVec);
-                symbolReductionRate(i-1) = symbolReductionProgress(i-1)/ nSymbolsProgress(i-1);                
+                symbolReductionRate(i-1) = symbolReductionProgress(i-1)/ nSymbolsProgress(i-1);
                 
                 compressionRate = symbolReductionRate(i-1);
                 nMergedSyms = symbolReductionProgress(i-1);
@@ -1078,18 +1075,133 @@ classdef SymbRepObject
             
         end
         
+        
+        
+        
+        function [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding2(SymbObj,SymbObjFunStrg, varargin)
+            
+            p = inputParser;
+            p.addRequired('SymbObj', @(x) isa(x, 'SymbRepObject'));
+            p.addRequired('SymbObjFunStrg', @(x) ischar(x));
+            p.addOptional('maxLevel', 0, @(x) isnumeric(x)&& isequal(size(x), [1,1]));
+            
+            p.parse(SymbObj,SymbObjFunStrg, varargin{:});
+            SymbObj = p.Results.SymbObj;
+            nameOrigSymbRep = SymbObj.name;
+            SymbObj = SymbObj.setName(strtrim([nameOrigSymbRep, ' Level 1']));
+            bLim = p.Results.maxLevel;
+            
+            imageMatrix = zeros(bLim, numel(SymbObj.symbRepVec));
+            imageMatrix(1, :) = grp2idx(SymbObj.symbRepVec);
+            
+            nSymbolsProgress = nan(bLim,1);
+            symbolReductionProgress = nan(bLim-1,1);
+            nCatsProgress = nan(bLim,1);
+            catsReductionProgress = nan(bLim-1,1);
+            symbolReductionRate = nan(bLim-1,1);
+            
+            nSymbolsProgress(1) = numel(SymbObj.symbols);
+            nCatsProgress(1) = numel(categories(SymbObj.symbols));
+            
+            allSymbRepObjects = cell(bLim, 1);
+            allSymbRepObjects{1} = SymbObj;
+            
+            evalRecord = table;
+            
+            i = 2;
+            bContinou = true;
+            funH = str2func(['@(SymbObj)SymbObj.', SymbObjFunStrg]);
+            while bContinou
+                
+                if nSymbolsProgress(i-1) <= nCatsProgress(i-1)
+                    break;
+                end
+                
+                disp(['Run ', num2str(i), '/', num2str(bLim)]);
+                
+                [occurenceM, markovM] = funH(SymbObj);
+                
+                [maxRel, Ind] = max(markovM(:));
+                
+                
+                
+                indsMax = find(markovM==maxRel);
+                
+                if length(indsMax)>1
+                    
+                    [~, IndMaxTemp]  = max(occurenceM(indsMax));
+                    Ind = indsMax(IndMaxTemp);
+                    %         disp('mehr maxima gefunden');
+                end
+                
+                %%%
+                maxM = occurenceM(Ind);
+
+                [I, J] = ind2sub(size(markovM), Ind);
+                
+                allCats = categories(SymbObj.symbols);
+                
+                mostFrequentFrom = cellstr(allCats(J));
+                mostFrequentTo = cellstr(allCats(I));
+                
+                newWord = [mostFrequentFrom; mostFrequentTo];
+                
+                SymbObj = SymbObj.mergeSequence(newWord);
+                SymbObj = SymbObj.setName(strtrim([nameOrigSymbRep, ' Level ', int2str(i)]));
+                
+                nSymbols = numel(SymbObj.symbols);
+                nCats = numel(categories(SymbObj.symbols));
+                
+                nSymbolsProgress(i) = nSymbols;
+                symbolReductionProgress(i - 1) = nSymbolsProgress(i - 1) - nSymbolsProgress(i);
+                
+                nCatsProgress(i) = nCats;
+                catsReductionProgress(i - 1) = nCatsProgress(i - 1) - nCatsProgress(i);
+                
+                allSymbRepObjects{i} = SymbObj;
+                imageMatrix(i, :) = grp2idx(SymbObj.symbRepVec);
+                symbolReductionRate(i-1) = symbolReductionProgress(i-1)/ nSymbolsProgress(i-1);
+                
+                compressionRate = symbolReductionRate(i-1);
+                nMergedSyms = symbolReductionProgress(i-1);
+                Run = i - 1;
+                nTransitions = maxM;
+                Word = {strjoin(newWord, '')};
+                recordLine = table(Run, nTransitions, nSymbols,nMergedSyms,compressionRate, Word);
+                evalRecord = [evalRecord; recordLine];
+                
+                if bLim
+                    
+                    if i>bLim
+                        
+                        bContinou = false;
+                        
+                    end
+                end
+                
+                i = i+1;
+                
+            end
+            
+            compressionData.nSymbols = nSymbolsProgress;
+            compressionData.nCats = nCatsProgress;
+            compressionData.nMergedSymbols = symbolReductionProgress;
+            compressionData.symbolReductionRate = symbolReductionRate;
+            
+        end
     end
+    
     methods (Static)
         function markovM = occurenceM2markovM(occurenceM)
-                 markovM = occurenceM ./ sum(occurenceM, 1);
+            markovM = occurenceM ./ sum(occurenceM, 1);
         end
         
         function markovMcleared = clearMarkovM(markovM, occurenceM)
-                sumOccurances = sum(occurenceM, 1);
-                markovMcleared = markovM;
-%                 sumOccurances(sumOccurances==1) = Inf;
-                markovMcleared(:,sumOccurances==1) = 0;
-                markovMcleared(isnan(markovMcleared)) = 0;
+            sumOccurances = sum(occurenceM, 1);
+            markovMcleared = markovM;
+            %                 sumOccurances(sumOccurances==1) = Inf;
+            markovMcleared(:,sumOccurances==1) = 0;
+            markovMcleared(isnan(markovMcleared)) = 0;
         end
     end
     
