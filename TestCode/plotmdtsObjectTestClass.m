@@ -112,7 +112,9 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             
             [~, ~, ~] = plotmdtsObject(returns3, 'plotSymbolName', true, 'plotSymbolDuration', true);
             [~, ~, ~] = plotmdtsObject(returns4, 'plotSymbolName', true, 'plotSymbolDuration', true);
-       
+            
+            % test horizontal y label
+            [~, ~, ~] = plotmdtsObject(returns4, 'plotSymbolName', true, 'plotSymbolDuration', true, 'bYLabelHorizontal', true);
             
 %             [~, ~, ~] = plotmdtsObject(returns5, 'plotSymbolName', true, 'plotSymbolDuration', true);
 %             
