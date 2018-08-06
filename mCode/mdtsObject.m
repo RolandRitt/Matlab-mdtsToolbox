@@ -397,7 +397,7 @@ classdef mdtsObject < mdtsCoreObject
                 errMsg = 'eventTime and eventDuration must have the same number of elements!';
                 error(errID, errMsg);
                 
-            elseif~isa(eventDuration, 'integer')
+            elseif~(prod(rem(eventDuration,1)==0)||prod(isa(eventDuration, 'duration')))
                 
                 errID = 'addEvent:InvalidEventDuration';
                 errMsg = 'Event duration must be an integer (array)!';
