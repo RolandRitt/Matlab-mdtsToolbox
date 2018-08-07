@@ -327,7 +327,7 @@ classdef mdtsObject < mdtsCoreObject
             timeSize = numel(obj.time);
             addTagSize = numel(addTags);
             
-            if~isnumeric(addData)
+            if~(isnumeric(addData)||islogical(addData))
                 
                 errID = 'expandDataSet:DataNotNumeric';
                 errMsg = 'The given data matrix is not numeric!';

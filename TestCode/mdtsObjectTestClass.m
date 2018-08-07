@@ -595,7 +595,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyError(@()returns.expandDataSet(addData(:, 1), addTags1), 'expandDataSet:InvalideDataSize2');
             testCase.verifyError(@()returns.expandDataSet(addData, [1, 2]), 'expandDataSet:InvalidTags');
             testCase.verifyError(@()returns.expandDataSet(addData, addTags1), 'expandDataSet:NonUniqueTags');
-            
+            returns.expandDataSet(logical(randi([0,1], size(time))), 'logical');
         end
         
         function testAddEvent(testCase)
@@ -658,7 +658,9 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo2.eventTime, eventInfo2.eventDuration), 'addEvent:TimesInconsistent');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo4.eventTime, eventInfo4.eventDuration), 'addEvent:InvalidEventDuration');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo5.eventTime, eventInfo5.eventDuration), 'addEvent:EventTimeNotAvailable');
-          
+            
+       
+            
         end
         
         function testAddSymbRepToChannel(testCase)
@@ -730,7 +732,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             testCase.verifyError(@()returns.addSymbRepToChannel(2, 'test1'), 'addSymbRepToChannel:NotASymbRepObject');
             testCase.verifyError(@()returns.addSymbRepToChannel('abc', symbObj1), 'addSymbRepToChannel:InvalidChannelNumber');
-            
+          
         end        
         
         function testAddSymbRepToAllChannels(testCase)
