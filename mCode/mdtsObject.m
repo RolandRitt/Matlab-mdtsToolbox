@@ -1,7 +1,7 @@
 classdef mdtsObject < mdtsCoreObject
     %
     % Description : Inherits from the core object, checks validity of input
-    % data and passes it to the core object
+    % data and passes it to the core object.
     %
     % Author :
     %    Paul O'Leary
