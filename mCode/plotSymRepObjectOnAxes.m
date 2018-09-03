@@ -122,7 +122,7 @@ for i = 1 : nAxes
             
             xStart = xTime(startInds);
             xEnd = xTime(startInds + durations - 1);
-            XStart = [xStart, xEnd, xEnd, xStart];
+            XStart = [xStart, xEnd, xEnd, xStart]';
             
 %             if isdatetime(xTime(1))
 %                 XStart = NaT(4,numel(startInds));
