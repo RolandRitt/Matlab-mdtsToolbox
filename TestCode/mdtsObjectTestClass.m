@@ -976,5 +976,89 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns3.getIntervalIndices(timeInterval3), linesToExtract);
           
         end
+        
+        
+           function testGetTimeInFormatms(testCase)
+            
+            ts = duration(0, 0,0, 1);
+            time0 = (0 : 8)';
+            time1 = [datetime(2017, 7, 31, 14, 3, 0 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 1 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 2 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 3 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 4 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 5 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 6 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 7 * seconds(ts));
+                     datetime(2017, 7, 31, 14, 3, 8 * seconds(ts))];
+            time2 = [datenum(datetime(2017, 7, 31, 14, 3, 0 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 1 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 2 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 3 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 4 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 5 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 6 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 7 * seconds(ts)));
+                     datenum(datetime(2017, 7, 31, 14, 3, 8 * seconds(ts)))];
+            time3 = (0 : 8)' * ts;
+            data = [1, 8, -1;
+                    2, 6, 1;
+                    3, 7, 1;
+                    3, 5, 1;
+                    3, 1, 1;
+                    2, 1, 2;
+                    1, 1, 2;
+                    1, 1, 2;
+                    3, 1, 2];
+            tags = {'Channel 1', 'Channel2', 'Channel 3'};
+            units = {'s', 'min', 'elephants'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            durations = [4; 5];
+            symbols = categorical({'a'; 'b'}, 'Ordinal', true);
+            symbObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = symbObj;
+            
+            returns0 = mdtsObject(time0, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns1 = mdtsObject(time1, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns2 = mdtsObject(time2, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns3 = mdtsObject(time3, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+              
+            expectedReturn0 = time0;
+            expectedReturn1 = time1;
+            expectedReturn2 = time2;
+            expectedReturn3 = time3;
+            
+            linesToExtract = [2; 4];
+            timeInterval0 = time0(linesToExtract);
+            timeInterval1 = time1(linesToExtract);
+            timeInterval2 = time2(linesToExtract);
+            timeInterval3 = time3(linesToExtract);
+            
+            testCase.verifyEqual(returns0.timeInFormat, expectedReturn0);
+            testCase.verifyEqual(returns1.timeInFormat, expectedReturn1);
+            testCase.verifyEqual(returns2.timeInFormat, expectedReturn2);
+            testCase.verifyEqual(returns3.timeInFormat, expectedReturn3);
+            
+            testCase.verifyError(@()mdtsObject('test1', data, tags), 'mdtsObject:InvalidTimeFormat');
+            
+            testCase.verifyEqual(returns0.convert2Datenum(time0), time0);
+            testCase.verifyEqual(returns0.convert2Datenum(time1), datenum(time1));
+            testCase.verifyEqual(returns0.convert2Datenum(time2), time2);
+            testCase.verifyEqual(returns0.convert2Datenum(time3), seconds(time3));
+            
+            testCase.verifyEqual(returns0.getIntervalIndices(timeInterval0), linesToExtract);
+            testCase.verifyEqual(returns1.getIntervalIndices(timeInterval1), linesToExtract);
+            testCase.verifyEqual(returns2.getIntervalIndices(timeInterval2), linesToExtract);
+            testCase.verifyEqual(returns3.getIntervalIndices(timeInterval3), linesToExtract);
+          
+        end
     end
 end

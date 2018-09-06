@@ -132,9 +132,9 @@ classdef mdtsObject < mdtsCoreObject
                 
                 timeInFormat = obj.time;
                 
-            elseif(obj.timeType == 2)
-                
-                timeInFormat = datetime(datestr(obj.time));
+            elseif(obj.timeType == 2) %datetime
+                 timeInFormat = obj.timeDateTime;
+%                  timeInFormat = datetime(datestr(obj.time));
                 
             elseif(obj.timeType == 3)
 
