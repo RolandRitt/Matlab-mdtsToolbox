@@ -46,7 +46,7 @@ classdef mdtsObject < mdtsCoreObject
             defaultComment = 'No comment available';
             defaulttsEvents = containers.Map;
             defaultSymbRep = cell(1, numel(tags));
-            defaultSegments = {};
+            defaultSegments = cell(1, numel(tags));
             
             if(isa(time, 'numeric'))
                 
@@ -93,7 +93,7 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'comment', defaultComment, @(x)validateattributes(x, {'char', 'cell'}, {'nonempty'}));
             addParameter(p, 'tsEvents', defaulttsEvents, @(x)validateattributes(x, {'containers.Map'}, {'nonempty'}));
             addParameter(p, 'symbReps', defaultSymbRep, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
-            addParameter(p, 'segments', defaultSegments, @(x)validateattributes(x, {'segmentsObject'}, {'nonempty'}));
+            addParameter(p, 'segments', defaultSegments, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             
             parse(p, time, data, tags, varargin{:});
             
@@ -506,12 +506,12 @@ classdef mdtsObject < mdtsCoreObject
                 errID = 'addSegments:NotASegmentsObject';
                 errMsg = 'The input segmentsObj must be of class segmentsObject!';
                 error(errID, errMsg);
-                
-            elseif~isempty(obj.segments)
-                
-                errID = 'addSegments:SegmentsAlreadyAdded';
-                errMsg = 'A segmentsObject was already added to the mdtsObject!';
-                error(errID, errMsg);
+%                 
+%             elseif~isempty(obj.segments)
+%                 
+%                 errID = 'addSegments:SegmentsAlreadyAdded';
+%                 errMsg = 'A segmentsObject was already added to the mdtsObject!';
+%                 error(errID, errMsg);
                 
             elseif~(segmentsObj.nTimestamps == numel(obj.time))
                 
