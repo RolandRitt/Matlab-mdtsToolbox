@@ -79,8 +79,12 @@ classdef plotSegmentsTestClass < matlab.unittest.TestCase
             segmentsObj = segmentsObj.addSegmentVector(tagName1, bVec1);
             segmentsObj = segmentsObj.addSegmentVector(tagName2, bVec2);
             segmentsObj = segmentsObj.addSegmentVector(tagName3, bVec3);
+
+            for i=1:numel(tags)
+                segments{i} = segmentsObj;
+            end
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segments', segmentsObj);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segments', segments);
             
             plotTag = tagName3;
             

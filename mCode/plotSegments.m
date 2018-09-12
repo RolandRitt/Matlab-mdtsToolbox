@@ -12,10 +12,10 @@ function [out, fM, ph] = plotSegments(inputObject, segmentTag, varargin)
 %
 % Return Parameters :
 %
-% Description : 
+% Description :
 %   Use the plotMulti function to plot the segments of the given object
 %
-% Author : 
+% Author :
 %   Paul O'Leary
 %   Roland Ritt
 %   Thomas Grandl
@@ -60,35 +60,41 @@ title(out(1), inputObject.name, 'Interpreter', 'none');
 
 %% Highlight Segments
 
-segmentsObj = inputObject.segments;
+% segmentsObj = inputObject.segments;
+% 
+% tagNo = find(ismember(segmentsObj.tags, segmentTag));
 
-tagNo = find(ismember(segmentsObj.tags, segmentTag));
 
-starts = segmentsObj.starts{tagNo};
-durations = segmentsObj.durations{tagNo};
 
-xStart = inputObject.timeInFormat(starts);
-xEnd = inputObject.timeInFormat(starts + durations - 1);
-XStart = [xStart';xEnd'; xEnd'; xStart'];
+
 for j = 1 : numel(out)
-        
+    
+    segmentsObj = inputObject.segments{j};
+    if ~isempty(segmentsObj)
+        tagNo = find(ismember(segmentsObj.tags, segmentTag));
+        starts = segmentsObj.starts{tagNo};
+        durations = segmentsObj.durations{tagNo};
+        xStart = inputObject.timeInFormat(starts);
+        xEnd = inputObject.timeInFormat(starts + durations - 1);
+        XStart = [xStart';xEnd'; xEnd'; xStart'];
         yLim = out(j).YLim;
         yMin = yLim(1);
         yMax = yLim(2);
         
         hold(out(j), 'on');
         
-        pa = fill(out(j), XStart, [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'r');   
+        pa = fill(out(j), XStart, [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'r');
+    end
     
 end
 
-    
-    %%
+
 %%
- for i=1:numel(ph)
-         uistack(ph(i), 'top');
-         set(out(i), 'Layer', 'top');
- end
+%%
+for i=1:numel(ph)
+    uistack(ph(i), 'top');
+    set(out(i), 'Layer', 'top');
+end
 
 fM.shouldAdd = shouldAddold;
 
