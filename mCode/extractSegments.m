@@ -1,4 +1,4 @@
-function arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, varargin)
+function arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, extractTagID, varargin)
 % data handling
 %
 % Purpose : extract segments of the given mdtsObject
@@ -39,17 +39,21 @@ defaultFrameLength = 10;
 p = inputParser();
 addRequired(p, 'inputObject', @(x) isa(x, 'mdtsObject')); %check if input is mdtsObject
 addRequired(p, 'segmentTag', @(x) isa(x, 'char')); %check if tag is a char array
+addRequired(p, 'extractTagID', @(x) isa(x, 'char')); %check if tag is a char array
 addParameter(p, 'frameLength', defaultFrameLength, @(x)isnumeric(x));
 
-parse(p, inputObject, segmentTag, varargin{:});
+parse(p, inputObject, segmentTag, extractTagID, varargin{:});
 
 inputObject = p.Results.inputObject;
 segmentTag = p.Results.segmentTag;
 frameLength = p.Results.frameLength;
+extractTagID = p.Results.extractTagID;
 
 %% Extract Data
+ChannelNr = inputObject.getTagIndices(extractTagID);
+segmentsObj = inputObject.segments{ChannelNr};
 
-segmentsObj = inputObject.segments;
+
 
 tagNo = find(ismember(segmentsObj.tags, segmentTag));
 
