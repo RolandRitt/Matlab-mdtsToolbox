@@ -253,12 +253,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     returnObject.keepRowsOfData(intervalI);
                     returnObject.keepTagsOfData(tagsIndices);
                     returnObject.extractRowsOfSymbReps(intervalI);
-                    
-                    if~isempty(returnObject.segments)
-                        
-                        returnObject.segments = returnObject.segments.extractRows(intervalI);
-                        
-                    end
+                    returnObject.extractRowsOfSegsReps(intervalI);
+%                     if~isempty(returnObject.segments)
+%                         
+%                         returnObject.segments = returnObject.segments.extractRows(intervalI);
+%                         
+%                     end
                     
                 elseif extractTags && ~extractRows
                     
@@ -268,12 +268,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     
                     returnObject.keepRowsOfData(intervalI);
                     returnObject.extractRowsOfSymbReps(intervalI);
-                    
-                    if~isempty(returnObject.segments)
-                        
-                        returnObject.segments = returnObject.segments.extractRows(intervalI);
-                        
-                    end
+                    returnObject.extractRowsOfSegsReps(intervalI);
+%                     if~isempty(returnObject.segments)
+%                         
+%                         returnObject.segments = returnObject.segments.extractRows(intervalI);
+%                         
+%                     end
                     
                 end
                 
@@ -625,8 +625,27 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             % Return Parameters :
             %   mdtsObject : Original object with the added segmentsObject
             
-            obj.segments = segmentsObj;
+%             obj.segments = segmentsObj;
+            obj = obj.addSegmentsToAllChannels(segmentsObj,false );
             
+        end
+        
+        function obj = addSegmentsToAllChannels(obj,segmentsObj, keepExistentSegReps)
+            if(keepExistentSegReps)
+                
+                nonEmtpySegReps = find(cellfun(@isempty, obj.segments));
+                for i = nonEmtpySegReps 
+                    obj.segments{i} = segmentsObj;         
+                end
+            else
+                for i = 1 : numel(obj.segments) 
+                    obj.segments{i} = segmentsObj;
+                end
+            end
+        end
+        
+        function obj = addSegmentsToChannels(obj,segmentsObj, channelNumber)
+            obj.segments{channelNumber} = segmentsObj;
         end
                 
     end
@@ -687,6 +706,32 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                 if ~isempty(obj.symbReps{i})
                     
                     obj.symbReps{i} = obj.symbReps{i}.getTimeInterval(intervalIndices);
+                    
+                end
+                
+            end
+            
+        end
+        
+        
+        function extractRowsOfSegsReps(obj, intervalIndices)
+            % Purpose : Extract all segments and druations from the
+            % segmentsObject of all channels, according to the input
+            %
+            % Syntax :
+            %   extractRowsOfSegsReps(intervalIndices)
+            %
+            % Input Parameters :
+            %   intervalIndices : All indices of the time stamps which have
+            %   to be extracted
+            %
+            % Return Parameters :
+            
+            for i = 1 : numel(obj.segments)
+                
+                if ~isempty(obj.segments{i})
+                    
+                    obj.segments{i} = obj.segments{i}.extractRows(intervalIndices);
                     
                 end
                 
