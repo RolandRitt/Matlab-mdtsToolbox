@@ -614,23 +614,40 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         end
         
         function obj = addSegments(obj, segmentsObj)
-            % Purpose : Add segmentsObject to mdtsCoreObject
+            % Purpose : Add segments to all channels which
+            % do not have segments assigned
             %
             % Syntax :
             %   mdtsCoreObject = mdtsCoreObject.addSegments(segmentsObj)
             %
             % Input Parameters :
-            %   segmentsObj : segmentsObject to be added to the mdtsObject
+            %   segmentsObj : segmentObject with the corresponding segments
+            %
             %
             % Return Parameters :
-            %   mdtsObject : Original object with the added segmentsObject
-            
-%             obj.segments = segmentsObj;a
+            %   mdtsObject : Original object with the added segments
+            %   representations
             obj = obj.addSegmentsToAllChannels(segmentsObj,false );
             
         end
         
         function obj = addSegmentsToAllChannels(obj,segmentsObj, keepExistentSegReps)
+            % Purpose : Add segments to all channels which
+            % do not have segments assigned
+            %
+            % Syntax :
+            %   mdtsCoreObject = mdtsCoreObject.addSegmentsToAllChannels(segmentsObj)
+            %
+            % Input Parameters :
+            %   segmentsObj : segmentObject with the corresponding segments
+            %   keepExistentSymbReps : Flag to indicate if existent
+            %   segments representations in the mdtsObject shall be
+            %   preserved. All existen segments representations are
+            %   overwritten when false and preserved when true.
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added segments
+            %   representations
             if(keepExistentSegReps)
                 
                 nonEmtpySegReps = find(cellfun(@isempty, obj.segments));
@@ -645,6 +662,20 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         end
         
         function obj = addSegmentsToChannels(obj,segmentsObj, channelNumber)
+            % Purpose : Add segments to given channels which
+            % do not have segments assigned
+            %
+            % Syntax :
+            %   mdtsCoreObject = mdtsCoreObject.addSegmentsToChannels(segmentsObj, channelNumber)
+            %
+            % Input Parameters :
+            %   segmentsObj : segmentObject with the corresponding segments
+            %   channelNumber: the index of the channel(s), to which the
+            %   segments should be added
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added segments
+            %   representations
             obj.segments{channelNumber} = segmentsObj;
         end
                 
