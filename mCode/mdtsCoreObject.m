@@ -625,7 +625,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             % Return Parameters :
             %   mdtsObject : Original object with the added segmentsObject
             
-%             obj.segments = segmentsObj;
+%             obj.segments = segmentsObj;a
             obj = obj.addSegmentsToAllChannels(segmentsObj,false );
             
         end
