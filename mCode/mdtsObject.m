@@ -490,19 +490,19 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function obj = addSegmentsToAllChannels(obj, segObj, varargin)
-            % Purpose : Add symbolic representation to all channels which
-            % do not have a symbolic representation assigned
+            % Purpose : Add segments  to all channels which
+            % do not have a segments representation assigned
             %
             % Syntax :
-            %   mdtsCoreObject = mdtsObject.addSymbRepToAllChannels(symbObj)
+            %   mdtsCoreObject = mdtsObject.addSegmentsToAllChannels(segObj)
+            %   mdtsCoreObject = mdtsObject.addSegmentsToAllChannels(segObj, varargin)
             %
             % Input Parameters :
-            %   symbObj : symbolicObject with the corresponding symbolic
-            %   representation
+            %   segObj : segmentsObject with the corresponding segments
             %
-            %   keepExistentSymbReps : Flag to indicate if existent
-            %   symbolic representations in the mdtsObject shall be
-            %   preserved. All existen symbolic representations are
+            %   keepExistentSymbReps : (optional; default false) Flag to indicate if existent
+            %   segments  in the mdtsObject shall be
+            %   preserved. All existen segments  are
             %   overwritten when false and preserved when true.
             %
             % Return Parameters :
@@ -536,28 +536,24 @@ classdef mdtsObject < mdtsCoreObject
         
         
         function obj = addSegments(obj, segmentsObj)
-            % Purpose : Add segmentsObject to mdtsObject
+            % Purpose : Add segments  to all channels which
+            % do not have a segments representation assigned
             %
             % Syntax :
-            %   mdtsObject = mdtsObject.addSegments(segmentsObj)
+            %   mdtsCoreObject = mdtsObject.addSegments(segObj)
             %
             % Input Parameters :
-            %   segmentsObj : segmentsObject to be added to the mdtsObject
+            %   segObj : segmentsObject with the corresponding segments
             %
             % Return Parameters :
-            %   mdtsObject : Original object with the added segmentsObject
+            %   mdtsObject : Original object with the added symbolic
+            %   representations
             
             if~isa(segmentsObj, 'segmentsObject')
                 
                 errID = 'addSegments:NotASegmentsObject';
                 errMsg = 'The input segmentsObj must be of class segmentsObject!';
-                error(errID, errMsg);
-%                 
-%             elseif~isempty(obj.segments)
-%                 
-%                 errID = 'addSegments:SegmentsAlreadyAdded';
-%                 errMsg = 'A segmentsObject was already added to the mdtsObject!';
-%                 error(errID, errMsg);
+                error(errID, errMsg);              
                 
             elseif~(segmentsObj.nTimestamps == numel(obj.time))
                 
@@ -567,26 +563,25 @@ classdef mdtsObject < mdtsCoreObject
                 
             end
             obj = obj.addSegmentsToAllChannels(segmentsObj);
-%             obj = addSegments@mdtsCoreObject(obj, segmentsObj);
             
         end
         
           function obj = addSegmentsToChannels(obj, segObj, channelNames)
-            % Purpose : Add symbolic representation to channel
+            % Purpose : Add segments  to specific channels which
+            % do not have a segments representation assigned
             %
             % Syntax :
-            %   mdtsObject = mdtsObject.addSymbRepToChannel(channelNumber, symbObj)
+            %   mdtsCoreObject = mdtsObject.addSegmentsToChannels(segObj, channelNames)
             %
             % Input Parameters :
-            %   channelNumber : channel number or tag indices of the
-            %   according channel/tag
+            %   segObj : segmentsObject with the corresponding segments
+            %   channelNames: char or cellstr containing the channelnames,
+            %   where the segments should be added
             %
-            %   symbObj : SymbRepObject with the corresponding symbolic
-            %   representation
             %
             % Return Parameters :
             %   mdtsObject : Original object with the added symbolic
-            %   representation
+            %   representations
             channelNumber= obj.getTagIndices(channelNames);
             if~isa(segObj, 'segmentsObject')
                 
