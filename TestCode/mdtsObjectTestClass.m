@@ -901,6 +901,173 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        
+        function testAddSegmentsToAllChannels(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 6 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 7 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 8 * seconds(ts)))];
+            data = [1, 8, -1;
+                2, 6, 1;
+                3, 7, 1;
+                3, 5, 1;
+                3, 1, 1;
+                2, 1, 2;
+                1, 1, 2;
+                1, 1, 2;
+                3, 1, 2];
+            tags = {'Channel 1', 'Channel2', 'Channel 3'};
+            units = {'s', 'min', 'elephants'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            durations = [4; 5];
+            symbols = categorical({'a'; 'b'}, 'Ordinal', true);
+            symbObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = symbObj;
+            nTimestamps = numel(time);
+            segments1 = segmentsObject(nTimestamps);
+            tagName1 = 'newChannel';
+            bVec1 = false(nTimestamps, 1);
+            tagName2 = 'secondChannel';
+            bVec2 = true(nTimestamps, 1);
+            segments1 = segments1.addSegmentVector(tagName1, bVec1);
+            segments1 = segments1.addSegmentVector(tagName2, bVec2);
+            segments2 = segmentsObject(123);
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns2 = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            
+            returns.addSegmentsToAllChannels(segments1);
+            
+            retSegments = returns.segments;
+            for i = 1:numel(tags)
+                testCase.verifyEqual(retSegments{i}.tags{1}, tagName1);
+                testCase.verifyEqual(retSegments{i}.tags{2}, tagName2);
+                testCase.verifyEqual(retSegments{i}.starts{1}, zeros(0, 1));
+                testCase.verifyEqual(retSegments{i}.starts{2}, [1]);
+                testCase.verifyEqual(retSegments{i}.durations{1}, zeros(1, 0));
+                testCase.verifyEqual(retSegments{i}.durations{2}, [nTimestamps]);
+            end
+            
+            testCase.verifyError(@()returns2.addSegmentsToAllChannels('test1'), 'addSegmentsToAllChannels:NotASegmentsObject');
+            %             testCase.verifyError(@()returns.addSegments(segments1), 'addSegments:SegmentsAlreadyAdded');
+            testCase.verifyError(@()returns2.addSegmentsToAllChannels(segments2), 'addSegmentsToAllChannels:InvalidNumberOfTimestamps');
+            
+        end
+        
+        
+      function testAddSegmentsToChannel(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 6 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 7 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 8 * seconds(ts)))];
+            data = [1, 8, -1;
+                2, 6, 1;
+                3, 7, 1;
+                3, 5, 1;
+                3, 1, 1;
+                2, 1, 2;
+                1, 1, 2;
+                1, 1, 2;
+                3, 1, 2];
+            tags = {'Channel 1', 'Channel 2', 'Channel 3'};
+            units = {'s', 'min', 'elephants'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            eventInfo.eventTime = datenum('09/01/2018 16:05:06');
+            eventInfo.eventDuration = int32(0);
+            tsEvents = containers.Map('key1', eventInfo);
+            durations = [4; 5];
+            symbols = categorical({'a'; 'b'}, 'Ordinal', true);
+            symbObj = SymbRepObject(durations, symbols);
+            symbReps = cell(1, numel(tags));
+            symbReps{2} = symbObj;
+            nTimestamps = numel(time);
+%             segments1 = segmentsObject(nTimestamps);
+%             tagName1 = 'newChannel';
+%             bVec1 = false(nTimestamps, 1);
+%             tagName2 = 'secondChannel';
+%             bVec2 = true(nTimestamps, 1);
+%             segments1 = segments1.addSegmentVector(tagName1, bVec1);
+%             segments1 = segments1.addSegmentVector(tagName2, bVec2);
+             segments2 = segmentsObject(123);
+            
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            returns2 = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
+            
+            segs = {};
+            for i=1:3
+                segTemp = segmentsObject(nTimestamps);
+                tagName1{i} = ['Seg', int2str(i), '_SegTag1'];
+                tagName2{i} = ['Seg', int2str(i), '_SegTag2'];
+                bVecs1{i} = logical(randi([0,1],nTimestamps,1));
+                bVect2{i} = logical(randi([0,1],nTimestamps,1));
+                segTemp = segTemp.addSegmentVector(tagName1{i},bVecs1{i} );
+                segTemp = segTemp.addSegmentVector(tagName2{i},  bVect2{i});
+                segs{i} = segTemp;
+                returns.addSegmentsToChannels(segTemp,['Channel ', int2str(i)]);
+            end
+            
+            
+            
+            retSegments = returns.segments;
+            for i = 1:numel(tags)
+                testCase.verifyEqual(retSegments{i}.tags{1}, tagName1{i});
+                testCase.verifyEqual(retSegments{i}.tags{2}, tagName2{i});
+                
+                bVec = bVecs1{i};
+                valueChange = [bVec(1); diff(bVec) ~= 0];
+                changeInds = find(valueChange);
+                durationInds = diff(find([valueChange; 1]));
+            
+                starts1 = changeInds(1 : 2 : end);
+                durations1 = durationInds(1 : 2 : end);
+                
+                bVec = bVect2{i};
+                valueChange = [bVec(1); diff(bVec) ~= 0];
+                changeInds = find(valueChange);
+                durationInds = diff(find([valueChange; 1]));
+                
+                starts2 = changeInds(1 : 2 : end);
+                durations2 = durationInds(1 : 2 : end);
+                
+                testCase.verifyEqual(retSegments{i}.starts{1},starts1);
+                testCase.verifyEqual(retSegments{i}.starts{2}, starts2);
+                testCase.verifyEqual(retSegments{i}.durations{1},durations1);
+                testCase.verifyEqual(retSegments{i}.durations{2},durations2);
+            end
+            
+            testCase.verifyError(@()returns2.addSegmentsToChannels('test1', 'Channel 1'), 'addSegmentsToChannels:NotASegmentObject');
+            %             testCase.verifyError(@()returns.addSegments(segments1), 'addSegments:SegmentsAlreadyAdded');
+            testCase.verifyError(@()returns2.addSegmentsToChannels(segments2, 'Channel 2'), 'addSegmentsToChannels:InvalidNumberOfTimestamps');
+            
+        end
+        
+        
         function testDifferentTimeInputs(testCase)
             
             ts = duration(0, 0, 1);

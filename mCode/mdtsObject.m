@@ -489,6 +489,52 @@ classdef mdtsObject < mdtsCoreObject
             
         end
         
+        function obj = addSegmentsToAllChannels(obj, segObj, varargin)
+            % Purpose : Add symbolic representation to all channels which
+            % do not have a symbolic representation assigned
+            %
+            % Syntax :
+            %   mdtsCoreObject = mdtsObject.addSymbRepToAllChannels(symbObj)
+            %
+            % Input Parameters :
+            %   symbObj : symbolicObject with the corresponding symbolic
+            %   representation
+            %
+            %   keepExistentSymbReps : Flag to indicate if existent
+            %   symbolic representations in the mdtsObject shall be
+            %   preserved. All existen symbolic representations are
+            %   overwritten when false and preserved when true.
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added symbolic
+            %   representations
+            
+            p = inputParser;
+            defaultKeepExistentSegReps = false;
+            addParameter(p, 'keepExistentSegReps', defaultKeepExistentSegReps, @(x)validateattributes(x, {'logical'}, {'nonempty'}));
+            parse(p, varargin{:});
+            
+            keepExistentSegReps = p.Results.keepExistentSegReps;
+            
+            if~isa(segObj, 'segmentsObject')
+                
+                errID = 'addSegmentsToAllChannels:NotASegmentsObject';
+                errMsg = 'The input segObj must be of class segmentsObject!';
+                error(errID, errMsg);
+                
+            elseif~(segObj.nTimestamps == numel(obj.time))
+                
+                errID = 'addSegmentsToAllChannels:InvalidNumberOfTimestamps';
+                errMsg = 'The input segmentsObj must be of the same size as the time vector of the mdtsObject!';
+                error(errID, errMsg);
+                
+            end
+                                   
+            obj = addSegmentsToAllChannels@mdtsCoreObject(obj, segObj, keepExistentSegReps);
+            
+        end
+        
+        
         function obj = addSegments(obj, segmentsObj)
             % Purpose : Add segmentsObject to mdtsObject
             %
@@ -520,10 +566,52 @@ classdef mdtsObject < mdtsCoreObject
                 error(errID, errMsg);
                 
             end
-            
-            obj = addSegments@mdtsCoreObject(obj, segmentsObj);
+            obj = obj.addSegmentsToAllChannels(segmentsObj);
+%             obj = addSegments@mdtsCoreObject(obj, segmentsObj);
             
         end
+        
+          function obj = addSegmentsToChannels(obj, segObj, channelNames)
+            % Purpose : Add symbolic representation to channel
+            %
+            % Syntax :
+            %   mdtsObject = mdtsObject.addSymbRepToChannel(channelNumber, symbObj)
+            %
+            % Input Parameters :
+            %   channelNumber : channel number or tag indices of the
+            %   according channel/tag
+            %
+            %   symbObj : SymbRepObject with the corresponding symbolic
+            %   representation
+            %
+            % Return Parameters :
+            %   mdtsObject : Original object with the added symbolic
+            %   representation
+            channelNumber= obj.getTagIndices(channelNames);
+            if~isa(segObj, 'segmentsObject')
+                
+                errID = 'addSegmentsToChannels:NotASegmentObject';
+                errMsg = 'The input segObj must be of class segmentObject!';
+                error(errID, errMsg);
+                
+            elseif~isa(channelNumber, 'numeric')
+                
+                errID = 'addSegmentsToChannels:InvalidChannelNames';
+                errMsg = 'Channel names not defined';
+                error(errID, errMsg);
+                
+            elseif~(segObj.nTimestamps == numel(obj.time))
+                
+                errID = 'addSegmentsToChannels:InvalidNumberOfTimestamps';
+                errMsg = 'The input segmentsObj must be of the same size as the time vector of the mdtsObject!';
+                error(errID, errMsg);
+                
+            end
+                                   
+            obj = addSegmentsToChannels@mdtsCoreObject(obj, segObj,channelNumber);
+            
+        end
+        
         
         function timeDateNum = convert2Datenum(obj, timeInput)
             % Purpose : Convert timeInput to datenum
