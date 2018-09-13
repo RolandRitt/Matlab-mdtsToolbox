@@ -140,7 +140,7 @@ classdef extractSegmentsTestClass < matlab.unittest.TestCase
             eventInfo4.eventDuration = int32(0);
             keys = {'Start', 'Middle', 'End', 'Outer'};
             tsEvents = containers.Map(keys, {eventInfo1, eventInfo2, eventInfo3, eventInfo4});
-            
+            segments = cell(1, numel(tags));
             bVec1 = false(nX, 1);
             bVec1(1 : 100) = true;
             bVec1(800 : end) = true;
@@ -155,13 +155,24 @@ classdef extractSegmentsTestClass < matlab.unittest.TestCase
             bVec3(800 : end) = true;
             tagName3 = 'ThirdSegments';
             
-            segmentsObj = segmentsObject(nX);
-            segmentsObj = segmentsObj.addSegmentVector(tagName1, bVec1);
-            segmentsObj = segmentsObj.addSegmentVector(tagName2, bVec2);
-            segmentsObj = segmentsObj.addSegmentVector(tagName3, bVec3);
-            for i = 1:numel(tags)
-                segments{i} = segmentsObj;
-            end
+            segmentsObj1 = segmentsObject(nX);
+            segmentsObj1 = segmentsObj1.addSegmentVector(tagName1, bVec1);
+            segmentsObj1 = segmentsObj1.addSegmentVector(tagName2, bVec2);
+            segmentsObj1 = segmentsObj1.addSegmentVector(tagName3, bVec3);
+            
+            segmentsObj2 = segmentsObject(nX);
+%             segmentsObj2 = segmentsObj.addSegmentVector(tagName1, bVec1);
+            segmentsObj2 = segmentsObj2.addSegmentVector(tagName2, bVec2);
+            segmentsObj2 = segmentsObj2.addSegmentVector(tagName3, bVec3);
+            
+            
+            segmentsObj3 = segmentsObject(nX);
+            segmentsObj3 = segmentsObj3.addSegmentVector(tagName1, bVec1);
+            segmentsObj3 = segmentsObj3.addSegmentVector(tagName2, bVec2);
+%             segmentsObj3 = segmentsObj3.addSegmentVector(tagName3, bVec3);
+            segments{1} = segmentsObj1;
+            segments{2} = segmentsObj2;
+            segments{3} = segmentsObj3;
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'segments', segments);
             
