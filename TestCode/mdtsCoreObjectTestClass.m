@@ -1040,6 +1040,81 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function test_return_nChannels(testCase)
+             ts = [];
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 50));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 62));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 99))];
+            
+            randomNumChannels = randi(10,1,1);
+            data = randn(4,randomNumChannels);
+            for i=1:randomNumChannels
+                tags{i} = ['Channel ', int2str(i)];
+            end
+%             data = [9, 8;
+%                 7, 6;
+%                 8, 7;
+%                 6, 5];
+%             tags = {'Channel 1'; 'Channel2'};
+            units = {'s', 'min'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            tsEvents = containers.Map;
+            symbReps = {};
+            nTimestamps = numel(time);
+            segments = segmentsObject(nTimestamps);
+            
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            
+            testCase.verifyEqual(returns.nChannels, randomNumChannels);
+            
+            
+        end
+        
+        function test_return_nDataPoints(testCase)
+             ts = [];
+             
+             
+            randomNumDataPoints = randi(500,1,1);
+            
+            timed = datetime(2017, 7, 31, 14, 3, 3, 123) + seconds(1:randomNumDataPoints);
+            time = datenum(timed);
+             
+%             time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
+%                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 50));
+%                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 62));
+%                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 99))];
+            
+            data = randn(randomNumDataPoints,2);
+
+%             data = [9, 8;
+%                 7, 6;
+%                 8, 7;
+%                 6, 5];
+             tags = {'Channel 1'; 'Channel2'};
+            units = {'s', 'min'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            tsEvents = containers.Map;
+            symbReps = {};
+            nTimestamps = numel(time);
+            segments = segmentsObject(nTimestamps);
+            
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            
+            testCase.verifyEqual(returns.nDataPoints, randomNumDataPoints);
+            
+            
+        end
+        
+        
     end
     
 end

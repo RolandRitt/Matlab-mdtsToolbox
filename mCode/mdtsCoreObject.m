@@ -41,6 +41,8 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         uniform
         ts
         isSubset = false;
+        nChannels
+        nDataPoints
         
         
     end
@@ -109,6 +111,35 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                 fs = 1 / ts_s;
                 
             end
+            
+        end
+        
+        
+        function nChannels = get.nChannels(obj)
+            % Purpose : return number of Channels in mdtsObject
+            %
+            % Syntax : nChannels = get.nChannels(obj)
+            %
+            % Input Parameters :
+            %
+            % Return Parameters :
+            %   nChannels : number of channels
+            
+            nChannels = numel(obj.tags);
+            
+        end
+        
+        function nDataPoints = get.nDataPoints(obj)
+            % Purpose : return number of datapoints in mdtsObj
+            %
+            % Syntax : nDataPoints = get.nDataPoints(obj)
+            %
+            % Input Parameters :
+            %
+            % Return Parameters :
+            %   nChannels : number of channels
+            
+            nDataPoints = numel(obj.time);
             
         end
         
