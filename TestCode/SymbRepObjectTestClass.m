@@ -452,6 +452,56 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testgetstartind(testCase)
+            t = SymbRepObject([1,2,3,4,5,1,4,3,2,1,5], categorical({'a','c','b','a','c','a', 'b','a','c','a','e'}));
+            nSyms = length(t.symbols);
+            nRand = randi(nSyms);
+            cuSum = cumsum(t.durations);
+            % one index
+            inds = t.getStartInd(nRand);
+            
+            
+            testCase.verifyEqual(inds, cuSum(nRand)-t.durations(nRand) + 1);
+            
+            % more indices
+            nRep = 4;
+            nRand2 = randi(nSyms, 1,nRep);
+            inds2 = t.getStartInd(nRand2);
+            for i=1:nRep
+                out2(i) = cuSum(nRand2(i))-t.durations(nRand2(i)) + 1;
+            end
+            testCase.verifyEqual(inds2, out2);
+        end
+        function testfindSequence(testCase)
+            
+            t = SymbRepObject([1,2,3,4,5,1,4,3,2,1,5], categorical({'a','c','b','a','c','a', 'b','a','c','a','e'}));
+            
+            % test empty
+            [a,b] = t.findSequence({'b','e'});
+            
+            testCase.verifyEmpty(a);
+            testCase.verifyEmpty(b);
+            
+            
+            % test empty non given symbol
+            [a,b] = t.findSequence({'x'});
+             testCase.verifyEmpty( a);
+             testCase.verifyEmpty( b);
+             
+            % test single symbol
+            
+             [a,b] = t.findSequence({'a'});
+             [a1,b1] = t.findSymbol('a');
+             testCase.verifyEqual(a, a1);
+             testCase.verifyEqual(b, b1);
+            
+             % test multiple symbols
+             [a,b] = t.findSequence({'a','c','a'});
+             testCase.verifyEqual(a, [7;21]);
+             testCase.verifyEqual(b, [10,6]);  
+            
+        end
+        
     end
     
 end
