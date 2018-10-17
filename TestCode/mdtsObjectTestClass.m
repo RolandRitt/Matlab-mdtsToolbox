@@ -77,7 +77,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns2.time, time);
             testCase.verifyEqual(returns2.data, data);
             testCase.verifyEqual(returns2.tags, tags);
-            testCase.verifyEqual(returns2.units, {'-', '-'});
+            testCase.verifyEqual(returns2.units, {'', ''});
             testCase.verifyEqual(returns2.ts, []);
             testCase.verifyEqual(returns2.uniform, 0);
             testCase.verifyEqual(returns2.name, 'Time Series');

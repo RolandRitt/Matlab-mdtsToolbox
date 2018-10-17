@@ -37,7 +37,7 @@ classdef mdtsObject < mdtsCoreObject
             
             p = inputParser;
             defaultUnits = cell(1, numel(tags));
-            defaultUnits(:) = {'-'};
+%             defaultUnits(:) = {'-'};
             defaultts = [];
             defaultName = 'Time Series';
             defaultWho = 'Author';
