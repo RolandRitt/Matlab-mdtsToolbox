@@ -98,7 +98,13 @@ end
 % 
 % fM = FigureManager;
 
-[out, ph] = plotMulti(xTime, inputObject.data, 'time', inputObject.tags,'yLabelsLatex',false, UnmatchedArgs{:});
+tagsLabel = inputObject.tags;
+
+indsUnits = ~cellfun(@isempty,inputObject.units);
+
+tagsLabel(indsUnits) =  strcat(inputObject.tags(indsUnits), ' [', inputObject.units(indsUnits), ']');
+
+[out, ph] = plotMulti(xTime, inputObject.data, 'time', tagsLabel,'yLabelsLatex',false, UnmatchedArgs{:});
 
 shouldAddold = fM.shouldAdd;
 fM.shouldAdd = false; %% otherwise it is too slow!!!
