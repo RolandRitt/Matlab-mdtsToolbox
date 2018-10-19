@@ -599,8 +599,10 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             tsEvents = containers.Map;
             symbReps = cell(1, numel(tags));
             nTimestamps = numel(time);
-            segments = segmentsObject(nTimestamps);
-            
+            segments{1} = segmentsObject(nTimestamps);
+            segments{2} = segmentsObject(nTimestamps);
+            segments{3} = segmentsObject(nTimestamps);
+            segments{4} = segmentsObject(nTimestamps);
             addData = [2, 3;
                 3, 4;
                 4, 5;
@@ -626,6 +628,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
             testCase.verifyEqual(returns2.data(:, 5 : end), [addData, addData]);
             testCase.verifyEqual(returns2.tags(:, 5 : end), [addTags1, addTags2]);
+            testCase.verifyEqual(size(returns.segments), size(returns.tags));
             
         end
         
