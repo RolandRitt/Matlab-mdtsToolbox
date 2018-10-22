@@ -88,6 +88,58 @@ classdef segmentsObject
                         
         end
         
+       function obj = addSegmentVectorStartDuration(obj, tagName, startInds,durations)
+            % Purpose : add a logical vector to the object
+            %
+            % Syntax : obj = addSegmentVector(tagName, bVec)
+            %
+            % Input Parameters :
+            %   tagName : Name of the channel to be added
+            %   bVec : logical vector representing the segments
+            %
+            % Return Parameters :
+            %
+            
+            if~ischar(tagName)
+                
+                errID = 'addSegmentVectorStartDuration:InvalidInputtagName';
+                errMsg = 'Input tagName must be a string (char array)!';
+                error(errID, errMsg);
+                
+            end
+            
+            if~isnumeric(startInds)
+                
+                errID = 'addSegmentVectorStartDuration:InvalidInputstartInds';
+                errMsg = 'Input startInds must be a numerical vector!';
+                error(errID, errMsg);
+                
+            end
+            
+            if~isnumeric(durations)
+                
+                errID = 'addSegmentVectorStartDuration:InvalidInputdurations';
+                errMsg = 'Input durations must be a numerical vector!';
+                error(errID, errMsg);
+                
+            end
+            
+            
+             if~isequal(size(startInds) ,size(durations))
+                
+                errID = 'addSegmentVectorStartDuration:InvalidInputSize';
+                errMsg = 'Input durations and startInds must be of same size!';
+                error(errID, errMsg);
+                
+            end
+            
+            obj.tags = [obj.tags, tagName];
+
+            obj.starts = [obj.starts, {startInds}];
+            obj.durations = [obj.durations, {durations}];
+                        
+        end
+        
         function bVec = getLogicalVector(obj, tagName)
             % Purpose : return logical vector which represents all segments
             % of channel tagName
