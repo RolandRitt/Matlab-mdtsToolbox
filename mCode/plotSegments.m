@@ -53,41 +53,44 @@ figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
 fM = FigureManager;
 
 [out, ph] = plotMulti(xTime, inputObject.data, 'time', inputObject.tags,'yLabelsLatex',false, UnmatchedArgs{:});
-
-shouldAddold = fM.shouldAdd;
-fM.shouldAdd = false; %% otherwise it is too slow!!!
 title(out(1), inputObject.name, 'Interpreter', 'none');
 
-%% Highlight Segments
 
-% segmentsObj = inputObject.segments;
+pa = plotSegmentsOnAxes(inputObject, out, segmentTag);
+% shouldAddold = fM.shouldAdd;
+% fM.shouldAdd = false; %% otherwise it is too slow!!!
 % 
-% tagNo = find(ismember(segmentsObj.tags, segmentTag));
-
-
-
-
-for j = 1 : numel(out)
-    
-    segmentsObj = inputObject.segments{j};
-    if ~isempty(segmentsObj)
-        tagNo = find(ismember(segmentsObj.tags, segmentTag));
-        starts = segmentsObj.starts{tagNo};
-        durations = segmentsObj.durations{tagNo};
-        xStart = inputObject.timeInFormat(starts);
-        xEnd = inputObject.timeInFormat(starts + durations - 1);
-        XStart = [xStart';xEnd'; xEnd'; xStart'];
-        yLim = out(j).YLim;
-        yMin = yLim(1);
-        yMax = yLim(2);
-        
-        hold(out(j), 'on');
-        
-        pa = fill(out(j), XStart, [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'r');
-    end
-    
-end
-
+% 
+% %% Highlight Segments
+% 
+% % segmentsObj = inputObject.segments;
+% % 
+% % tagNo = find(ismember(segmentsObj.tags, segmentTag));
+% 
+% 
+% 
+% 
+% for j = 1 : numel(out)
+%     
+%     segmentsObj = inputObject.segments{j};
+%     if ~isempty(segmentsObj)
+%         tagNo = find(ismember(segmentsObj.tags, segmentTag));
+%         starts = segmentsObj.starts{tagNo};
+%         durations = segmentsObj.durations{tagNo};
+%         xStart = inputObject.timeInFormat(starts);
+%         xEnd = inputObject.timeInFormat(starts + durations - 1);
+%         XStart = [xStart';xEnd'; xEnd'; xStart'];
+%         yLim = out(j).YLim;
+%         yMin = yLim(1);
+%         yMax = yLim(2);
+%         
+%         hold(out(j), 'on');
+%         
+%         pa = fill(out(j), XStart, [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'r');
+%     end
+%     
+% end
+% fM.shouldAdd = shouldAddold;
 
 %%
 %%
@@ -96,7 +99,7 @@ for i=1:numel(ph)
     set(out(i), 'Layer', 'top');
 end
 
-fM.shouldAdd = shouldAddold;
+
 
 end
 
