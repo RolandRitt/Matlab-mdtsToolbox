@@ -226,7 +226,7 @@ classdef SymbRepObject
             newSequence = {['[', joinedSequence{1}, ']']};
             tempRemoving = {'TempRemoving'};
             tempRemovingCat = categorical(tempRemoving);
-            symbols = addcats(obj.symbols, [newSequence, tempRemoving])';
+            symbols = addcats(obj.symbols, [newSequence, tempRemoving]);
             indArray = ones(numel(obj.symbols) + nSymbSequence - 1, 1);
             
             try
@@ -240,8 +240,8 @@ classdef SymbRepObject
                 return
             end
             symbInd = find(indArray(nSymbSequence:end));
-            startInds = obj.getStartInd(symbInd)';
-            durations = nan(1,length(symbInd));
+            startInds = obj.getStartInd(symbInd);
+            durations = nan(length(symbInd),1);
             for i=1:length(symbInd)
                 durations(i) = sum(obj.durations(symbInd(i):(symbInd(i) +nSymbSequence-1)));
             end

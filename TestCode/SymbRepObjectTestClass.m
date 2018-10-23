@@ -474,7 +474,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
         end
         function testfindSequence(testCase)
             
-            t = SymbRepObject([1,2,3,4,5,1,4,3,2,1,5], categorical({'a','c','b','a','c','a', 'b','a','c','a','e'}));
+            t = SymbRepObject([1,2,3,4,5,1,4,3,2,1,5]', categorical({'a','c','b','a','c','a', 'b','a','c','a','e'})');
             
             % test empty
             [a,b] = t.findSequence({'b','e'});
@@ -498,7 +498,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
              % test multiple symbols
              [a,b] = t.findSequence({'a','c','a'});
              testCase.verifyEqual(a, [7;21]);
-             testCase.verifyEqual(b, [10,6]);  
+             testCase.verifyEqual(b, [10;6]);  
             
         end
         
