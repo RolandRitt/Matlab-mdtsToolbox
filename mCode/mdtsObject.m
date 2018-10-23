@@ -288,17 +288,17 @@ classdef mdtsObject < mdtsCoreObject
             
             timeIntervalDatenum = obj.convert2Datenum(timeInterval);
             
-            if(timeIntervalDatenum(1) >= obj.time(1) && timeIntervalDatenum(end) <= obj.time(end))
+%             if(timeIntervalDatenum(1) >= obj.time(1) && timeIntervalDatenum(end) <= obj.time(end))
                 
                 intervalIndices = getIntervalIndices@mdtsCoreObject(obj, timeIntervalDatenum); 
                 
-            else
-                
-                errID = 'getIntervalIndices:IntervalOutOfBoundaries';
-                errMsg = 'Specified interval exceeds the boundaries of the data!';
-                error(errID, errMsg);
-                
-            end
+%             else
+%                 
+%                 errID = 'getIntervalIndices:IntervalOutOfBoundaries';
+%                 errMsg = 'Specified interval exceeds the boundaries of the data!';
+%                 error(errID, errMsg);
+%                 
+%             end
             
         end
         

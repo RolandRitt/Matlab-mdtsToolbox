@@ -384,6 +384,13 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returnObject3.isSubset, true);
             testCase.verifyEqual(returnObject3.timeDateTime, datetime(timeToExtract2, 'ConvertFrom', 'datenum'));
             
+            returnObject4 = returns.getData(tagsToExtract, timeToExtract2+datenum(minutes(30)));
+            testCase.verifyEqual(returnObject4.time, []);
+            testCase.verifyEqual(returnObject4.data, double.empty(0,2));
+            testCase.verifyEqual(returnObject4.isSubset, true);
+            testCase.verifyEqual(returnObject4.timeDateTime, datetime([],[],[]));
+            
+            
         end
         
         function testgetDataNarginN(testCase)
@@ -541,7 +548,18 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
-            testCase.verifyError(@()returns.getIntervalIndices(tooLargeInterval), 'getIntervalIndices:IntervalOutOfBoundaries');
+            indStart = find(time>=tooLargeInterval(1), 1);
+            indStop = find(time<=tooLargeInterval(2), 1,'last');
+            
+            testCase.verifyEqual(returns.getIntervalIndices(tooLargeInterval),[indStart, indStop]');
+            
+            
+            OutsideInterval = [time(end) + seconds(1); time(end) + seconds(5)];
+            
+            indStart = find(time>=OutsideInterval(1), 1);
+            indStop = find(time<=OutsideInterval(2), 1,'last');
+            
+            testCase.verifyEqual(returns.getIntervalIndices(OutsideInterval),double.empty(2,0));
             
         end
         
