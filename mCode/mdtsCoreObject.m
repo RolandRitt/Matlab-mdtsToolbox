@@ -213,9 +213,13 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                 s1subs = s(1).subs{1};
                 
                 if isnumeric(s1subs) %direct indexing
-                    
+                    if isempty(s1subs)
+                        intervalI = [];
+                    else
+                        
                     intervalI(1) = min(s1subs);
                     intervalI(2) =  max(s1subs);
+                    end
                     extractRows = 1;
                     
                 elseif iscell(s1subs) % time indexing
@@ -372,12 +376,19 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                     end
                     
                     intervalIndices = obj.getIntervalIndices(timeInterval);
+%                     if isempty(intervalIndices)
+%                         intervalIndices = [0;0];
+%                     end
             
             end
     
             s = struct;
             s.type = '()';
-            s.subs = {intervalIndices(1) : intervalIndices(end), tagList};
+            if isempty(intervalIndices)
+                s.subs = {[], tagList};
+            else
+                s.subs = {intervalIndices(1) : intervalIndices(end), tagList};
+            end
             
             returnObject = obj.subsref(s);
     
@@ -453,8 +464,12 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             startI = find(obj.time >= timeInterval(1), 1);
             endI = find(obj.time <= timeInterval(end), 1, 'last');
             
-            intervalIndices = [startI; endI];
+            if isempty(startI)|| isempty(endI)
+                intervalIndices = double.empty(2,0);
+            else
             
+                intervalIndices = [startI; endI];
+            end
         end
         
         function correctTags = checkTags(obj, tagList)
@@ -728,8 +743,13 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             %
             % Return Parameters :
             
-            obj.time = obj.time(intervalIndices(1) : intervalIndices(end));
-            obj.data = obj.data(intervalIndices(1) : intervalIndices(end), :);
+            if isempty(intervalIndices)
+                obj.time = obj.time([]);
+                obj.data = obj.data([], :);
+            else
+                obj.time = obj.time(intervalIndices(1) : intervalIndices(end));
+                obj.data = obj.data(intervalIndices(1) : intervalIndices(end), :);
+            end
         
         end
         
