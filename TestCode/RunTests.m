@@ -18,8 +18,9 @@
 %
 %%
 
-tests = {'CoreObjectTestClass.m',...
-         'CoreObject_Tests.m'};
+% tests = {'mdtsCoreObjectTestClass.m',...
+%          'CoreObject_Tests.m'};
+tests = {'mdtsCoreObjectTestClass.m'};
 runtests(tests);
 
 

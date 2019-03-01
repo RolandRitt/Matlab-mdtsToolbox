@@ -18,9 +18,62 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
     % --------------------------------------------------
     %
     
-    properties
+       properties
+        defaultObj;
+        defaultAliasTable;
+        defaultAliasTable2;
+        defaultTags;
+        defaultTags2;
     end
-    
+    methods(TestMethodSetup)
+        function createDefaultTags(testCase)
+            testCase.defaultTags = {'Channel 1', 'Channel2'};
+            testCase.defaultTags2 = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+        end
+        function createDefaultObj(testCase)
+                       ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8, 7, 6;
+                7, 6, 5, 4;
+                8, 7, 6, 5;
+                6, 5, 4, 3];
+            tags = testCase.defaultTags2;
+            units = {'s', 'min', 'elephants', 'giraffes'};
+            name = 'TS-Test';
+            who = 'Operator';
+            when = 'Now';
+            description = {'This is a TS-Test'; 'with two text lines'};
+            comment = {'This is'; 'a comment'};
+            tsEvents = containers.Map;
+            symbReps = cell(1, numel(tags));
+            nTimestamps = numel(time);
+            segments = cell(1, numel(tags));
+            for i=1:length(tags)
+                segments{i} = segmentsObject(nTimestamps);
+            end
+            AliasTable = array2table(cell(0,1));
+            AliasTable.Properties.VariableNames = {'OrigTag'};
+            testCase.defaultObj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,AliasTable);
+           
+            
+        end
+        function createDeafaultAliasTable(testCase)
+            tags = testCase.defaultTags;
+            AliasTable = array2table(cell(0,1));
+            AliasTable.Properties.VariableNames = {'OrigTag'};
+            AliasTable({'alias1', 'al 2'},:) = tags([2,1])';
+            testCase.defaultAliasTable = AliasTable;
+            
+            tags2 = testCase.defaultTags2;
+            AliasTable2 = array2table(cell(0,1));
+            AliasTable2.Properties.VariableNames = {'OrigTag'};
+            AliasTable2({'alias 1', 'alias 2', 'alias 3', 'alias 4'},:) = tags2([2,1,4,3])';
+            testCase.defaultAliasTable2 = AliasTable2;
+        end
+    end
     methods (Test)
         
         function testEqualDistribution(testCase)
@@ -46,7 +99,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             nTimestamps = numel(time);
             segments = segmentsObject(nTimestamps);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments, table());
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -92,7 +145,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             nTimestamps = numel(time);
             segments = segmentsObject(nTimestamps);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments, table());
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -159,7 +212,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             for i=1:numel(tags)
                 segmentsIn{i} = segments;
             end
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn, table());
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -279,7 +332,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             dataToExtract = data(:, columnsToExtract);
             unitsToExtract = units(:, columnsToExtract);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn,table());
             returnObject = returns.getData(tagsToExtract);
             
             testCase.verifyEqual(returnObject.time, time);
@@ -331,7 +384,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             dataToExtract2 = data(linesToExtract2, columnsToExtract);
             unitsToExtract = units(:, columnsToExtract);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn,table());
             returnObject1 = returns.getData(tagsToExtract, timeToExtract1);
             returnObject2 = returns.getData(tagsToExtract, timeToExtract2);
             returnObject3 = returns.getData(tagsToExtract, timeToExtract2StartEnd);
@@ -388,7 +441,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             expectedReturn1 = data(:, columnsToExtract);
             expectedReturn2 = data(rowsToExtract, columnsToExtract);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn,table());
             returnMat1 = returns.getRawData(tagsToExtract);
             returnMat2 = returns.getRawData(tagsToExtract, timeToExtract);
             
@@ -399,26 +452,9 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
         
         function testgetTagIndices(testCase)
             
-            ts = duration(0, 0, 0, 50);
-            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
-                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
-                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
-                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
-            data = [9, 8, 7, 6;
-                7, 6, 5, 4;
-                8, 7, 6, 5;
-                6, 5, 4, 3];
-            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
-            units = {'s', 'min', 'elephants', 'giraffes'};
-            name = 'TS-Test';
-            who = 'Operator';
-            when = 'Now';
-            description = {'This is a TS-Test'; 'with two text lines'};
-            comment = {'This is'; 'a comment'};
-            tsEvents = containers.Map;
-            symbReps = cell(1, numel(tags));
-            nTimestamps = numel(time);
-            segments = segmentsObject(nTimestamps);
+            tags = testCase.defaultTags2;
+            
+            returns = testCase.defaultObj;
             
             columnsToExtract1 = [2, 4];
             tagsToExtract1 = tags(columnsToExtract1);
@@ -426,13 +462,32 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             columnsToExtract2 = [4, 3];
             tagsToExtract2 = tags(columnsToExtract2);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
-            
+             
             tagIndices1 = returns.getTagIndices(tagsToExtract1);
             tagIndices2 = returns.getTagIndices(tagsToExtract2);
             
             testCase.verifyEqual(tagIndices1, columnsToExtract1);
             testCase.verifyEqual(tagIndices2, columnsToExtract2);
+            
+            
+            tagsIndsAlias = [2,1,4,3]; %default order of alias to tags
+            returns.aliasTable = testCase.defaultAliasTable2;
+            aliases = testCase.defaultAliasTable2.Properties.RowNames';
+            allTagsAlias = unique([returns.tags, returns.aliasTable.Properties.RowNames']);
+            
+            test_indsAlias = returns.getTagIndices(aliases);
+            testCase.verifyEqual(test_indsAlias,tagsIndsAlias);
+            
+            data1 = returns.data(:,1)+randn(size(returns.data(:,1)));
+            
+            returns.expandDataSet(data1, {'TestTag'});
+            indNewTag = length(returns.tags);
+            
+            returns.aliasTable({'New Alias'},'OrigTag') = {'TestTag'};
+            
+            test_newAlias = returns.getTagIndices('TestTag');
+            testCase.verifyEqual(test_newAlias, indNewTag);
+            
             
         end
         
@@ -466,7 +521,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             linesToExtract = [2; 4];
             timeInterval = time(linesToExtract);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             timeIndices = returns.getIntervalIndices(timeInterval);
             
             testCase.verifyEqual(timeIndices, linesToExtract);
@@ -504,7 +559,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             tagListInCorrect1 = {'Channel 1', 'Channel 2', 'Channel 3', 'SomeChannel'};
             tagListInCorrect2 = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 5'};
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             
             testCase.verifyEqual(true, returns.checkTags(tagListCorrect));
             testCase.verifyEqual(false, returns.checkTags(tagListInCorrect1));
@@ -553,7 +608,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             date3 = '25-Jul-2017';
             date4 = 'Aug-2017';
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn,table());
             extractedReturns = returns.getData(tags, date4);
             
             [start1, end1] = returns.startEndOfDate(date1);
@@ -612,8 +667,8 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             addTags1 = {'AddedTag1', 'AddedTag2'};
             addTags2 = {'AddedTag3', 'AddedTag4'};
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
-            returns2 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
+            returns2 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             
             returns.expandDataSet(addData, addTags1);
             returns2.expandDataSet(addData, addTags1).expandDataSet(addData, addTags2);
@@ -661,7 +716,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             segments{2} = segmentsObject(nTimestamps);
             segments{3} = segmentsObject(nTimestamps);
             segments{4} = segmentsObject(nTimestamps);
-%             segments = segmentsObject(nTimestamps);
+            %             segments = segmentsObject(nTimestamps);
             
             addData = [2, 3;
                 3, 4;
@@ -671,7 +726,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                 7, 8];
             addTags = {'AddedTag1', 'AddedTag2'};
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             returns.expandDataSet(addData, addTags);
             
             extraction1 = returns(:, :);
@@ -726,7 +781,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             nTimestamps = numel(time);
             segments = segmentsObject(nTimestamps);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             
             eventInfo.eventTime = time(2);
             eventInfo.eventDuration = 5 * ts;
@@ -764,7 +819,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             nTimestamps = numel(time);
             segments = segmentsObject(nTimestamps);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             
             durations = [4; 5];
             symbols = categorical({'a'; 'b'}, {'a'; 'b'});
@@ -806,8 +861,8 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             nTimestamps = numel(time);
             segments = segmentsObject(nTimestamps);
             
-            returns1 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
-            returns2 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns1 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
+            returns2 = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             
             durations1 = [4; 5];
             symbols1 = categorical({'a'; 'b'}, {'a'; 'b'});
@@ -898,7 +953,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             segments = segments.addSegmentVector(tagName1, bVec1);
             segments = segments.addSegmentVector(tagName2, bVec2);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segReps,table());
             
             returns.addSegmentsToAllChannels(segments, false);
             
@@ -940,18 +995,18 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             segReps = cell(1, numel(tags));
             nTimestamps = 100;
             segments = segmentsObject(nTimestamps);
-%             tagName1 = 'newChannel';
-%             bVec1 = false(nTimestamps, 1);
-%             tagName2 = 'secondChannel';
-%             bVec2 = true(nTimestamps, 1);
-%             segments = segments.addSegmentVector(tagName1, bVec1);
-%             segments = segments.addSegmentVector(tagName2, bVec2);
-%             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segReps);
+            %             tagName1 = 'newChannel';
+            %             bVec1 = false(nTimestamps, 1);
+            %             tagName2 = 'secondChannel';
+            %             bVec2 = true(nTimestamps, 1);
+            %             segments = segments.addSegmentVector(tagName1, bVec1);
+            %             segments = segments.addSegmentVector(tagName2, bVec2);
+            %
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segReps,table());
             
-%             returns.addSegmentsToAllChannels(segments, false);
+            %             returns.addSegmentsToAllChannels(segments, false);
             
-           
+            
             
             segs = {};
             for i=1:4
@@ -1031,7 +1086,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             segments = segments.addSegmentVector(tagName1, bVec1);
             segments = segments.addSegmentVector(tagName2, bVec2);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segReps);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segReps,table());
             
             returns.addSegments(segments);
             
@@ -1048,7 +1103,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
         end
         
         function test_return_nChannels(testCase)
-             ts = [];
+            ts = [];
             time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 50));
                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 62));
@@ -1059,11 +1114,11 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             for i=1:randomNumChannels
                 tags{i} = ['Channel ', int2str(i)];
             end
-%             data = [9, 8;
-%                 7, 6;
-%                 8, 7;
-%                 6, 5];
-%             tags = {'Channel 1'; 'Channel2'};
+            %             data = [9, 8;
+            %                 7, 6;
+            %                 8, 7;
+            %                 6, 5];
+            %             tags = {'Channel 1'; 'Channel2'};
             units = {'s', 'min'};
             name = 'TS-Test';
             who = 'Operator';
@@ -1075,7 +1130,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             nTimestamps = numel(time);
             segments = segmentsObject(nTimestamps);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             
             testCase.verifyEqual(returns.nChannels, randomNumChannels);
             
@@ -1083,26 +1138,26 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
         end
         
         function test_return_nDataPoints(testCase)
-             ts = [];
-             
-             
+            ts = [];
+            
+            
             randomNumDataPoints = randi(500,1,1);
             
             timed = datetime(2017, 7, 31, 14, 3, 3, 123) + seconds(1:randomNumDataPoints);
             time = datenum(timed);
-             
-%             time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
-%                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 50));
-%                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 62));
-%                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 99))];
+            
+            %             time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123));
+            %                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 50));
+            %                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 62));
+            %                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 99))];
             
             data = randn(randomNumDataPoints,2);
-
-%             data = [9, 8;
-%                 7, 6;
-%                 8, 7;
-%                 6, 5];
-             tags = {'Channel 1'; 'Channel2'};
+            
+            %             data = [9, 8;
+            %                 7, 6;
+            %                 8, 7;
+            %                 6, 5];
+            tags = {'Channel 1'; 'Channel2'};
             units = {'s', 'min'};
             name = 'TS-Test';
             who = 'Operator';
@@ -1114,13 +1169,25 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             nTimestamps = numel(time);
             segments = segmentsObject(nTimestamps);
             
-            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments);
+            returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments,table());
             
             testCase.verifyEqual(returns.nDataPoints, randomNumDataPoints);
             
             
         end
         
+        function test_alias2tag(testCase)
+            tObj = testCase.defaultObj;
+            aliasTable = testCase.defaultAliasTable2;
+            tObj.aliasTable=aliasTable;
+            tagsSoll = aliasTable{:,:};
+            aliasSoll = aliasTable.Properties.RowNames;
+            
+            randInds = randi(length(tagsSoll), 8,1);
+            
+            tags = tObj.alias2tag(aliasSoll(randInds));
+            testCase.verifyEqual(tags, tagsSoll(randInds)')
+        end
         
     end
     

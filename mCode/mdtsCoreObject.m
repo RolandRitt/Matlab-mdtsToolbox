@@ -29,7 +29,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         tsEvents
         symbReps
         segments
-        
+        aliasTable
         %Meta data
         
         name
@@ -58,7 +58,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
     
     methods
         
-        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments)
+        function obj = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segments, aliasTable)
             
             % Core data
             
@@ -68,6 +68,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.tsEvents = tsEvents;
             obj.symbReps = symbReps;
             obj.segments = segments;
+            obj.aliasTable = aliasTable;
             
             % Meta data            
             
@@ -436,14 +437,21 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             %   array of strings
             %
             % Return Parameters :
-            %   tagIndices : Indices of the required tags as array 
+            %   tagIndices : Indices of the required tags as array
+            if ~iscell(tagList)
+                tagList = {tagList}
+            end
             
-            [Lia, idx] = ismember(obj.tags, tagList);
-            indVec = 1 : numel(obj.tags);
-            indVec = indVec(Lia);
-            idx = idx(Lia);
-            [~, idxSort] = sort(idx);
-            tagIndices = indVec(idxSort);
+            [isAlias] = ismember(tagList,obj.aliasTable.Properties.RowNames);            
+            tagList(isAlias) = obj.alias2tag(tagList(isAlias));
+            [~, tagIndices] = ismember(tagList,obj.tags);
+            
+%             [Lia, idx] = ismember(obj.tags, tagList);
+%             indVec = 1 : numel(obj.tags);
+%             indVec = indVec(Lia);
+%             idx = idx(Lia);
+%             [~, idxSort] = sort(idx);
+%             tagIndices = indVec(idxSort);
             
         end
         
@@ -821,6 +829,10 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                 
             end
             
+        end
+        
+        function tags = alias2tag(obj, aliases)
+            tags = obj.aliasTable{aliases,:}'; 
         end
         
     end
