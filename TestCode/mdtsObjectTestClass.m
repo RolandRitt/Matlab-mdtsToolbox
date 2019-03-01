@@ -19,9 +19,83 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
     %
     
     properties
+        defaultObj;
+        defaultAliasTable;
+        defaultAliasTable2;
+        defaultTags;
+        defaultTags2;
     end
-    
+    methods(TestMethodSetup)
+        function createDefaultTags(testCase)
+            testCase.defaultTags = {'Channel 1', 'Channel2'};
+            testCase.defaultTags2 = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+        end
+        function createDefaultObj(testCase)
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8;
+                7, 6;
+                8, 7;
+                6, 5];
+            tags = testCase.defaultTags;
+            testCase.defaultObj = mdtsObject(time, data, tags);
+        end
+        function createDeafaultAliasTable(testCase)
+            tags = testCase.defaultTags;
+            AliasTable = array2table(cell(0,1));
+            AliasTable.Properties.VariableNames = {'OrigTag'};
+            AliasTable({'alias1', 'al 2'},:) = tags([2,1])';
+            testCase.defaultAliasTable = AliasTable;
+            
+            tags2 = testCase.defaultTags2;
+            AliasTable2 = array2table(cell(0,1));
+            AliasTable2.Properties.VariableNames = {'OrigTag'};
+            AliasTable2({'alias 1', 'alias 2', 'alias 3', 'alias 4'},:) = tags2([2,1,4,3])';
+            testCase.defaultAliasTable2 = AliasTable2;
+        end
+    end
     methods (Test)
+        
+        function testMinimumconstructor(testCase)
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8;
+                7, 6;
+                8, 7;
+                6, 5];
+            tags = testCase.defaultTags;
+            defaultAliasTable = array2table(cell(0,1));
+            defaultAliasTable.Properties.VariableNames = {'OrigTag'};
+            
+            
+            returns2 = mdtsObject(time, data, tags);
+                        
+            testCase.verifyEqual(returns2.time, time);
+            testCase.verifyEqual(returns2.data, data);
+            testCase.verifyEqual(returns2.tags, tags);
+            testCase.verifyEqual(returns2.units, {'-', '-'});
+            testCase.verifyEqual(returns2.ts, []);
+            testCase.verifyEqual(returns2.uniform, 0);
+            testCase.verifyEqual(returns2.name, 'Time Series');
+            testCase.verifyEqual(returns2.who, 'Author');
+            testCase.verifyEqual(returns2.when, 'Now');
+            testCase.verifyEqual(returns2.description, 'No description available');
+            testCase.verifyEqual(returns2.comment, 'No comment available');
+            testCase.verifyEqual(returns2.tsEvents, containers.Map);
+            testCase.verifyEqual(returns2.symbReps, cell(1, numel(tags)));
+            testCase.verifyEqual(returns2.segments, cell(1, numel(tags)));
+            testCase.verifyEqual(returns2.aliasTable, defaultAliasTable);
+            
+            
+            testCase.verifyEqual(returns2.timeRelative, time - time(1));
+            testCase.verifyEqual(returns2.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
+        end
         
         function testConstructor(testCase)
             
@@ -34,7 +108,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                 7, 6;
                 8, 7;
                 6, 5];
-            tags = {'Channel 1', 'Channel2'};
+            tags = testCase.defaultTags;
             units = {'s', 'min'};
             name = 'TS-Test';
             who = 'Operator';
@@ -51,9 +125,14 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             symbReps{2} = segObj;
             segments = cell(1, numel(tags));
             segments{2} = segmentsObject(100);
+            defaultAliasTable = array2table(cell(0,1));
+            defaultAliasTable.Properties.VariableNames = {'OrigTag'};
+            defaultAliasTable({'alias1', 'al 2'},:) = tags([2,1])';
             
-            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps, 'segments', segments);
-            returns2 = mdtsObject(time, data, tags);
+            returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, ...
+                'name', name, 'who', who, 'when', when, 'description', description,...
+                'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps, 'segments', segments, 'aliasTable',defaultAliasTable );
+            
             
             testCase.verifyEqual(returns.time, time);
             testCase.verifyEqual(returns.data, data);
@@ -69,28 +148,13 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns.tsEvents, tsEvents);
             testCase.verifyEqual(returns.symbReps, symbReps);
             testCase.verifyEqual(returns.segments, segments);
+            testCase.verifyEqual(returns.aliasTable, defaultAliasTable);
             
             testCase.verifyEqual(returns.fs, 1 / seconds(ts));
             testCase.verifyEqual(returns.timeRelative, time - time(1));
             testCase.verifyEqual(returns.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
             
-            testCase.verifyEqual(returns2.time, time);
-            testCase.verifyEqual(returns2.data, data);
-            testCase.verifyEqual(returns2.tags, tags);
-            testCase.verifyEqual(returns2.units, {'', ''});
-            testCase.verifyEqual(returns2.ts, []);
-            testCase.verifyEqual(returns2.uniform, 0);
-            testCase.verifyEqual(returns2.name, 'Time Series');
-            testCase.verifyEqual(returns2.who, 'Author');
-            testCase.verifyEqual(returns2.when, 'Now');
-            testCase.verifyEqual(returns2.description, 'No description available');
-            testCase.verifyEqual(returns2.comment, 'No comment available');
-            testCase.verifyEqual(returns2.tsEvents, containers.Map);
-            testCase.verifyEqual(returns2.symbReps, cell(1, numel(tags)));
-            testCase.verifyEqual(returns2.segments, cell(1, numel(tags)));
-            
-            testCase.verifyEqual(returns2.timeRelative, time - time(1));
-            testCase.verifyEqual(returns2.timeDateTime, datetime(time, 'ConvertFrom', 'datenum'));
+
             
         end
         
@@ -105,7 +169,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                 7, 6;
                 8, 7;
                 6, 5];
-            tags = {'Channel 1', 'Channel2'};
+            tags = testCase.defaultTags;
             units = {'s', 'min'};
             name = 'TS-Test';
             who = 'Operator';
@@ -578,7 +642,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                 6, 5, 4, 3;
                 4, 3, 2, 1;
                 5, 4, 3, 2];
-            tags = {'Channel 1', 'Channel 2', 'Channel 3', 'Channel 4'};
+            tags = testCase.defaultTags2;
             units = {'s', 'min', 'elephants', 'giraffes'};
             name = 'TS-Test';
             who = 'Operator';
@@ -619,6 +683,10 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyError(@()returns.expandDataSet(addData(:, 1), addTags1), 'expandDataSet:InvalideDataSize2');
             testCase.verifyError(@()returns.expandDataSet(addData, [1, 2]), 'expandDataSet:InvalidTags');
             testCase.verifyError(@()returns.expandDataSet(addData, addTags1), 'expandDataSet:NonUniqueTags');
+            returns.setAliasTable(testCase.defaultAliasTable2);
+            aliases = testCase.defaultAliasTable2.Properties.RowNames;
+            testCase.verifyError(@()returns.expandDataSet(addData, aliases([1,2])'), 'expandDataSet:NonUniqueTagsAlias');
+            testCase.verifyError(@()returns.expandDataSet(addData, [aliases([1]),addTags1(1)]'), 'expandDataSet:NonUniqueTagsAlias');
             returns.expandDataSet(logical(randi([0,1], size(time))), 'logical');
         end
         
@@ -1252,5 +1320,145 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(returns3.getIntervalIndices(timeInterval3), linesToExtract);
             
         end
+        
+        function testisValidAliasTableTags(testCase)
+            tags = {'tag1', 'tag2'};
+            
+            defaultAliasTable = array2table(cell(0,1));
+            defaultAliasTable.Properties.VariableNames = {'OrigTag'};
+            defaultAliasTable({'alias1', 'al 2'},:) = {'tag1', 'tag2'}';
+            
+            testCase.verifyTrue(mdtsObject.isValidAliasTableTags(defaultAliasTable,tags));
+            
+            defaultAliasTable2 = array2table(cell(0,1));
+            defaultAliasTable2.Properties.VariableNames = {'OrigTag'};
+            defaultAliasTable2({'alias1', 'al 2'},:) = {'tag3', 'tag2'}';
+            testCase.verifyFalse(mdtsObject.isValidAliasTableTags(defaultAliasTable2,tags));
+ 
+        end
+        
+        function testsetAliasTable(testCase)
+            
+            ts = duration(0, 0, 0, 50);
+            time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
+                datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)))];
+            data = [9, 8;
+                7, 6;
+                8, 7;
+                6, 5];
+            tags = testCase.defaultTags;
+            defaultAliasTable = array2table(cell(0,1));
+            defaultAliasTable.Properties.VariableNames = {'OrigTag'};
+            defaultAliasTable({'alias1', 'al 2'},:) = tags([2,1])';
+            
+            defaultAliasTable2 = array2table(cell(0,1));
+            defaultAliasTable2.Properties.VariableNames = {'OrigTag'};
+            defaultAliasTable2({'alias1', 'al 2'},:) = {'Channel 3', 'Channel2'}';
+            
+            returns2 = mdtsObject(time, data, tags);
+            
+            returns2.setAliasTable(defaultAliasTable);
+            testCase.verifyEqual(returns2.aliasTable, defaultAliasTable);
+            
+            testCase.verifyError(@()returns2.setAliasTable(defaultAliasTable2),'setAliasTable:InvalidAliasTable');
+            
+        end
+        
+        function testisTagWithinTagList(testCase)
+            tObj = testCase.defaultObj;
+            testCase.verifyTrue(mdtsObject.isTagWithinTagList('Channel 1', tObj.tags));
+            testCase.verifyFalse(mdtsObject.isTagWithinTagList('Tg', tObj.tags))
+            testCase.verifyEqual (mdtsObject.isTagWithinTagList({'Channel 1', 'Channel2'}, tObj.tags), [true,true])
+            testCase.verifyEqual(mdtsObject.isTagWithinTagList({'Channel 1', 'Channel3'}, tObj.tags), [true,false])
+            
+        end
+        function testisTag(testCase)
+            tObj = testCase.defaultObj;
+            aliases = testCase.defaultAliasTable.Properties.RowNames;
+            testCase.verifyTrue(tObj.isTag('Channel 1'));
+            testCase.verifyFalse(tObj.isTag('Tg'));
+            testCase.verifyEqual(tObj.isTag({'Channel 1', 'Channel2'}), [true, true]);
+            testCase.verifyEqual(tObj.isTag({'Channel 1', 'Channel3'}), [true, false]);
+            tObj.setAliasTable(testCase.defaultAliasTable);
+            %with alias
+            testCase.verifyEqual(tObj.isTag({'Channel 1', 'Channel2', aliases{1}}), [true, true, true]);
+            testCase.verifyEqual(tObj.isTag({'Channel 1', 'Channel2', aliases{2}}), [true, true, true]);
+            testCase.verifyEqual(tObj.isTag({'Channel 1', 'Channel2', aliases{2}, aliases{1}}), [true, true, true, true]);
+            testCase.verifyEqual(tObj.isTag({'Channel 1', 'Channel3', aliases{2}, aliases{1}}), [true, false, true, true]);
+            
+%             testCase.verifyTrue(tObj.isTag({'Channel 1', 'Channel2'}));
+%             testCase.verifyFalse(tObj.isTag({'Channel 1', 'Channel3'}));
+            
+        end
+        
+        function testisTagWithinAliasTable(testCase)
+            tObj = testCase.defaultObj;
+            aliases = {'alias1', 'al 2'};
+            AliasTable = testCase.defaultAliasTable;
+            testCase.verifyTrue(mdtsObject.isTagWithinAliasTable(aliases{1}, AliasTable));
+            testCase.verifyTrue(mdtsObject.isTagWithinAliasTable(aliases{2}, AliasTable));
+            testCase.verifyEqual(mdtsObject.isTagWithinAliasTable(aliases, AliasTable), [true,true]);
+            testCase.verifyFalse(mdtsObject.isTagWithinAliasTable('wrongAlias', AliasTable));
+            testCase.verifyEqual(mdtsObject.isTagWithinAliasTable({aliases{2},'wrongAlias'}, AliasTable), [true,false]);
+            testCase.verifyEqual(mdtsObject.isTagWithinAliasTable({'wrongAlias',aliases{1}}, AliasTable), [false,true]);
+            testCase.verifyEqual(mdtsObject.isTagWithinAliasTable({aliases{1},aliases{1}}, AliasTable), [true,true]);
+            %             testCase.verifyFalse(mdtsObject.isWithinTagList('Tg', tObj.tags))
+%             testCase.verifyTrue (mdtsObject.isWithinTagList({'Channel 1', 'Channel2'}, tObj.tags))
+%             testCase.verifyFalse(mdtsObject.isWithinTagList({'Channel 1', 'Channel3'}, tObj.tags))
+            
+            testCase.verifyFalse(mdtsObject.isTagWithinAliasTable(aliases{1}, tObj.aliasTable));
+            testCase.verifyEqual(mdtsObject.isTagWithinAliasTable(aliases, tObj.aliasTable), [false, false]);
+        end
+        
+        function testisAlias(testCase)
+            tObj = testCase.defaultObj;
+%             aliases = {'alias1', 'al 2'};
+            AliasTable = testCase.defaultAliasTable;
+            aliases = AliasTable.Properties.RowNames;
+            testCase.verifyFalse(tObj.isAlias(aliases{1}));
+            testCase.verifyEqual(tObj.isAlias(aliases), [false, false]');
+            tObj.setAliasTable(AliasTable);
+            testCase.verifyTrue(tObj.isAlias(aliases{1}));
+            testCase.verifyTrue(tObj.isAlias(aliases{2}));
+            testCase.verifyEqual(tObj.isAlias(aliases), [true,true]');
+            testCase.verifyFalse(tObj.isAlias('wrongAlias'));
+            testCase.verifyEqual(tObj.isAlias({aliases{2},'wrongAlias'}), [true,false]);
+            testCase.verifyEqual(tObj.isAlias({'wrongAlias',aliases{1}}), [false,true]);
+            testCase.verifyEqual(tObj.isAlias({aliases{1},aliases{1}}), [true,true]);
+        end
+        
+        function test_addAliases(testCase)
+            
+            tObj = testCase.defaultObj;
+            AliasTable = testCase.defaultAliasTable;
+            defaultTags = testCase.defaultTags;
+            tObj.setAliasTable(AliasTable);
+            
+            testCase.verifyError(@()tObj.addAliases('Te', {'Channel 1','Channel2','Channel 1'}), 'addAliases:InvalidInputArguments:sizeMissmach');
+            testCase.verifyError(@()tObj.addAliases(4, {'Channel 1','Channel2','Channel 1'}), 'addAliases:InvalidInputArguments:aliasesWrong');
+            testCase.verifyError(@()tObj.addAliases('Te', 5), 'addAliases:InvalidInputArguments:tagsWrong');
+            testCase.verifyError(@()tObj.addAliases({'Te',5,'Te'}, {'Channel 1','Channel2','Channel 1'}), 'addAliases:InvalidInputArguments:aliasesWrong');
+            testCase.verifyError(@()tObj.addAliases({'Te','asdf','obc'}, {'a',8,'c'}), 'addAliases:InvalidInputArguments:tagsWrong');
+            testCase.verifyWarning(@()tObj.addAliases({'Te','asdf','Te'}, {'Channel 1','Channel2','Channel 1'}), 'addAliases:AliasesOverwritten:MultipleAliases');
+%             tObj.addAliases({'alias1','asdf','al 2'}, {'a','u','c'})
+            testCase.verifyWarning(@()tObj.addAliases({'alias1','asdf','al 2'}, {'Channel 1','Channel2','Channel 1'}), 'addAliases:AliasesOverwritten:AliasAlreadyExist');
+            testCase.verifyError(@()tObj.addAliases({'test1','test2'}, {'Channel 1','Channel3'}), 'addAliases:InvalidInputArguments:TagsAreNotDefined');
+            
+            
+            tObj.addAliases('Te', 'Channel 1');
+ 
+            testCase.verifyEqual(tObj.aliasTable{'Te','OrigTag'}, {'Channel 1'});
+            tObj.addAliases({'Te', 'Te1'}, {'Channel2', 'Channel 1'});
+            testCase.verifyEqual(tObj.aliasTable{{'Te', 'Te1'},'OrigTag'},{'Channel2', 'Channel 1'}');
+            
+            tObj.addAliases({'Te', 'Te1'}', {'Channel 1', 'Channel2'}');
+            testCase.verifyEqual(tObj.aliasTable{{'Te', 'Te1'},'OrigTag'},{'Channel 1', 'Channel2'}');
+%             
+%             tObj.setAliasTable(AliasTable);
+            
+        end
+        
     end
 end

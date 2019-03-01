@@ -31,13 +31,44 @@ classdef mdtsObject < mdtsCoreObject
         
     end
     
+    methods (Static)
+        function bValid = isValidAliasTableTags(tIn, tags)
+            bValid = false;
+            if istable(tIn)
+                if isequal(tIn.Properties.VariableNames,{'OrigTag'})
+                    tagList = tIn{:, 'OrigTag'};
+                    if mdtsObject.isTagWithinTagList(tagList, tags);
+                        bValid = true;
+                    end
+                    %                      correctTagInput = ismember(tagList, tags);
+                    %
+                    %                     if(correctTagInput)
+                    %                         bValid = true;
+                    %                     end
+                end
+            end
+        end
+        
+        function [isInList] = isTagWithinTagList(tags, taglist)
+            %              bValid = false;
+            isInList = ismember(tags, taglist);
+            %             if(isInList)
+            %                 bValid = true;
+            %             end
+        end
+        
+        function isInList = isTagWithinAliasTable(tags, aliasTab)
+            isInList = mdtsObject.isTagWithinTagList(tags, aliasTab.Properties.RowNames);
+        end
+    end
+    
     methods
         
         function obj = mdtsObject(time, data, tags, varargin)
             
             p = inputParser;
             defaultUnits = cell(1, numel(tags));
-%             defaultUnits(:) = {'-'};
+            defaultUnits(:) = {'-'};
             defaultts = [];
             defaultName = 'Time Series';
             defaultWho = 'Author';
@@ -47,6 +78,8 @@ classdef mdtsObject < mdtsCoreObject
             defaulttsEvents = containers.Map;
             defaultSymbRep = cell(1, numel(tags));
             defaultSegments = cell(1, numel(tags));
+            defaultAliasTable = array2table(cell(0,1));
+            defaultAliasTable.Properties.VariableNames = {'OrigTag'};
             
             if(isa(time, 'numeric'))
                 
@@ -59,18 +92,18 @@ classdef mdtsObject < mdtsCoreObject
                     timeType = 1;
                     
                 end
-            
-                addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(data, 1), 1]}));            
+                
+                addRequired(p, 'timeIn', @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [size(data, 1), 1]}));
                 
                 
-            elseif(isa(time, 'datetime'))                
+            elseif(isa(time, 'datetime'))
                 
-                addRequired(p, 'timeIn', @(x)validateattributes(x, {'datetime', 'nonempty'}, {'size', [size(data, 1), 1]}));            
+                addRequired(p, 'timeIn', @(x)validateattributes(x, {'datetime', 'nonempty'}, {'size', [size(data, 1), 1]}));
                 timeType = 2;
                 
-            elseif(isa(time, 'duration'))                
+            elseif(isa(time, 'duration'))
                 
-                addRequired(p, 'timeIn', @(x)validateattributes(x, {'duration', 'nonempty'}, {'size', [size(data, 1), 1]}));            
+                addRequired(p, 'timeIn', @(x)validateattributes(x, {'duration', 'nonempty'}, {'size', [size(data, 1), 1]}));
                 timeType = 3;
                 
             else
@@ -80,7 +113,7 @@ classdef mdtsObject < mdtsCoreObject
                 error(errID, errMsg);
                 
             end
-                
+            
             addRequired(p, 'dataIn', @(x)validateattributes(x, {'numeric'}, {'nonempty'}));
             addRequired(p, 'tagsIn', @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             
@@ -94,7 +127,7 @@ classdef mdtsObject < mdtsCoreObject
             addParameter(p, 'tsEvents', defaulttsEvents, @(x)validateattributes(x, {'containers.Map'}, {'nonempty'}));
             addParameter(p, 'symbReps', defaultSymbRep, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
             addParameter(p, 'segments', defaultSegments, @(x)validateattributes(x, {'cell', 'nonempty'}, {'size', [1, size(data, 2)]}));
-            
+            addParameter(p, 'aliasTable', defaultAliasTable, @(x)mdtsObject.isValidAliasTableTags(x,tags));
             parse(p, time, data, tags, varargin{:});
             
             if(timeType == 0 || timeType == 1)
@@ -111,7 +144,7 @@ classdef mdtsObject < mdtsCoreObject
                 
             end
             
-            obj@mdtsCoreObject(timeVector, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.symbReps, p.Results.segments);
+            obj@mdtsCoreObject(timeVector, p.Results.dataIn, p.Results.tagsIn, p.Results.units, p.Results.ts, p.Results.name, p.Results.who, p.Results.when, p.Results.description, p.Results.comment, p.Results.tsEvents, p.Results.symbReps, p.Results.segments, p.Results.aliasTable);
             
             obj.timeType = timeType;
             
@@ -133,11 +166,11 @@ classdef mdtsObject < mdtsCoreObject
                 timeInFormat = obj.time;
                 
             elseif(obj.timeType == 2) %datetime
-                 timeInFormat = obj.timeDateTime;
-%                  timeInFormat = datetime(datestr(obj.time));
+                timeInFormat = obj.timeDateTime;
+                %                  timeInFormat = datetime(datestr(obj.time));
                 
             elseif(obj.timeType == 3)
-
+                
                 timeInFormat = duration(0, 0, obj.time);
                 
             end
@@ -165,25 +198,25 @@ classdef mdtsObject < mdtsCoreObject
             %   returnObject : mdtsObject with the extracted data
             
             nArguments = numel(varargin);
-    
-            if(nArguments > 2 || nArguments == 0)
             
-                    errID = 'getData:InvalidNumberOfInputs';
-                    errMsg = 'Invalid number of input arguments!';
-                    error(errID, errMsg);
-                    
+            if(nArguments > 2 || nArguments == 0)
+                
+                errID = 'getData:InvalidNumberOfInputs';
+                errMsg = 'Invalid number of input arguments!';
+                error(errID, errMsg);
+                
             elseif(nArguments == 2)
                 
                 tags = varargin{1};
                 timeInterval = obj.convert2Datenum(varargin{2});
                 
-                returnObject = getData@mdtsCoreObject(obj, tags, timeInterval); 
+                returnObject = getData@mdtsCoreObject(obj, tags, timeInterval);
                 
             elseif(nArguments == 1)
                 
                 tags = varargin{1};
                 
-                returnObject = getData@mdtsCoreObject(obj, tags); 
+                returnObject = getData@mdtsCoreObject(obj, tags);
                 
             end
             
@@ -209,25 +242,25 @@ classdef mdtsObject < mdtsCoreObject
             %   dataMat : matrix with the data
             
             nArguments = numel(varargin);
-    
-            if(nArguments > 2 || nArguments == 0)
             
-                    errID = 'getRawData:InvalidNumberOfInputs';
-                    errMsg = 'Invalid number of input arguments!';
-                    error(errID, errMsg);
-                    
+            if(nArguments > 2 || nArguments == 0)
+                
+                errID = 'getRawData:InvalidNumberOfInputs';
+                errMsg = 'Invalid number of input arguments!';
+                error(errID, errMsg);
+                
             elseif(nArguments == 2)
                 
                 tags = varargin{1};
                 timeInterval = obj.convert2Datenum(varargin{2});
                 
-                dataMat = getRawData@mdtsCoreObject(obj, tags, timeInterval); 
+                dataMat = getRawData@mdtsCoreObject(obj, tags, timeInterval);
                 
             elseif(nArguments == 1)
                 
                 tags = varargin{1};
                 
-                dataMat = getRawData@mdtsCoreObject(obj, tags); 
+                dataMat = getRawData@mdtsCoreObject(obj, tags);
                 
             end
             
@@ -244,7 +277,7 @@ classdef mdtsObject < mdtsCoreObject
             %   array of strings or string (in case of one tag)
             %
             % Return Parameters :
-            %   tagIndices : Indices of the required tags as array 
+            %   tagIndices : Indices of the required tags as array
             
             validateattributes( tagList, {'cell', 'char'}, {'nonempty'}, '', 'tagList');
             
@@ -253,13 +286,13 @@ classdef mdtsObject < mdtsCoreObject
                 tagList = {tagList};
                 
             end
-                       
+            
             correctTagInput = ismember(tagList, obj.tags);
-                       
+            
             if(correctTagInput)
                 
-                tagIndices = getTagIndices@mdtsCoreObject(obj, tagList); 
-                               
+                tagIndices = getTagIndices@mdtsCoreObject(obj, tagList);
+                
             else
                 
                 notIncludedTags = tagList(~correctTagInput);
@@ -288,17 +321,17 @@ classdef mdtsObject < mdtsCoreObject
             
             timeIntervalDatenum = obj.convert2Datenum(timeInterval);
             
-%             if(timeIntervalDatenum(1) >= obj.time(1) && timeIntervalDatenum(end) <= obj.time(end))
-                
-                intervalIndices = getIntervalIndices@mdtsCoreObject(obj, timeIntervalDatenum); 
-                
-%             else
-%                 
-%                 errID = 'getIntervalIndices:IntervalOutOfBoundaries';
-%                 errMsg = 'Specified interval exceeds the boundaries of the data!';
-%                 error(errID, errMsg);
-%                 
-%             end
+            %             if(timeIntervalDatenum(1) >= obj.time(1) && timeIntervalDatenum(end) <= obj.time(end))
+            
+            intervalIndices = getIntervalIndices@mdtsCoreObject(obj, timeIntervalDatenum);
+            
+            %             else
+            %
+            %                 errID = 'getIntervalIndices:IntervalOutOfBoundaries';
+            %                 errMsg = 'Specified interval exceeds the boundaries of the data!';
+            %                 error(errID, errMsg);
+            %
+            %             end
             
         end
         
@@ -357,6 +390,11 @@ classdef mdtsObject < mdtsCoreObject
                 errMsg = 'Given tags for data expansion are already existend in the data set!';
                 error(errID, errMsg);
                 
+                
+            elseif(obj.isTag(addTags))
+                errID = 'expandDataSet:NonUniqueTagsAlias';
+                errMsg = 'Given tags are already defined as alias!';
+                error(errID, errMsg);
             end
             
             obj = expandDataSet@mdtsCoreObject(obj, addData, addTags);
@@ -445,7 +483,7 @@ classdef mdtsObject < mdtsCoreObject
                 error(errID, errMsg);
                 
             end
-                                   
+            
             obj = addSymbRepToChannel@mdtsCoreObject(obj, channelNumber, symbObj);
             
         end
@@ -484,7 +522,7 @@ classdef mdtsObject < mdtsCoreObject
                 error(errID, errMsg);
                 
             end
-                                   
+            
             obj = addSymbRepToAllChannels@mdtsCoreObject(obj, symbObj, keepExistentSymbReps);
             
         end
@@ -529,7 +567,7 @@ classdef mdtsObject < mdtsCoreObject
                 error(errID, errMsg);
                 
             end
-                                   
+            
             obj = addSegmentsToAllChannels@mdtsCoreObject(obj, segObj, keepExistentSegReps);
             
         end
@@ -553,7 +591,7 @@ classdef mdtsObject < mdtsCoreObject
                 
                 errID = 'addSegments:NotASegmentsObject';
                 errMsg = 'The input segmentsObj must be of class segmentsObject!';
-                error(errID, errMsg);              
+                error(errID, errMsg);
                 
             elseif~(segmentsObj.nTimestamps == numel(obj.time))
                 
@@ -566,7 +604,7 @@ classdef mdtsObject < mdtsCoreObject
             
         end
         
-          function obj = addSegmentsToChannels(obj, segObj, channelNames)
+        function obj = addSegmentsToChannels(obj, segObj, channelNames)
             % Purpose : Add segments  to specific channels which
             % do not have a segments representation assigned
             %
@@ -602,7 +640,7 @@ classdef mdtsObject < mdtsCoreObject
                 error(errID, errMsg);
                 
             end
-                                   
+            
             obj = addSegmentsToChannels@mdtsCoreObject(obj, segObj,channelNumber);
             
         end
@@ -622,15 +660,15 @@ classdef mdtsObject < mdtsCoreObject
             %
             
             if(isa(timeInput, 'numeric'))
-            
-                timeDateNum = timeInput;            
+                
+                timeDateNum = timeInput;
                 
                 
-            elseif(isa(timeInput, 'datetime'))                
+            elseif(isa(timeInput, 'datetime'))
                 
                 timeDateNum = datenum(timeInput);
                 
-            elseif(isa(timeInput, 'duration'))                
+            elseif(isa(timeInput, 'duration'))
                 
                 timeDateNum = seconds(timeInput);
                 
@@ -641,6 +679,121 @@ classdef mdtsObject < mdtsCoreObject
                 error(errID, errMsg);
                 
             end
+            
+        end
+        function bValid = isValidAliasTable(obj, tIn)
+            %test if the given input is a valid Alias Table
+            bValid = obj.isValidAliasTableTags( tIn, obj.tags);
+        end
+        
+        function [isTagList] = isTag(obj,tags)
+            % Purpose : checks if a given tag is within obj.tags or the
+            % aliasTable
+            %
+            % Syntax :
+            %   [isTagList] = isTag(obj,tags)
+            %
+            % Input Parameters :
+            %   tags : char or cellArray of tags to be checked
+            %
+            % Return Parameters :
+            %   isTagList : logical list idicating if tags{i} is a Tag or
+            %   alias
+            %
+            isTag = mdtsObject.isTagWithinTagList(tags, obj.tags);
+            isAlias = obj.isAlias(tags);
+            isTagList = isTag|isAlias;
+            
+        end
+        
+        function obj =  setAliasTable(obj, tIn)
+            if obj.isValidAliasTable(tIn)
+                obj.aliasTable = tIn;
+            else
+                errID = 'setAliasTable:InvalidAliasTable';
+                errMsg = 'The input is not correct, please check the alias table. Maybe the alias is not the index of the table? Is the first column called OrigTag?';
+                error(errID, errMsg);
+            end
+            
+        end
+        
+        function  isInList = isAlias(obj, tags)
+            isInList = mdtsObject.isTagWithinAliasTable(tags, obj.aliasTable);
+        end
+        
+        function obj = addAliases(obj, aliases, tags)
+            % Purpose : adds aliases for tags to the object
+            %
+            % Syntax :
+            %   obj = addAliases(obj, aliases, tags)
+            %
+            % Input Parameters :
+            %
+            %   tags : char,string or cellArray of tags to be checked
+            %
+            % Return Parameters :
+            %   isTagList : logical list idicating if tags{i} is a Tag or
+            %   alias
+            %
+            if ischar(aliases)||isstring(aliases)
+                aliases = {aliases};
+            end
+            
+            if ischar(tags)||isstring(tags)
+                tags = {tags};
+            end
+            
+            %check if input is correct
+            if ~iscellstr(aliases)
+                errID = 'addAliases:InvalidInputArguments:aliasesWrong';
+                errMsg = 'The input ''aliases'' is wrong format. It must be a cell, char or string';
+                error(errID, errMsg);
+            elseif ~iscellstr(tags)
+                errID = 'addAliases:InvalidInputArguments:tagsWrong';
+                errMsg = 'The input ''tags'' is wrong format. It must be a cell, char or string';
+                error(errID, errMsg);
+            elseif ~isequal(size(aliases), size(tags))
+                errID = 'addAliases:InvalidInputArguments:sizeMissmach';
+                errMsg = 'The inputs do not have the same size.';
+                error(errID, errMsg);
+            end
+            
+            %check if aliases are already existing
+            tagsOverwritten = {};
+            [bIsAlias, IndAlias] = ismember(aliases, obj.aliasTable.Properties.RowNames);
+            aliases = [aliases(:)]';
+            if any(bIsAlias)
+                tagsOverwritten = strjoin(aliases(bIsAlias), ', ');
+%                 temp = [tagsOverwritten(:)];
+%                 tagsOverwritten = temp';
+                warnID = 'addAliases:AliasesOverwritten:AliasAlreadyExist';
+                warnMsg = ['The aliases ''', tagsOverwritten,  ''' are already defined and overwritten with the new value'];
+                warning(warnID,warnMsg);
+            end
+            
+            %check if input alias is unique
+            uniqueAliases = unique(aliases);
+            if ~isequal(size(aliases),size(uniqueAliases))
+                warnID = 'addAliases:AliasesOverwritten:MultipleAliases';
+                warnMsg = ['Some of your aliases occure multiple times. Please check your input'];
+                warning(warnID,warnMsg);
+            end
+            
+            %check if valid tags
+            [isInList] = mdtsObject.isTagWithinTagList(tags, obj.tags);
+            if ~all(isInList)
+                tagsNotInObject = strjoin(tags(~isInList), ', ');
+                errorID = 'addAliases:InvalidInputArguments:TagsAreNotDefined';
+                errorMsg = ['The tags ''', tagsNotInObject,  ''' are not defined in the mdts Instance. Please check your ''tags''-input'];
+                error(errorID,errorMsg);
+            end
+            
+            obj.aliasTable(aliases,'OrigTag') = tags(:);
+            
+            
+            
+            
+            
             
         end
         
