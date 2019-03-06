@@ -250,6 +250,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                 segmentsIn{i} =segments;
             end
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps, 'segments', segmentsIn);
+            returns.addAliases('alias1', 'Channel 2');
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -258,6 +259,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             extraction5 = returns(2 : 4, 2 : 3);
             extraction6 = returns(2 : 4, tags{2});
             extraction7 = returns(3 : 5, tags(2 : 3));
+            extraction8 = returns(:, 'alias1');
             
             for i = 1:numel(tags)
                 testCase.verifyEqual(data(1, 1), extraction1.data);
@@ -314,7 +316,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                 testCase.verifyEqual(extraction7.segments{i}.starts{1}, 2);
                 testCase.verifyEqual(extraction7.segments{i}.durations{1}, 2);
             end
-            
+            testCase.verifyEqual(extraction8, returns(:,'Channel 2'));
         end
         
         function testgetDataNargin0(testCase)

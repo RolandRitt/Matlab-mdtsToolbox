@@ -286,8 +286,8 @@ classdef mdtsObject < mdtsCoreObject
                 tagList = {tagList};
                 
             end
-            
-            correctTagInput = ismember(tagList, obj.tags);
+
+            correctTagInput = obj.isTag(tagList);
             
             if(correctTagInput)
                 
