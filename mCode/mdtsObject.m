@@ -243,12 +243,13 @@ classdef mdtsObject < mdtsCoreObject
             
             nArguments = numel(varargin);
             
-            if(nArguments > 2 || nArguments == 0)
+            if(nArguments > 2)
                 
                 errID = 'getRawData:InvalidNumberOfInputs';
                 errMsg = 'Invalid number of input arguments!';
                 error(errID, errMsg);
-                
+            elseif(nArguments == 0)
+                dataMat = getRawData@mdtsCoreObject(obj, obj.tags);
             elseif(nArguments == 2)
                 
                 tags = varargin{1};

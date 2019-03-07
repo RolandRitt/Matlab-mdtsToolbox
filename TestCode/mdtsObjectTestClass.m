@@ -536,11 +536,13 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             returnMat2 = returns.getRawData(tagsToExtract, timeToExtract2);
             returnMat3 = returns.getRawData(tagsToExtract, timeToExtract2StartEnd);
             returnMat4 = returns.getRawData(tagsToExtract);
+            returnMat5 = returns(:,tagsToExtract).getRawData();
             
             testCase.verifyEqual(returnMat1, dataToExtract1);
             testCase.verifyEqual(returnMat2, dataToExtract2);
             testCase.verifyEqual(returnMat3, dataToExtract2);
             testCase.verifyEqual(returnMat4, dataToExtract4);
+            testCase.verifyEqual(returnMat5, dataToExtract4);
             
             testCase.verifyError(@()returns.getRawData(1, 2, 3), 'getRawData:InvalidNumberOfInputs');
             
