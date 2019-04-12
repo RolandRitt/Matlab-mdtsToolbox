@@ -22,11 +22,14 @@ classdef segmentsObject
     properties
         
         nTimestamps
-        
         tags
         starts
         durations        
         
+    end
+    properties(Dependent)
+        startInds %this will replace in future the starts property
+        stopInds
     end
     
     methods
@@ -232,6 +235,15 @@ classdef segmentsObject
                 
             end
             
+        end
+        function startInds = get.startInds(obj)
+            startInds = obj.starts;
+        end
+        function stopInds = get.stopInds(obj)
+            stopInds = cell(0,length(obj.tags));
+            for i=1:length(obj.tags)
+            stopInds{i} =  obj.starts{i} + obj.durations{i} - 1;
+            end
         end
 
     end

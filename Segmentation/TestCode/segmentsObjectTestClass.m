@@ -26,10 +26,10 @@ classdef segmentsObjectTestClass < matlab.unittest.TestCase
         function testConstructor(testCase)
             
             expectedReturn1.nTimestamps = 100;
-           
+            
             expectedReturn1.tags = {};
             expectedReturn1.starts = {};
-            expectedReturn1.durations = {};            
+            expectedReturn1.durations = {};
             
             segObj1 = segmentsObject(expectedReturn1.nTimestamps);
             
@@ -84,8 +84,8 @@ classdef segmentsObjectTestClass < matlab.unittest.TestCase
         
         function testGetLogicalVector(testCase)
             
-            nTimestamps = 100;            
-                        
+            nTimestamps = 100;
+            
             tagName1 = 'newChannel';
             bVec1 = false(nTimestamps, 1);
             bVec1(20 : 30) = true;
@@ -97,7 +97,7 @@ classdef segmentsObjectTestClass < matlab.unittest.TestCase
             bVec2 = false(nTimestamps, 1);
             bVec2(1 : 30) = true;
             bVec2(70 : 90) = true;
-           
+            
             segObj1 = segmentsObject(nTimestamps);
             segObj1 = segObj1.addSegmentVector(tagName1, bVec1);
             segObj1 = segObj1.addSegmentVector(tagName2, bVec2);
@@ -116,7 +116,7 @@ classdef segmentsObjectTestClass < matlab.unittest.TestCase
         
         function testGetLabeledVector(testCase)
             
-            nTimestamps = 100;  
+            nTimestamps = 100;
             
             tagName1 = 'newChannel';
             bVec1 = false(nTimestamps, 1);
@@ -135,7 +135,7 @@ classdef segmentsObjectTestClass < matlab.unittest.TestCase
             segObj1 = segObj1.addSegmentVector(tagName1, bVec1);
             
             expectedReturn1.lVec = lVec1;
-
+            
             testCase.verifyEqual(segObj1.getLabeledVector(tagName1), expectedReturn1.lVec);
             
             testCase.verifyError(@()segObj1.getLabeledVector(123), 'getLabeledVector:InvalidInputtagName');
@@ -144,7 +144,7 @@ classdef segmentsObjectTestClass < matlab.unittest.TestCase
         
         function testExtractRows(testCase)
             
-            nTimestamps = 100;  
+            nTimestamps = 100;
             
             tagName1 = 'newChannel';
             bVec1 = false(nTimestamps, 1);
@@ -170,11 +170,11 @@ classdef segmentsObjectTestClass < matlab.unittest.TestCase
             expectedReturn1.nTimestamps = nTimestamps;
             expectedReturn1.tags = {tagName1, tagName2};
             expectedReturn1.bVecs = {bVec1(intervalInd1(1) : intervalInd1(2)), bVec2(intervalInd1(1) : intervalInd1(2))};
-
+            
             expectedReturn2.nTimestamps = nTimestamps;
             expectedReturn2.tags = {tagName1, tagName2};
             expectedReturn2.bVecs = {bVec1(intervalInd2(1) : intervalInd2(2)), bVec2(intervalInd2(1) : intervalInd2(2))};
-
+            
             testCase.verifyEqual(segObj2.tags, expectedReturn1.tags);
             testCase.verifyEqual(segObj2.getLogicalVector(tagName1), expectedReturn1.bVecs{1});
             testCase.verifyEqual(segObj2.getLogicalVector(tagName2), expectedReturn1.bVecs{2});
@@ -185,7 +185,34 @@ classdef segmentsObjectTestClass < matlab.unittest.TestCase
             
             testCase.verifyError(@()segObj1.extractRows('test123'), 'extractRows:InvalidInputintervalIndices');
             testCase.verifyError(@()segObj1.extractRows([1; 2; 3]), 'extractRows:InvalidInputintervalIndices');
-                      
+            
+        end
+        
+        function testgetstopInds(testCase)
+            
+            nTimestamps = 100;
+            
+            segObj1 = segmentsObject(nTimestamps);
+            
+            tagName1 = 'newChannel';
+            bVec1 = false(nTimestamps, 1);
+            bVec1(20 : 30) = true;
+            bVec1(50 : 55) = true;
+            bVec1(60 : 60) = true;
+            bVec1(98 : 100) = true;
+            
+            tagName2 = 'secondChannel';
+            bVec2 = false(nTimestamps, 1);
+            bVec2(1 : 30) = true;
+            bVec2(70 : 90) = true;
+            
+            segObj1 = segmentsObject(nTimestamps);
+            segObj1 = segObj1.addSegmentVector(tagName1, bVec1);
+            segObj1 = segObj1.addSegmentVector(tagName2, bVec2);
+            
+            testCase.verifyEqual(segObj1.stopInds, {[30,55,60,100]', [30, 90]'});
+            testCase.verifyEqual(segObj1.startInds, {[20,50,60,98]', [1, 70]'});
+            
         end
         
     end
