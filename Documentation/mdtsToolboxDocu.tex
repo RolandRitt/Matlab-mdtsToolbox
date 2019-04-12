@@ -406,44 +406,6 @@ This function checks, if a table \textit{tIn} is a valid aliasTable with respect
 
 \item \textbf{bValid = isValidAliasTable(obj, tIn)}\\
 This function checks, if a table \textit{tIn} is a valid aliasTable with respect to the tags of the mdtsObject \textit{obj.tags}. It checks if the table has exactly one column \textit{OrigTag} and if the entries in this column can be found in \textit{obj.tags}.
-\subsubsection{extractSegments}
-
-\subsubsection{Function Signature:}
-
-\begin{center}
-	arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, varargin)
-\end{center}
-
-\subsubsection{Purpose}
-
-Extract all instances of a certain segment
-
-\subsubsection{Input Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	inputObject & The mdtsObject containing the segmentsObject\\ \hline
-	segmentTag & The tag name of the required segment within the segmentsObject\\ \hline
-	varargin & The following parameters are available:
-	\begin{enumerate}
-		\item \textbf{frameLength:} Number of time stamps before the start and after the end of an instance of the segment, which define the range in which the instance is plotted. Default is 10.
-	\end{enumerate} \\ \hline
-\end{longtabu}
-
-\subsubsection{Return Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	arrayOfmdtsObjects & Cell array of mdtsObjects, where every object represents one instance of the required segment\\ \hline
-\end{longtabu}
-
-\subsubsection{Description}
-
-Extracts every instance of the segment specified in \textit{segmentTag} and initializes a new mdtsObject for every such an instance from $start - frameLength$ to $start + duration + frameLength$ of the according instance. Embraces all initialized mdtsObjects in a cell array of mdtsObjects and returns this cell array.
 \end{enumerate}
 \todo{add all functions for aliasTables to the documentation}
 
@@ -1167,28 +1129,31 @@ This example shows two segments in the segmentsObject: One with the tag label "M
 	
 \end{enumerate}
 
-
-
-\section{Supporting Functions}
-
-\subsection{serverData2mdtsObject}
-
-This function loads data from the server and initializes a mdtsObject with this data. It is an interface between the data storage of a project and the mdtsToolbox. Thus, it has to be adapted or rewritten for every project.
-\todo[inline]{Diese Funktion laedt derzeit ein ganz bestimmtes Projekt. Aber wie soll das konkret aussehen, wenns fertig ist? Soll diese Funktion ueberhaut irgendeine allgemeingueltige Relevanz haben? Habs im Moment so in der Doku gelassen, das muss aber noch angepasst werden.}
+\subsection{extractSegments}
 
 \subsubsection{Function Signature:}
 
 \begin{center}
-	returnObject = serverData2mdtsObject
+	arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, varargin)
 \end{center}
 
 \subsubsection{Purpose}
 
-Get data from server and store it in a mdtsObject.
+Extract all instances of a certain segment
 
 \subsubsection{Input Parameters:}
 
-No input parameters available
+\begin{longtabu} to \textwidth {|c|X|}
+	\hline
+	\textbf{Parameter} & \textbf{Description} \\ \hline
+	\endhead
+	inputObject & The mdtsObject containing the segmentsObject\\ \hline
+	segmentTag & The tag name of the required segment within the segmentsObject\\ \hline
+	varargin & The following parameters are available:
+	\begin{enumerate}
+		\item \textbf{frameLength:} Number of time stamps before the start and after the end of an instance of the segment, which define the range in which the instance is plotted. Default is 10.
+	\end{enumerate} \\ \hline
+\end{longtabu}
 
 \subsubsection{Return Parameters:}
 
@@ -1196,12 +1161,14 @@ No input parameters available
 	\hline
 	\textbf{Parameter} & \textbf{Description} \\ \hline
 	\endhead
-	returnObject & The mdtsObject containing the loaded data \\ \hline
+	arrayOfmdtsObjects & Cell array of mdtsObjects, where every object represents one instance of the required segment\\ \hline
 \end{longtabu}
 
 \subsubsection{Description}
 
-Access a sever, get the data from the server and pass it to a mdtsObject. Return the generated object.
+Extracts every instance of the segment specified in \textit{segmentTag} and initializes a new mdtsObject for every such an instance from $start - frameLength$ to $start + duration + frameLength$ of the according instance. Embraces all initialized mdtsObjects in a cell array of mdtsObjects and returns this cell array.
+
+\section{Supporting Functions}
 
 \subsection{plotmdtsObject}
 
