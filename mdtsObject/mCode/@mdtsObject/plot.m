@@ -119,10 +119,12 @@ title(out(1), inputObject.name, 'Interpreter', 'none');
 
 gObjArr = plotSymRepObjectOnAxes(out, inputObject.symbReps, xTime, 'plotSymbolName',p.Results.plotSymbolName, 'plotSymbolDuration',...
     p.Results.plotSymbolDuration, 'plotSymbolNameMinLength', plotSymbolNameMinLength, 'colorDismiss', get(ph(1), 'Color'));
- for i=1:numel(ph)
+ 
+
+for i=1:numel(ph)
          uistack(ph(i), 'top');
          set(out(i), 'Layer', 'top');
- end
+end
 
 
 % allSymbols = {};

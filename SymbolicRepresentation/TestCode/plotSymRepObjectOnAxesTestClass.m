@@ -122,7 +122,13 @@ classdef plotSymRepObjectOnAxesTestClass < matlab.unittest.TestCase
             
             [Ax, ~, ph] = plotmdtsObject(returns6, 'plotSymbolName', true, 'plotSymbolDuration', true);
             plotSymRepObjectOnAxes(Ax, symbRepObjectsList2,returns6.timeDateTime, 'plotSymbolName', true, 'plotSymbolDuration', true, 'colorDismiss', get(ph(1), 'Color'));
+            
+            % test function plotOnAxes
+             [Ax, ~, ph] = plotmdtsObject(returns6, 'plotSymbolName', true, 'plotSymbolDuration', true);
+%             plotSymRepObjectOnAxes( symbRepObjectsList2,returns6.timeDateTime, 'plotSymbolName', true, 'plotSymbolDuration', true, 'colorDismiss', get(ph(1), 'Color'));
+            
 
+            symbRepObjectsList2.plotOnAxes(Ax,returns6.timeDateTime, 'plotSymbolName', true, 'plotSymbolDuration', true, 'colorDismiss', get(ph(1), 'Color'));
         end
     end
     
