@@ -18,8 +18,7 @@ classdef SymbRepObject
     % --------------------------------------------------
     %
     
-    properties
-        
+    properties 
         durations
         symbols
         name
@@ -27,6 +26,8 @@ classdef SymbRepObject
     
     properties(Dependent)
         symbolDurations
+        startInds
+        stopInds
     end
     methods
         
@@ -1036,8 +1037,8 @@ classdef SymbRepObject
         
         function newObj = getTimeInterval(obj, intervalIndices)
             
-            endInds = cumsum(obj.durations);
-            startInds = endInds - obj.durations + 1;
+            endInds = obj.stopInds;
+            startInds = obj.startInds;
             
             firstElementInd = find(startInds <= intervalIndices(1), 1, 'last');
             lastElementInd = find(endInds >= intervalIndices(2), 1, 'first');
@@ -1275,6 +1276,14 @@ classdef SymbRepObject
             compressionData.symbolReductionRate = symbolReductionRate;
             
         end
+        function startInds = get.startInds(obj)
+            startInds = obj.stopInds - obj.durations + 1; 
+        end
+        
+        function stopInds = get.stopInds(obj)
+            stopInds =cumsum(obj.durations);
+        end
+            
     end
     
     methods (Static)
