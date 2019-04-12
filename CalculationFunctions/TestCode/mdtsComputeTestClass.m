@@ -265,7 +265,7 @@ classdef mdtsComputeTestClass < matlab.unittest.TestCase
             testCase.verifyError(@()mdtsCompute(matrix1, input1), 'mdtsCompute:IllegalInputs');
             testCase.verifyError(@()mdtsCompute(matrix2, input2), 'mdtsCompute:IllegalInputs');
             testCase.verifyError(@()mdtsCompute(matrix3, input2), 'compute1:EvenSupportLength');
-            testCase.verifyError(@()mdtsCompute(matrix4, input2), 'compute1:NonSquareOperator');
+            testCase.verifyError(@()mdtsCompute(matrix4, input2), 'compute1:IncorrectMatrixDimensions');
             
         end
         

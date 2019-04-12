@@ -89,7 +89,7 @@ classdef compute1TestClass < matlab.unittest.TestCase
             testCase.verifyError(@()compute1(matrix1, input1), 'compute1:IllegalInputFormat');
             testCase.verifyError(@()compute1(matrix2, input2), 'compute1:IllegalMatrixFormat');
             testCase.verifyError(@()compute1(matrix3, input2), 'compute1:EvenSupportLength');
-            testCase.verifyError(@()compute1(matrix4, input2), 'compute1:InvalidOperator');
+            testCase.verifyError(@()compute1(matrix4, input2), 'compute1:IncorrectMatrixDimensions');
             
         end
         

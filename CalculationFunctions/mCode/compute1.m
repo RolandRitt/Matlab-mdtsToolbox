@@ -123,7 +123,7 @@ elseif(m == 1 || n == 1)
     
 else
     
-    errID = 'compute1:InvalidOperator';
+    errID = 'compute1:IncorrectMatrixDimensions';
     errMsg = 'Operator must be a n x n matrix (dense or sparse) or a vector!';
     error(errID, errMsg);
     

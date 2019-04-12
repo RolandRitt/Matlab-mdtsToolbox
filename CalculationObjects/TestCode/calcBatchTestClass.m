@@ -40,17 +40,17 @@ classdef calcBatchTestClass < matlab.unittest.TestCase
                      -1,  0,  1;
                       0, -1,  1];
                   
-            calcObj = DummyConvCalcObject(calcName, inputTag, outputTag, convM);
-            
-            calcProgram = calcBatch;
-            
-            calcProgram.addCalculations(calcObj);
-            
-            testCase.verifyEqual(calcProgram.calcObjectBatch, {calcObj});
-            
-            calcProgram.addCalculations({calcObj, calcObj, calcObj});
-            
-            testCase.verifyEqual(calcProgram.calcObjectBatch, {calcObj; calcObj; calcObj; calcObj});
+%             calcObj = DummyConvCalcObject(calcName, inputTag, outputTag, convM);
+%             
+%             calcProgram = calcBatch;
+%             
+%             calcProgram.addCalculations(calcObj);
+%             
+%             testCase.verifyEqual(calcProgram.calcObjectBatch, {calcObj});
+%             
+%             calcProgram.addCalculations({calcObj, calcObj, calcObj});
+%             
+%             testCase.verifyEqual(calcProgram.calcObjectBatch, {calcObj; calcObj; calcObj; calcObj});
             
         end
         
