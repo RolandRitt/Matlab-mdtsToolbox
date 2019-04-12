@@ -48,7 +48,7 @@ addParameter(p, 'plotSymbolDuration', false, @islogical);
 addParameter(p, 'plotSymbolNameMinLength', 0, @(x)isreal(x)&& isequal(size(x),[1,1]));
 addParameter(p, 'colorDismiss', [], @(x)(isreal(x)&& isequal(size(x),[1,3]))|| ischar(x));
 
-parse(p, axes_in, SymbRepObj, xTime, varargin{:});
+parse(p, SymbRepObj,axes_in,  xTime, varargin{:});
 
 tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
 UnmatchedArgs = reshape(tmp',[],1)';
