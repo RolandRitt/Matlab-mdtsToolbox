@@ -123,7 +123,7 @@ gObjArr = plotSymRepObjectOnAxes(out, inputObject.symbReps, xTime, 'plotSymbolNa
 
 for i=1:numel(ph)
          uistack(ph(i), 'top');
-         set(out(i), 'Layer', 'top');
+%         set(out(i), 'Layer', 'top');
 end
 
 
@@ -205,89 +205,95 @@ end
 % end
 
 %% Plot Events
-eventKeys = keys(inputObject.tsEvents);
-nEvents = length(eventKeys);
-legendEntries = [];
-xev = [];
-    
-for i = 1 : nEvents
-    
-    eventInfo = inputObject.tsEvents(eventKeys{i});
-    eventTimeDatenum = inputObject.convert2Datenum(eventInfo.eventTime);
-    
-    if(eventTimeDatenum >= inputObject.time(1) && eventTimeDatenum <= inputObject.time(end))
-        
-        if(inputObject.timeType == 2)
-            
-            eventTime = datetime(datestr(eventTimeDatenum));
-            
-        elseif(inputObject.timeType == 3)
-            
-            eventTime = seconds(eventTimeDatenum);
-            
-        else
-            
-            eventTime = eventTimeDatenum;
-            
-        end
-        
-         xev = [xev; eventTime];
-        
-%         if(~inputObject.absoluteTS)
+
+[ph2]= inputObject.plotEventsOnAxes(out);
+% 
+% eventKeys = keys(inputObject.tsEvents);
+% nEvents = length(eventKeys);
+% legendEntries = [];
+% 
+% xevAll = {};    
+% for i = 1 : nEvents
+%     xev = [];
+%     eventInfo = inputObject.tsEvents(eventKeys{i});
+%     eventTimeDatenumAllEv = inputObject.convert2Datenum(eventInfo.eventTime);
+%     for j =1:numel(eventTimeDatenumAllEv)
+%         eventTimeDatenum = eventTimeDatenumAllEv(j);
+%         if(eventTimeDatenum >= inputObject.time(1) && eventTimeDatenum <= inputObject.time(end))
 %             
-%             xev = [xev; datetime(datestr(eventInfo.eventTime)) - datetime(datestr(inputObject.time(1)))];
-%             
-%         elseif bDatetime
-%             
-%             if bTimeRelative
+%             if(inputObject.timeType == 2)
 %                 
-%                 xev = [xev; datetime(eventInfo.eventTime - inputObject.time(1), 'ConvertFrom', 'datenum')];
+%                 eventTime = datetime(datestr(eventTimeDatenum));
+%                 
+%             elseif(inputObject.timeType == 3)
+%                 
+%                 eventTime = seconds(eventTimeDatenum);
 %                 
 %             else
-%             
-%                 xev = [xev; datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum')];
-%             
+%                 
+%                 eventTime = eventTimeDatenum;
+%                 
 %             end
 %             
-%         else
+%             xev = [xev; eventTime];
 %             
-%             if bTimeRelative
-%                 
-%                 xev = [xev; eventInfo.eventTime - inputObject.time(1)];
-%                 
-%             else
-%             
-%                 xev = [xev; eventInfo.eventTime];
-%             
-%             end
-%             
-%         end       
-                
-        legendEntries = [legendEntries, eventKeys(i)];
-        
-    end
-    
-end
+%             %         if(~inputObject.absoluteTS)
+%             %
+%             %             xev = [xev; datetime(datestr(eventInfo.eventTime)) - datetime(datestr(inputObject.time(1)))];
+%             %
+%             %         elseif bDatetime
+%             %
+%             %             if bTimeRelative
+%             %
+%             %                 xev = [xev; datetime(eventInfo.eventTime - inputObject.time(1), 'ConvertFrom', 'datenum')];
+%             %
+%             %             else
+%             %
+%             %                 xev = [xev; datetime(eventInfo.eventTime, 'ConvertFrom', 'datenum')];
+%             %
+%             %             end
+%             %
+%             %         else
+%             %
+%             %             if bTimeRelative
+%             %
+%             %                 xev = [xev; eventInfo.eventTime - inputObject.time(1)];
+%             %
+%             %             else
+%             %
+%             %                 xev = [xev; eventInfo.eventTime];
+%             %
+%             %             end
+%             %
+%             %         end
+%         end
+%        
+%     end
+%     xevAll = [xevAll; {xev}];
+%     legendEntries = [legendEntries, eventKeys(i)];
+%         
+% end
+% 
+% nEventsToPlot = numel(legendEntries);
+% eventColors = distinguishable_colors(nEventsToPlot, {'w', get(ph(1), 'Color')});
+% phLegend = [];
+% 
+% for i = 1 : nEventsToPlot
+%     
+%     ph2 = plotvline(xevAll{i}, 'Axes', out, 'Color', eventColors(i, :));
+%     phLegend = [phLegend, ph2(end)];
+%     
+% end
+% 
+% if~isempty(phLegend)
+%     
+%     leg = legend(out(1), phLegend, cellfun(@num2str, legendEntries, 'UniformOutput', false));
+%     title(leg, 'Events');
+%     uistack(out(1), 'top');
+% 
+% end
 
-nEventsToPlot = numel(legendEntries);
-eventColors = distinguishable_colors(nEventsToPlot, {'w', get(ph(1), 'Color')});
-phLegend = [];
-
-for i = 1 : nEventsToPlot    
-    
-    ph2 = plotvline(xev(i), 'Axes', out, 'Color', eventColors(i, :));
-    phLegend = [phLegend, ph2(end)];
-    
-end
-
-if~isempty(phLegend)
-    
-    leg = legend(out(1), phLegend, cellfun(@num2str, legendEntries, 'UniformOutput', false));
-    title(leg, 'Events');
-    uistack(out(1), 'top');
-
-end
-
+%%
 fM.shouldAdd = shouldAddold;
 
 end
