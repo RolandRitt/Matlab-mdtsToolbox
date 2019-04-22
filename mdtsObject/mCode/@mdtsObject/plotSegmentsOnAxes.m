@@ -72,7 +72,7 @@ if ~isempty(pa)
         
         uistack(pa(:,i), 'bottom');
         
-        set(axesIn(i), 'Layer', 'bottom');
+%         set(axesIn(i), 'Layer', 'bottom');
     end
 end
 if bfM
