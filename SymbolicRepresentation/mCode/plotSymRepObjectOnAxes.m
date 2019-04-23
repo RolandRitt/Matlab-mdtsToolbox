@@ -38,6 +38,7 @@ function gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, varargin)
 % --------------------------------------------------
 %
 %%
+defFontSize = 8;
 p = inputParser();
 p.KeepUnmatched=true;
 addRequired(p, 'axes_in', @(x) isa(x, 'matlab.graphics.axis.Axes')||ishghandle(x)); %check if input is axes or handle object
@@ -61,6 +62,9 @@ SymbRepObj = p.Results.SymbRepObj;
 axes_in = p.Results.axes_in;
 %%%%%
 allSymbols = {};
+
+
+
 
 for i = 1 : numel(SymbRepObj)
     
@@ -92,14 +96,15 @@ for i = 1 : nAxes
     if  isa( gObjArr(i), 'matlab.graphics.axis.Axes')
         tempAx = gObjArr(i);
         bishggroup = false;
+        fontSizeIn = tempAx.FontSize;
     elseif ishghandle(gObjArr(i))
         bishggroup = true;
         tempAx = ancestor(gObjArr(i), {'axes'});
-        
+        fontSizeIn = defFontSize;
     else
         error('something went wrong in visu Ranges');
     end
-    
+
     
     if ishold(tempAx)
         hold_old = 'on';
@@ -124,26 +129,26 @@ for i = 1 : nAxes
             xEnd = xTime(startInds + durations - 1);
             XStart = [xStart, xEnd, xEnd, xStart]';
             
-%             if isdatetime(xTime(1))
-%                 XStart = NaT(4,numel(startInds));
-%             else
-%                 XStart = nan(4,numel(startInds));
-%             end
-%             
-%             for k = 1 : numel(startInds)
-%                 
-%                 xStart = xTime(startInds(k));
-%                 xEnd = xTime(startInds(k) + durations(k) - 1);
-%                 XStart(:,k) = [xStart, xEnd, xEnd, xStart];
-%                 
-%             end
+            %             if isdatetime(xTime(1))
+            %                 XStart = NaT(4,numel(startInds));
+            %             else
+            %                 XStart = nan(4,numel(startInds));
+            %             end
+            %
+            %             for k = 1 : numel(startInds)
+            %
+            %                 xStart = xTime(startInds(k));
+            %                 xEnd = xTime(startInds(k) + durations(k) - 1);
+            %                 XStart(:,k) = [xStart, xEnd, xEnd, xStart];
+            %
+            %             end
             
             if(plotSymbolName || plotSymbolDuration)
                 bTextPrint = durations > plotSymbolNameMinLength;
                 xSymbol = xTime(startInds(bTextPrint) + round(durations(bTextPrint) ./ 2));
                 
                 if (plotSymbolName)
-                    symbolText = allSymbols{j};
+                    symbolText = uniqueSymbols{j};
                     symbolText = strrep(symbolText, '{', '\{');
                     symbolText = strrep(symbolText, '}', '\}');
                 end
@@ -162,8 +167,10 @@ for i = 1 : nAxes
             
             if plotSymbolName||plotSymbolDuration
                 yText = (ymin + (ymax - ymin) * 0.25) * ones(size(xSymbol));
-                
-                tHandle = text(tempAx, xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+
+                tHandle = text(tempAx, xSymbol, yText, symbRepText, 'FontSize',fontSizeIn , 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+%                 tHandle = annotation(tempAx,'textbox', xSymbol, yText, symbRepText, 'FontSize',fontSizeIn , 'BackgroundColor', [1,1,1], 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+
                 if bishggroup
                     set(tHandle, 'Parent', gObjArr(i));
                 end

@@ -143,7 +143,7 @@ for j = 1 : nSymbols
         if plotSymbolName||plotSymbolDuration
             yText = (ymin(i) + (ymax(i) - ymin(i)) * 0.25) * ones(size(xSymbol));
             
-            tHandle = text(tempAx{i}, xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+            tHandle = text(tempAx{i}, xSymbol, yText, symbRepText, 'FontSize', tempAx{i}.FontSize, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
             if bishggroup
                 set(tHandle, 'Parent', gObjArr(i));
             end
