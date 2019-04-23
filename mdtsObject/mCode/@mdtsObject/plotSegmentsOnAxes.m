@@ -44,33 +44,35 @@ end
 % tagNo = find(ismember(segmentsObj.tags, segmentTag));
 
 
-pa=[];
-
+paAll=[];
+timeIn = inputObject.timeInFormat;
 for j = 1 : numel(axesIn)
-    
+    pa = [];
     segmentsObj = inputObject.segments{j};
     if ~isempty(segmentsObj)
-        tagNo = find(ismember(segmentsObj.tags, segmentTag));
-        starts = segmentsObj.starts{tagNo};
-        durations = segmentsObj.durations{tagNo};
-        xStart = inputObject.timeInFormat(starts);
-        xEnd = inputObject.timeInFormat(starts + durations - 1);
-        XStart = [xStart';xEnd'; xEnd'; xStart'];
-        yLim = axesIn(j).YLim;
-        yMin = yLim(1);
-        yMax = yLim(2);
-        
-        hold(axesIn(j), 'on');
-        
-        pa(:,j) = fill(axesIn(j), XStart, [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'r', varargin{:});
+       
+        pa = segmentsObj.plotOnAxes(axesIn(j),timeIn, varargin{:});
+%         tagNo = find(ismember(segmentsObj.tags, segmentTag));
+%         starts = segmentsObj.starts{tagNo};
+%         durations = segmentsObj.durations{tagNo};
+%         xStart = inputObject.timeInFormat(starts);
+%         xEnd = inputObject.timeInFormat(starts + durations - 1);
+%         XStart = [xStart';xEnd'; xEnd'; xStart'];
+%         yLim = axesIn(j).YLim;
+%         yMin = yLim(1);
+%         yMax = yLim(2);
+%         
+%         hold(axesIn(j), 'on');
+%         
+%         pa = fill(axesIn(j), XStart, [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.3, 'EdgeColor', 'r', varargin{:});
     end
-    
+    paAll = [paAll;pa];
 end
 
-if ~isempty(pa)
-    for i=1:numel(axesIn)
+if ~isempty(paAll)
+    for i=1:numel(paAll)
         
-        uistack(pa(:,i), 'bottom');
+        uistack(paAll(i), 'bottom');
         
 %         set(axesIn(i), 'Layer', 'bottom');
     end
