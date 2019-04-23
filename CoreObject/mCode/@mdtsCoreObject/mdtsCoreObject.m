@@ -777,6 +777,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             obj.tags = obj.tags(tagsI);
             obj.units = obj.units(tagsI);
             obj.symbReps = obj.symbReps(tagsI);
+            obj.segments = obj.segments(tagsI);
         
         end
         
@@ -828,6 +829,31 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
                 end
                 
             end
+            
+        end
+        
+        function extractIntervalOfEvents(obj, intervalIndices)
+            % Purpose : Extract all Events and druations from the
+            % events element, according to the input interval
+            %
+            % Syntax :
+            %   extractIntervalOfEvents(intervalIndices)
+            %
+            % Input Parameters :
+            %   intervalIndices : All indices of the time stamps which have
+            %   to be extracted
+            %
+            % Return Parameters :
+            warning('extractIntervalOfEvents not implemented yet');
+%             for i = 1 : numel(obj.tsEvents.keys)
+%                 
+%                 if ~isempty(obj.segments{i})
+%                     
+%                     obj.segments{i} = obj.segments{i}.extractRows(intervalIndices);
+%                     
+%                 end
+%                 
+%             end
             
         end
         
