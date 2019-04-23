@@ -213,7 +213,7 @@ classdef segmentsObject
             % Return Parameters :
             %
             
-            if~(isnumeric(intervalIndices) && isequal(size(intervalIndices), [1, 2]))
+            if~(isnumeric(intervalIndices) && (isequal(size(intervalIndices), [1, 2]))|| (isequal(size(intervalIndices), [2, 1])))
                 
                 errID = 'extractRows:InvalidInputintervalIndices';
                 errMsg = 'Input intervalIndices must be a numerical vector of size [1, 2]!';
