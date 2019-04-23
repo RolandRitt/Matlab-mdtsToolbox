@@ -209,9 +209,13 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             segments = segments.addSegmentVector(tagName1, bVec1);
             segments = segments.addSegmentVector(tagName2, bVec2);
             
+            segments2 = segmentsObject(nTimestamps);
+            segments2 = segments2.addSegmentVector(tagName2, bVec2);
+            
             for i=1:numel(tags)
                 segmentsIn{i} = segments;
             end
+            segmentsIn{2} = segments2;
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn, table());
             
             extraction1 = returns(1, 1);
@@ -222,7 +226,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             extraction6 = returns(2 : 4, tags{2});
             extraction7 = returns(3 : 5, tags(2 : 3));
             
-            for i=1:numel(tags)
+%             for j=1:numel
                 testCase.verifyEqual(data(1, 1), extraction1.data);
                 testCase.verifyEqual(time(1), extraction1.time);
                 testCase.verifyEqual(tags(1), extraction1.tags);
@@ -233,8 +237,11 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                 testCase.verifyEqual(description, extraction1.description);
                 testCase.verifyEqual(comment, extraction1.comment);
                 testCase.verifyEqual(extraction1.symbReps, {[]});
-                testCase.verifyEqual(extraction1.segments{i}.starts{1}, zeros(1, 0));
-                testCase.verifyEqual(extraction1.segments{i}.durations{1}, zeros(1, 0));
+                testCase.verifySize(extraction1.segments, [1,1]);
+                testCase.verifySize(extraction1.segments, [1,1]); 
+                testCase.verifyEqual(extraction1.segments{1}.tags, {'newChannel','secondChannel' });
+                testCase.verifyEqual(extraction1.segments{1}.starts{1}, zeros(1, 0));
+                testCase.verifyEqual(extraction1.segments{1}.durations{1}, zeros(1, 0));
                 
                 testCase.verifyEqual(data(3, 2), extraction2.data);
                 testCase.verifyEqual(time(3), extraction2.time);
@@ -243,16 +250,22 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                 testCase.verifyEqual(numel(extraction2.symbReps{:}), 1);
                 testCase.verifyEqual(extraction2.symbReps{1}.symbols, categorical({'a'}));
                 testCase.verifyEqual(extraction2.symbReps{1}.durations, [1]);
-                testCase.verifyEqual(extraction2.segments{i}.starts{1}, zeros(1, 0));
-                testCase.verifyEqual(extraction2.segments{i}.durations{1}, zeros(1, 0));
+                testCase.verifySize(extraction2.segments, [1,1]);
+                testCase.verifyEqual(extraction2.segments{1}.tags, {'secondChannel' });
+                testCase.verifyEqual(extraction2.segments{1}.starts{1}, 1);
+                testCase.verifyEqual(extraction2.segments{1}.durations{1}, 1);
                 
                 testCase.verifyEqual(data(:, 4), extraction3.data);
                 testCase.verifyEqual(time, extraction3.time);
                 testCase.verifyEqual(tags(4), extraction3.tags);
                 testCase.verifyEqual(units(4), extraction3.units);
                 testCase.verifyEqual(numel(extraction3.symbReps{:}), 0);
-                testCase.verifyEqual(extraction3.segments{i}.starts{1}, 4);
-                testCase.verifyEqual(extraction3.segments{i}.durations{1}, 2);
+                testCase.verifySize(extraction3.segments, [1,1]);
+                testCase.verifyEqual(extraction3.segments{1}.tags, {'newChannel','secondChannel' });
+                testCase.verifyEqual(extraction3.segments{1}.starts{1}, 4);
+                testCase.verifyEqual(extraction3.segments{1}.durations{1}, 2);
+                testCase.verifyEqual(extraction3.segments{1}.starts{2}, 2);
+                testCase.verifyEqual(extraction3.segments{1}.durations{2}, 5);
                 
                 testCase.verifyEqual(data(3, :), extraction4.data);
                 testCase.verifyEqual(time(3), extraction4.time);
@@ -263,8 +276,20 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                 testCase.verifyEqual(extraction4.symbReps{2}.durations, [1]);
                 testCase.verifyEqual(extraction4.symbReps{3}.symbols, categorical({'a'}));
                 testCase.verifyEqual(extraction4.symbReps{3}.durations, [1]);
-                testCase.verifyEqual(extraction4.segments{i}.starts{1}, zeros(1, 0));
-                testCase.verifyEqual(extraction4.segments{i}.durations{1}, zeros(1, 0));
+                testCase.verifySize(extraction4.segments, [1,4]);
+                for j=1:numel(extraction4.segments)
+                    if j==2 %orignal segments{2}
+                        testCase.verifyEqual(extraction4.segments{j}.tags, {'secondChannel'});
+                        testCase.verifyEqual(extraction4.segments{j}.starts{1}, 1);
+                        testCase.verifyEqual(extraction4.segments{j}.durations{1}, 1);
+                    else
+                        testCase.verifyEqual(extraction4.segments{j}.tags, {'newChannel','secondChannel'});
+                        testCase.verifyEqual(extraction4.segments{j}.starts{1}, zeros(1, 0));
+                        testCase.verifyEqual(extraction4.segments{j}.durations{1}, zeros(1, 0));
+                        testCase.verifyEqual(extraction4.segments{j}.starts{2}, 1);
+                        testCase.verifyEqual(extraction4.segments{j}.durations{2}, 1);
+                    end
+                end
                 
                 testCase.verifyEqual(data(2 : 4, 2 : 3), extraction5.data);
                 testCase.verifyEqual(time(2 : 4), extraction5.time);
@@ -275,8 +300,23 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                 testCase.verifyEqual(extraction5.symbReps{1}.durations, [2; 1]);
                 testCase.verifyEqual(extraction5.symbReps{2}.symbols, categorical({'a'; 'b'}));
                 testCase.verifyEqual(extraction5.symbReps{2}.durations, [2; 1]);
-                testCase.verifyEqual(extraction5.segments{i}.starts{1}, 3);
-                testCase.verifyEqual(extraction5.segments{i}.durations{1}, 1);
+                testCase.verifySize(extraction5.segments, [1,2]);
+                
+                for j=1:numel(extraction5.segments)
+                    if j==1
+                        testCase.verifyEqual(extraction5.segments{j}.tags, {'secondChannel' });
+                        testCase.verifyEqual(extraction5.segments{j}.starts{1}, 1);
+                        testCase.verifyEqual(extraction5.segments{j}.durations{1}, 3);
+                    else
+                        testCase.verifyEqual(extraction5.segments{j}.tags, {'newChannel','secondChannel'});
+                        testCase.verifyEqual(extraction5.segments{j}.starts{1}, 3);
+                        testCase.verifyEqual(extraction5.segments{j}.durations{1}, 1);
+                        testCase.verifyEqual(extraction5.segments{j}.starts{2}, 1);
+                        testCase.verifyEqual(extraction5.segments{j}.durations{2}, 3);
+                    end
+                end
+%                 testCase.verifyEqual(extraction5.segments{i}.starts{1}, 3);
+%                 testCase.verifyEqual(extraction5.segments{i}.durations{1}, 1);
                 
                 testCase.verifyEqual(data(2 : 4, 2), extraction6.data);
                 testCase.verifyEqual(time(2 : 4), extraction6.time);
@@ -285,8 +325,12 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                 testCase.verifyEqual(size(extraction6.symbReps, 2), 1);
                 testCase.verifyEqual(extraction6.symbReps{1}.symbols, categorical({'a'; 'b'}));
                 testCase.verifyEqual(extraction6.symbReps{1}.durations, [2; 1]);
-                testCase.verifyEqual(extraction6.segments{i}.starts{1}, 3);
-                testCase.verifyEqual(extraction6.segments{i}.durations{1}, 1);
+                testCase.verifySize(extraction6.segments, [1,1]);
+                testCase.verifyEqual(extraction6.segments{1}.tags, {'secondChannel'});
+                testCase.verifyEqual(extraction6.segments{1}.starts{1}, 1);
+                testCase.verifyEqual(extraction6.segments{1}.durations{1}, 3);
+%                 testCase.verifyEqual(extraction6.segments{i}.starts{1}, 3);
+%                 testCase.verifyEqual(extraction6.segments{i}.durations{1}, 1);
                 
                 testCase.verifyEqual(data(3 : 5, 2 : 3), extraction7.data);
                 testCase.verifyEqual(time(3 : 5), extraction7.time);
@@ -297,9 +341,23 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                 testCase.verifyEqual(extraction7.symbReps{1}.durations, [1; 2]);
                 testCase.verifyEqual(extraction7.symbReps{2}.symbols, categorical({'a'; 'b'}));
                 testCase.verifyEqual(extraction7.symbReps{2}.durations, [1; 2]);
-                testCase.verifyEqual(extraction7.segments{i}.starts{1}, 2);
-                testCase.verifyEqual(extraction7.segments{i}.durations{1}, 2);
-            end
+                testCase.verifySize(extraction7.segments, [1,2]);
+                for j=1:numel(extraction7.segments)
+                    if j==1
+                        testCase.verifyEqual(extraction7.segments{j}.tags, {'secondChannel' });
+                        testCase.verifyEqual(extraction7.segments{j}.starts{1}, 1);
+                        testCase.verifyEqual(extraction7.segments{j}.durations{1}, 3);
+                    else
+                        testCase.verifyEqual(extraction7.segments{j}.tags, {'newChannel','secondChannel'});
+                        testCase.verifyEqual(extraction7.segments{j}.starts{1}, 2);
+                        testCase.verifyEqual(extraction7.segments{j}.durations{1}, 2);
+                        testCase.verifyEqual(extraction7.segments{j}.starts{2}, 1);
+                        testCase.verifyEqual(extraction7.segments{j}.durations{2}, 3);
+                    end
+                end
+%                 testCase.verifyEqual(extraction7.segments{i}.starts{1}, 2);
+%                 testCase.verifyEqual(extraction7.segments{i}.durations{1}, 2);
+            
         end
         
         function testgetDataNargin1(testCase)
@@ -1187,6 +1245,10 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             
             tags = tObj.alias2tag(aliasSoll(randInds));
             testCase.verifyEqual(tags, tagsSoll(randInds)')
+        end
+        
+        function test_sliceEvents(testCase)
+           error('no test cases implemented, please do'); 
         end
         
     end
