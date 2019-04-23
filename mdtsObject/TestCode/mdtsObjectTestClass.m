@@ -246,9 +246,13 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             segments = segments.addSegmentVector(tagName1, bVec1);
             segments = segments.addSegmentVector(tagName2, bVec2);
             
+            segments2 = segmentsObject(nTimestamps);
+            segments2 = segments2.addSegmentVector(tagName2, bVec2);
+            
             for i = 1:numel(tags)
                 segmentsIn{i} =segments;
             end
+            segmentsIn{2} = segments2;
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps, 'segments', segmentsIn);
             returns.addAliases('alias1', 'Channel 2');
             
@@ -261,8 +265,62 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             extraction7 = returns(3 : 5, tags(2 : 3));
             extraction8 = returns(:, 'alias1');
             
-            for i = 1:numel(tags)
-                testCase.verifyEqual(data(1, 1), extraction1.data);
+%             for i = 1:numel(tags)
+%                 testCase.verifyEqual(data(1, 1), extraction1.data);
+%                 testCase.verifyEqual(time(1), extraction1.time);
+%                 testCase.verifyEqual(tags(1), extraction1.tags);
+%                 testCase.verifyEqual(units(1), extraction1.units);
+%                 testCase.verifyEqual(name, extraction1.name);
+%                 testCase.verifyEqual(who, extraction1.who);
+%                 testCase.verifyEqual(when, extraction1.when);
+%                 testCase.verifyEqual(description, extraction1.description);
+%                 testCase.verifyEqual(comment, extraction1.comment);
+%                 testCase.verifyEqual(extraction1.segments{i}.starts{1}, zeros(1, 0));
+%                 testCase.verifyEqual(extraction1.segments{i}.durations{1}, zeros(1, 0));
+%                 
+%                 testCase.verifyEqual(data(3, 2), extraction2.data);
+%                 testCase.verifyEqual(time(3), extraction2.time);
+%                 testCase.verifyEqual(tags(2), extraction2.tags);
+%                 testCase.verifyEqual(units(2), extraction2.units);
+%                 testCase.verifyEqual(extraction2.segments{i}.starts{1}, zeros(1, 0));
+%                 testCase.verifyEqual(extraction2.segments{i}.durations{1}, zeros(1, 0));
+%                 
+%                 testCase.verifyEqual(data(:, 4), extraction3.data);
+%                 testCase.verifyEqual(time, extraction3.time);
+%                 testCase.verifyEqual(tags(4), extraction3.tags);
+%                 testCase.verifyEqual(units(4), extraction3.units);
+%                 testCase.verifyEqual(extraction3.segments{i}.starts{1}, 4);
+%                 testCase.verifyEqual(extraction3.segments{i}.durations{1}, 2);
+%                 
+%                 testCase.verifyEqual(data(3, :), extraction4.data);
+%                 testCase.verifyEqual(time(3), extraction4.time);
+%                 testCase.verifyEqual(tags, extraction4.tags);
+%                 testCase.verifyEqual(units, extraction4.units);
+%                 testCase.verifyEqual(extraction4.segments{i}.starts{1}, zeros(1, 0));
+%                 testCase.verifyEqual(extraction4.segments{i}.durations{1}, zeros(1, 0));
+%                 
+%                 testCase.verifyEqual(data(2 : 4, 2 : 3), extraction5.data);
+%                 testCase.verifyEqual(time(2 : 4), extraction5.time);
+%                 testCase.verifyEqual(tags(2 : 3), extraction5.tags);
+%                 testCase.verifyEqual(units(2 : 3), extraction5.units);
+%                 testCase.verifyEqual(extraction5.segments{i}.starts{1}, 3);
+%                 testCase.verifyEqual(extraction5.segments{i}.durations{1}, 1);
+%                 
+%                 testCase.verifyEqual(data(2 : 4, 2), extraction6.data);
+%                 testCase.verifyEqual(time(2 : 4), extraction6.time);
+%                 testCase.verifyEqual(tags(2), extraction6.tags);
+%                 testCase.verifyEqual(units(2), extraction6.units);
+%                 testCase.verifyEqual(extraction6.segments{i}.starts{1}, 3);
+%                 testCase.verifyEqual(extraction6.segments{i}.durations{1}, 1);
+%                 
+%                 testCase.verifyEqual(data(3 : 5, 2 : 3), extraction7.data);
+%                 testCase.verifyEqual(time(3 : 5), extraction7.time);
+%                 testCase.verifyEqual(tags(2 : 3), extraction7.tags);
+%                 testCase.verifyEqual(units(2 : 3), extraction7.units);
+%                 testCase.verifyEqual(extraction7.segments{i}.starts{1}, 2);
+%                 testCase.verifyEqual(extraction7.segments{i}.durations{1}, 2);
+%             end
+               testCase.verifyEqual(data(1, 1), extraction1.data);
                 testCase.verifyEqual(time(1), extraction1.time);
                 testCase.verifyEqual(tags(1), extraction1.tags);
                 testCase.verifyEqual(units(1), extraction1.units);
@@ -271,51 +329,127 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
                 testCase.verifyEqual(when, extraction1.when);
                 testCase.verifyEqual(description, extraction1.description);
                 testCase.verifyEqual(comment, extraction1.comment);
-                testCase.verifyEqual(extraction1.segments{i}.starts{1}, zeros(1, 0));
-                testCase.verifyEqual(extraction1.segments{i}.durations{1}, zeros(1, 0));
+%                 testCase.verifyEqual(extraction1.symbReps, {[]});
+                testCase.verifySize(extraction1.segments, [1,1]);
+                testCase.verifySize(extraction1.segments, [1,1]); 
+                testCase.verifyEqual(extraction1.segments{1}.tags, {'newChannel','secondChannel' });
+                testCase.verifyEqual(extraction1.segments{1}.starts{1}, zeros(1, 0));
+                testCase.verifyEqual(extraction1.segments{1}.durations{1}, zeros(1, 0));
                 
                 testCase.verifyEqual(data(3, 2), extraction2.data);
                 testCase.verifyEqual(time(3), extraction2.time);
                 testCase.verifyEqual(tags(2), extraction2.tags);
                 testCase.verifyEqual(units(2), extraction2.units);
-                testCase.verifyEqual(extraction2.segments{i}.starts{1}, zeros(1, 0));
-                testCase.verifyEqual(extraction2.segments{i}.durations{1}, zeros(1, 0));
+                testCase.verifyEqual(numel(extraction2.symbReps{:}), 1);
+%                 testCase.verifyEqual(extraction2.symbReps{1}.symbols, categorical({'a'}));
+%                 testCase.verifyEqual(extraction2.symbReps{1}.durations, [1]);
+                testCase.verifySize(extraction2.segments, [1,1]);
+                testCase.verifyEqual(extraction2.segments{1}.tags, {'secondChannel' });
+                testCase.verifyEqual(extraction2.segments{1}.starts{1}, 1);
+                testCase.verifyEqual(extraction2.segments{1}.durations{1}, 1);
                 
                 testCase.verifyEqual(data(:, 4), extraction3.data);
                 testCase.verifyEqual(time, extraction3.time);
                 testCase.verifyEqual(tags(4), extraction3.tags);
                 testCase.verifyEqual(units(4), extraction3.units);
-                testCase.verifyEqual(extraction3.segments{i}.starts{1}, 4);
-                testCase.verifyEqual(extraction3.segments{i}.durations{1}, 2);
+%                 testCase.verifyEqual(numel(extraction3.symbReps{:}), 0);
+                testCase.verifySize(extraction3.segments, [1,1]);
+                testCase.verifyEqual(extraction3.segments{1}.tags, {'newChannel','secondChannel' });
+                testCase.verifyEqual(extraction3.segments{1}.starts{1}, 4);
+                testCase.verifyEqual(extraction3.segments{1}.durations{1}, 2);
+                testCase.verifyEqual(extraction3.segments{1}.starts{2}, 2);
+                testCase.verifyEqual(extraction3.segments{1}.durations{2}, 5);
                 
                 testCase.verifyEqual(data(3, :), extraction4.data);
                 testCase.verifyEqual(time(3), extraction4.time);
                 testCase.verifyEqual(tags, extraction4.tags);
                 testCase.verifyEqual(units, extraction4.units);
-                testCase.verifyEqual(extraction4.segments{i}.starts{1}, zeros(1, 0));
-                testCase.verifyEqual(extraction4.segments{i}.durations{1}, zeros(1, 0));
+%                 testCase.verifyEqual(size(extraction4.symbReps, 2), 4);
+%                 testCase.verifyEqual(extraction4.symbReps{2}.symbols, categorical({'a'}));
+%                 testCase.verifyEqual(extraction4.symbReps{2}.durations, [1]);
+%                 testCase.verifyEqual(extraction4.symbReps{3}.symbols, categorical({'a'}));
+%                 testCase.verifyEqual(extraction4.symbReps{3}.durations, [1]);
+                 testCase.verifySize(extraction4.segments, [1,4]);
+                for j=1:numel(extraction4.segments)
+                    if j==2 %orignal segments{2}
+                        testCase.verifyEqual(extraction4.segments{j}.tags, {'secondChannel'});
+                        testCase.verifyEqual(extraction4.segments{j}.starts{1}, 1);
+                        testCase.verifyEqual(extraction4.segments{j}.durations{1}, 1);
+                    else
+                        testCase.verifyEqual(extraction4.segments{j}.tags, {'newChannel','secondChannel'});
+                        testCase.verifyEqual(extraction4.segments{j}.starts{1}, zeros(1, 0));
+                        testCase.verifyEqual(extraction4.segments{j}.durations{1}, zeros(1, 0));
+                        testCase.verifyEqual(extraction4.segments{j}.starts{2}, 1);
+                        testCase.verifyEqual(extraction4.segments{j}.durations{2}, 1);
+                    end
+                end
                 
                 testCase.verifyEqual(data(2 : 4, 2 : 3), extraction5.data);
                 testCase.verifyEqual(time(2 : 4), extraction5.time);
                 testCase.verifyEqual(tags(2 : 3), extraction5.tags);
                 testCase.verifyEqual(units(2 : 3), extraction5.units);
-                testCase.verifyEqual(extraction5.segments{i}.starts{1}, 3);
-                testCase.verifyEqual(extraction5.segments{i}.durations{1}, 1);
+%                 testCase.verifyEqual(size(extraction5.symbReps, 2), 2);
+%                 testCase.verifyEqual(extraction5.symbReps{1}.symbols, categorical({'a'; 'b'}));
+%                 testCase.verifyEqual(extraction5.symbReps{1}.durations, [2; 1]);
+%                 testCase.verifyEqual(extraction5.symbReps{2}.symbols, categorical({'a'; 'b'}));
+%                 testCase.verifyEqual(extraction5.symbReps{2}.durations, [2; 1]);
+                testCase.verifySize(extraction5.segments, [1,2]);
+                
+                for j=1:numel(extraction5.segments)
+                    if j==1
+                        testCase.verifyEqual(extraction5.segments{j}.tags, {'secondChannel' });
+                        testCase.verifyEqual(extraction5.segments{j}.starts{1}, 1);
+                        testCase.verifyEqual(extraction5.segments{j}.durations{1}, 3);
+                    else
+                        testCase.verifyEqual(extraction5.segments{j}.tags, {'newChannel','secondChannel'});
+                        testCase.verifyEqual(extraction5.segments{j}.starts{1}, 3);
+                        testCase.verifyEqual(extraction5.segments{j}.durations{1}, 1);
+                        testCase.verifyEqual(extraction5.segments{j}.starts{2}, 1);
+                        testCase.verifyEqual(extraction5.segments{j}.durations{2}, 3);
+                    end
+                end
+%                 testCase.verifyEqual(extraction5.segments{i}.starts{1}, 3);
+%                 testCase.verifyEqual(extraction5.segments{i}.durations{1}, 1);
                 
                 testCase.verifyEqual(data(2 : 4, 2), extraction6.data);
                 testCase.verifyEqual(time(2 : 4), extraction6.time);
                 testCase.verifyEqual(tags(2), extraction6.tags);
                 testCase.verifyEqual(units(2), extraction6.units);
-                testCase.verifyEqual(extraction6.segments{i}.starts{1}, 3);
-                testCase.verifyEqual(extraction6.segments{i}.durations{1}, 1);
+%                 testCase.verifyEqual(size(extraction6.symbReps, 2), 1);
+%                 testCase.verifyEqual(extraction6.symbReps{1}.symbols, categorical({'a'; 'b'}));
+%                 testCase.verifyEqual(extraction6.symbReps{1}.durations, [2; 1]);
+                testCase.verifySize(extraction6.segments, [1,1]);
+                testCase.verifyEqual(extraction6.segments{1}.tags, {'secondChannel'});
+                testCase.verifyEqual(extraction6.segments{1}.starts{1}, 1);
+                testCase.verifyEqual(extraction6.segments{1}.durations{1}, 3);
+%                 testCase.verifyEqual(extraction6.segments{i}.starts{1}, 3);
+%                 testCase.verifyEqual(extraction6.segments{i}.durations{1}, 1);
                 
                 testCase.verifyEqual(data(3 : 5, 2 : 3), extraction7.data);
                 testCase.verifyEqual(time(3 : 5), extraction7.time);
                 testCase.verifyEqual(tags(2 : 3), extraction7.tags);
                 testCase.verifyEqual(units(2 : 3), extraction7.units);
-                testCase.verifyEqual(extraction7.segments{i}.starts{1}, 2);
-                testCase.verifyEqual(extraction7.segments{i}.durations{1}, 2);
-            end
+%                 testCase.verifyEqual(size(extraction7.symbReps, 2), 2);
+%                 testCase.verifyEqual(extraction7.symbReps{1}.symbols, categorical({'a'; 'b'}));
+%                 testCase.verifyEqual(extraction7.symbReps{1}.durations, [1; 2]);
+%                 testCase.verifyEqual(extraction7.symbReps{2}.symbols, categorical({'a'; 'b'}));
+%                 testCase.verifyEqual(extraction7.symbReps{2}.durations, [1; 2]);
+                testCase.verifySize(extraction7.segments, [1,2]);
+                for j=1:numel(extraction7.segments)
+                    if j==1
+                        testCase.verifyEqual(extraction7.segments{j}.tags, {'secondChannel' });
+                        testCase.verifyEqual(extraction7.segments{j}.starts{1}, 1);
+                        testCase.verifyEqual(extraction7.segments{j}.durations{1}, 3);
+                    else
+                        testCase.verifyEqual(extraction7.segments{j}.tags, {'newChannel','secondChannel'});
+                        testCase.verifyEqual(extraction7.segments{j}.starts{1}, 2);
+                        testCase.verifyEqual(extraction7.segments{j}.durations{1}, 2);
+                        testCase.verifyEqual(extraction7.segments{j}.starts{2}, 1);
+                        testCase.verifyEqual(extraction7.segments{j}.durations{2}, 3);
+                    end
+                end
+
+
             testCase.verifyEqual(extraction8, returns(:,'Channel 2'));
         end
         
