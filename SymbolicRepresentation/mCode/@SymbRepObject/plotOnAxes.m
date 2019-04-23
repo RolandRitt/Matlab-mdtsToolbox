@@ -1,4 +1,4 @@
-function gObjArr = plotOnAxes(SymbRepObj, axes_in, xTime, varargin)
+function [paAll, tHandleAll] = plotOnAxes(SymbRepObj, axes_in, xTime, varargin)
 % Purpose :
 %
 % Syntax :
@@ -38,6 +38,7 @@ function gObjArr = plotOnAxes(SymbRepObj, axes_in, xTime, varargin)
 % --------------------------------------------------
 %
 %%
+defFontSize = 8;
 p = inputParser();
 p.KeepUnmatched=true;
 addRequired(p, 'SymbRepObj', @(x) isa(x, 'SymbRepObject')); %check if input is SymbRepObject
@@ -63,17 +64,17 @@ axes_in = p.Results.axes_in;
 % allSymbols = {};
 
 % for i = 1 : numel(SymbRepObj)
-%     
+%
 %     if~isempty(SymbRepObj{i})
-%         
+%
 %         if ~isa(SymbRepObj{i}, 'SymbRepObject')
 %             error('the second input argument must be a SymbRepObject. See function isHierarchicalSymRep');
 %         end
 %         addSymbols = categories(SymbRepObj{i}.symbols);
 %         allSymbols = [allSymbols; addSymbols];
-%         
+%
 %     end
-%     
+%
 % end
 
 uniqueSymbols = categories(SymbRepObj.symbols);
@@ -87,17 +88,35 @@ alphCol = 0.3;
 
 nAxes = numel(axes_in);
 gObjArr = axes_in;
+paAll = [];
+tHandleAll = [];
 
 for i = 1 : nAxes
     if  isa( gObjArr(i), 'matlab.graphics.axis.Axes')
         tempAx = gObjArr(i);
         bishggroup = false;
+        FontSize = tempAx.FontSize;
     elseif ishghandle(gObjArr(i))
         bishggroup = true;
         tempAx = ancestor(gObjArr(i), {'axes'});
-        
+        FontSize = defFontSize;
     else
         error('something went wrong in visu Ranges');
+    end
+    
+    %% check if there is a figureManagerRunning
+    figH = ancestor(tempAx,'figure');
+    fM = figH.UserData;
+    bfM = true;
+    ph = [];
+    
+    if ~isa(fM, 'FigureManager');
+        bfM = false;
+    end
+    if bfM
+        shouldAddold = fM.shouldAdd;
+        fM.shouldAdd = false; %% otherwise it is too slow!!!
+        
     end
     
     
@@ -114,7 +133,8 @@ for i = 1 : nAxes
     if~isempty(SymbRepObj)
         
         for j = 1 : nSymbols
-            
+            tHandle = [];
+            pa=[];
             [startInds, durations] = SymbRepObj.findSymbol(uniqueSymbols{j});
             if isempty(startInds)
                 continue;
@@ -124,19 +144,6 @@ for i = 1 : nAxes
             xEnd = xTime(startInds + durations - 1);
             XStart = [xStart, xEnd, xEnd, xStart]';
             
-%             if isdatetime(xTime(1))
-%                 XStart = NaT(4,numel(startInds));
-%             else
-%                 XStart = nan(4,numel(startInds));
-%             end
-%             
-%             for k = 1 : numel(startInds)
-%                 
-%                 xStart = xTime(startInds(k));
-%                 xEnd = xTime(startInds(k) + durations(k) - 1);
-%                 XStart(:,k) = [xStart, xEnd, xEnd, xStart];
-%                 
-%             end
             
             if(plotSymbolName || plotSymbolDuration)
                 bTextPrint = durations > plotSymbolNameMinLength;
@@ -163,7 +170,7 @@ for i = 1 : nAxes
             if plotSymbolName||plotSymbolDuration
                 yText = (ymin + (ymax - ymin) * 0.25) * ones(size(xSymbol));
                 
-                tHandle = text(tempAx, xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
+                tHandle = text(tempAx, xSymbol, yText, symbRepText, 'FontSize', FontSize, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
                 if bishggroup
                     set(tHandle, 'Parent', gObjArr(i));
                 end
@@ -206,8 +213,12 @@ for i = 1 : nAxes
             
             %         uistack(ph(i), 'top');
             %         set(axes_in(i), 'Layer', 'top')
+            paAll = [paAll;pa];
+            tHandleAll = [tHandleAll; tHandle];
         end
     end
     hold(axes_in(i), hold_old);
-    
+    if bfM
+        fM.shouldAdd = shouldAddold;
+    end
 end
