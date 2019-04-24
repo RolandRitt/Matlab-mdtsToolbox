@@ -10,7 +10,7 @@ A short Introduction (How-To) can be found under [HowTo](Documentation/Introduct
 ## Dependencies
 
 ## License
-This project is licensed under the MIT License - see the [license](LICENSE) file for details
+This project is licensed under the MIT License - see the [license](LICENSE) file for details.
 
 ## Example Plot
 This plot shows a multi-dimensional time series overlaid with a symbolic time series representation.
