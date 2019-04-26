@@ -15,6 +15,7 @@ To get the full functionality, the following toolboxes are needed:
 *  **Matlab-graphics**: [https://github.com/RolandRitt/Matlab-graphics](https://github.com/RolandRitt/Matlab-graphics)
 *  **Matlab-general**: [https://github.com/RolandRitt/Matlab-general](https://github.com/RolandRitt/Matlab-general)
 *  **Matlab-figureManager**: [https://github.com/RolandRitt/Matlab-figureManager](https://github.com/RolandRitt/Matlab-figureManager)
+*  **DOPBox**: [https://de.mathworks.com/matlabcentral/fileexchange/41250-discrete-orthogonal-polynomial-toolbox-dopbox-version-1-8?s_cid=ME_prod_FX](https://de.mathworks.com/matlabcentral/fileexchange/41250-discrete-orthogonal-polynomial-toolbox-dopbox-version-1-8?s_cid=ME_prod_FX)
 
 
 ## License
