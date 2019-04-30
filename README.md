@@ -7,7 +7,7 @@ Additionally this toolbox implements tools and classes for symbolic time series 
 The documentation of the core component (mdtsObject) can be found in the [Doku](Documentation/mdtsToolboxDocu.pdf).
 A short Introduction (How-To) can be found under [HowTo](Documentation/IntroductionToUseMDTSObjects_V1.pdf).
 
-This toolbox is also mirrored to the [Matlab File Exchange](https://de.mathworks.com/matlabcentral/profile/authors/3965795-roland).
+This toolbox is also mirrored to the [Matlab File Exchange](https://de.mathworks.com/matlabcentral/fileexchange/71414-matlab-mdtstoolbox).
 
 ## Dependencies
 To get the full functionality, the following toolboxes are needed:
