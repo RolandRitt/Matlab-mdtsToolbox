@@ -114,7 +114,14 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             [~, ~, ~] = plotmdtsObject(returns4, 'plotSymbolName', true, 'plotSymbolDuration', true);
             
             % test horizontal y label
-            [~, ~, ~] = plotmdtsObject(returns4, 'plotSymbolName', true, 'plotSymbolDuration', true, 'bYLabelHorizontal', true);
+            [A, B, C] = plotmdtsObject(returns4, 'plotSymbolName', true, 'plotSymbolDuration', true, 'bYLabelHorizontal', true);
+            testCase.verifyInstanceOf(A(1).XAxis, 'matlab.graphics.axis.decorator.NumericRuler')
+            
+            
+            returns4.timeType = 2;
+            [A1, B1, C1] = plotmdtsObject(returns4, 'plotSymbolName', true, 'plotSymbolDuration', true, 'bYLabelHorizontal', true);
+            testCase.verifyInstanceOf(A1(1).XAxis, 'matlab.graphics.axis.decorator.DatetimeRuler')
+
             
 %             [~, ~, ~] = plotmdtsObject(returns5, 'plotSymbolName', true, 'plotSymbolDuration', true);
 %             
