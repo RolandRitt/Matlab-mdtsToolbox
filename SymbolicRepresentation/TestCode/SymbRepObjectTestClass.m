@@ -502,6 +502,15 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        function testPropertyRepetitions(testCase)
+            lenghtVec = randi(20, 11,1);
+            %lengthVec = [1,2,3,4,5,1,4,3,2,1,5]';
+            symsVec = categorical({'a','c','b','a','c','a', 'b','a','c','a','e'})';
+            
+            t = SymbRepObject(lenghtVec, symsVec);
+            testCase.verifyEqual(t.repetitions, lenghtVec); 
+        end
+        
     end
     
 end
