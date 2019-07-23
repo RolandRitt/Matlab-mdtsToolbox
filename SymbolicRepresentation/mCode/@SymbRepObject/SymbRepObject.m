@@ -22,6 +22,7 @@ classdef SymbRepObject
         durations
         symbols
         name
+        repetitions
     end
     
     properties(Dependent)
@@ -64,6 +65,7 @@ classdef SymbRepObject
             end
             
             obj.durations = durations;
+            obj.repetitions =durations;
             obj.name = [];
         end
         
