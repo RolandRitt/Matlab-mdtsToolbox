@@ -46,13 +46,19 @@ classdef SymbRepObject
                 errMsg = 'The durations as input must be numeric!';
                 error(errID, errMsg);
                 
-            elseif~(numel(symbols) == numel(durations))
+            elseif~isequal(size(symbols) ,size(durations))
                 
                 errID = 'SymbRepObject:InvalidInputLength';
                 errMsg = 'The length of both inputs (symbols and durations) must be of the same length!';
                 error(errID, errMsg);
                 
             end
+            
+%             if size(symbols, 1)~= 1
+%                 symbols = symbols';
+%                 durations = durations';
+%             end
+
             
             if(isprotected(symbols) && ~isordinal(symbols))
                 
@@ -411,11 +417,12 @@ classdef SymbRepObject
                 for i = numel(obj.symbols) : -1 : 2
                     
                     if(isequal(obj.symbols(i), obj.symbols(i - 1)))
-                        
+%                         obj.repetitions(i-1) = 1;
                         obj.durations(i - 1) = obj.durations(i) + obj.durations(i - 1);
                         
                         obj.durations(i) = [];
                         obj.symbols(i) = [];
+
                         
                     end
                     
@@ -1285,7 +1292,8 @@ classdef SymbRepObject
         function stopInds = get.stopInds(obj)
             stopInds =cumsum(obj.durations);
         end
-            
+        
+           
     end
     
     methods (Static)

@@ -24,11 +24,11 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
     methods (Test)
         
         function testConstructor(testCase)
-           
+            
             expectedReturn1.durations = [1; 1; 3; 1; 2; 1];
             expectedReturn1.symbols = categorical({'a', 'b', 'c', 'b', 'a', 'c'})';
             
-            symbObj1 = SymbRepObject(expectedReturn1.durations, expectedReturn1.symbols);    
+            symbObj1 = SymbRepObject(expectedReturn1.durations, expectedReturn1.symbols);
             
             testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
             testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
@@ -85,7 +85,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             expectedReturn6.symbols = categorical({'[{a}{b}{c}{a}]', 'b', 'a', 'b', 'a', 'b', 'c'}, {'a', 'b', 'c', '[{a}{b}{c}{a}]'})';
             expectedReturn6.durations = [11; 3; 4; 2; 3; 1; 2];
             
-            symbObj1 = SymbRepObject(durations1, symbols1); 
+            symbObj1 = SymbRepObject(durations1, symbols1);
             symbObj2 = SymbRepObject(durations2, symbols2);
             symbObj3 = SymbRepObject(durations3, symbols3);
             symbObj4 = SymbRepObject(durations4, symbols4);
@@ -135,7 +135,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             expectedReturn3.startInds = [3; 9; 12];
             expectedReturn3.durations = [3; 1; 3];
             
-            symbObj = SymbRepObject(durations, symbols); 
+            symbObj = SymbRepObject(durations, symbols);
             
             [return1.startInds, return1.durations] = symbObj.findSymbol('a');
             [return2.startInds, return2.durations] = symbObj.findSymbol('b');
@@ -161,7 +161,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             expectedReturn2 = boolean([0; 1; 0; 0; 0; 1; 0; 0; 0; 1; 1; 0; 0; 0; 1; 1; 1; 1]);
             expectedReturn3 = boolean([0; 0; 1; 1; 1; 0; 0; 0; 1; 0; 0; 1; 1; 1; 0; 0; 0; 0]);
             
-            symbObj = SymbRepObject(durations, symbols); 
+            symbObj = SymbRepObject(durations, symbols);
             
             testCase.verifyEqual(symbObj.findSymbolVec('a'), expectedReturn1);
             testCase.verifyEqual(symbObj.findSymbolVec('b'), expectedReturn2);
@@ -186,7 +186,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             expectedReturn2.symbols = categorical({'Word1', 'Word2', 'y', 'Word2', 'Word1', 'x', 'Word2'}, {'x', 'y', 'Word2', 'Word1'})';
             expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
             
-            symbObj1 = SymbRepObject(durations1, symbols1); 
+            symbObj1 = SymbRepObject(durations1, symbols1);
             symbObj2 = SymbRepObject(durations2, symbols2);
             
             symbObj1 = symbObj1.mergeSequence(symbSequence1);
@@ -203,7 +203,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
             testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
             testCase.verifyEqual(categories(symbObj2.symbols), categories(expectedReturn2.symbols));
-                        
+            
             testCase.verifyError(@()symbObj2.renameSymbol(123, 'Word3'), 'renameSymbol:InvalidInputs');
             testCase.verifyError(@()symbObj1.renameSymbol('b', 123), 'renameSymbol:InvalidInputs');
             
@@ -213,13 +213,13 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
             durations1 = [1; 1; 3; 1; 2; 1; 2; 3; 4];
             symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
-
+            
             symbSequence1 = {'c', 'b'};
             
             expectedReturn1.symbols = categorical({'Word1', 'b', 'Word1'}, {'Word1', 'b'})';
             expectedReturn1.durations = [1; 1; 16];
             
-            symbObj1 = SymbRepObject(durations1, symbols1); 
+            symbObj1 = SymbRepObject(durations1, symbols1);
             
             symbObj1 = symbObj1.mergeSequence(symbSequence1);
             
@@ -256,8 +256,8 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
             expectedReturn3.symbols = categorical({'a', 'b', 'd', 'b', 'f', 'b', 'c', 'e', 'b'})';
             expectedReturn3.durations = [1; 1; 3; 1; 5; 1; 1; 2; 4];
-
-            symbObj1 = SymbRepObject(durations1, symbols1); 
+            
+            symbObj1 = SymbRepObject(durations1, symbols1);
             
             symbObj1 = symbObj1.setSymbolsInRange(newSymbol1, range1);
             symbObj2 = symbObj1.setSymbolsInRange(newSymbol2, range2);
@@ -309,8 +309,8 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             expectedReturn5.durations = [6; 6; 15; 5; 6];
             expectedReturn6.symbols = categorical({'a', 'b', 'c', 'd'}, {'a', 'b', 'c', 'd'})';
             expectedReturn6.durations = [10; 15; 20; 12];
-                        
-            symbObj1 = SymbRepObject(durations1, symbols1); 
+            
+            symbObj1 = SymbRepObject(durations1, symbols1);
             symbObj2 = SymbRepObject(durations2, symbols2);
             symbObj3 = SymbRepObject(durations3, symbols3);
             symbObj4 = SymbRepObject(durations4, symbols4);
@@ -318,11 +318,11 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbObj6 = SymbRepObject(durations6, symbols6);
             
             symbObj1 = symbObj1.removeShortSymbols('shortSymbolLength', shortSymbolLength1, 'maxNumberShortSymbols', maxNumberShortSymbols1);
-            symbObj2 = symbObj2.removeShortSymbols('shortSymbolLength', shortSymbolLength1, 'maxNumberShortSymbols', maxNumberShortSymbols1);                       
-            symbObj3 = symbObj3.removeShortSymbols('shortSymbolLength', shortSymbolLength1, 'maxNumberShortSymbols', maxNumberShortSymbols2);                       
-            symbObj4 = symbObj4.removeShortSymbols('shortSymbolLength', shortSymbolLength4, 'maxNumberShortSymbols', maxNumberShortSymbols4, 'SplittingMode', 'weighted');                       
-            symbObj5 = symbObj5.removeShortSymbols('shortSymbolLength', shortSymbolLength5, 'maxNumberShortSymbols', maxNumberShortSymbols5, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength5, 'SplittingMode', 'weighted');                       
-            symbObj6 = symbObj6.removeShortSymbols('shortSymbolLength', shortSymbolLength6);                       
+            symbObj2 = symbObj2.removeShortSymbols('shortSymbolLength', shortSymbolLength1, 'maxNumberShortSymbols', maxNumberShortSymbols1);
+            symbObj3 = symbObj3.removeShortSymbols('shortSymbolLength', shortSymbolLength1, 'maxNumberShortSymbols', maxNumberShortSymbols2);
+            symbObj4 = symbObj4.removeShortSymbols('shortSymbolLength', shortSymbolLength4, 'maxNumberShortSymbols', maxNumberShortSymbols4, 'SplittingMode', 'weighted');
+            symbObj5 = symbObj5.removeShortSymbols('shortSymbolLength', shortSymbolLength5, 'maxNumberShortSymbols', maxNumberShortSymbols5, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength5, 'SplittingMode', 'weighted');
+            symbObj6 = symbObj6.removeShortSymbols('shortSymbolLength', shortSymbolLength6);
             
             testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
             testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
@@ -346,18 +346,18 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
             symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
             
-%             expectedReturn1a = [  0, 1/3, 1/3;
-%                                 2/3,   0, 2/3;
-%                                 1/3, 2/3,   0];
-%             expectedReturn2a = [  0, 1/3, 1/2;
-%                                 2/3,   0, 1/2;
-%                                 1/3, 2/3,   0];
+            %             expectedReturn1a = [  0, 1/3, 1/3;
+            %                                 2/3,   0, 2/3;
+            %                                 1/3, 2/3,   0];
+            %             expectedReturn2a = [  0, 1/3, 1/2;
+            %                                 2/3,   0, 1/2;
+            %                                 1/3, 2/3,   0];
             expectedReturn1b = [0, 1, 1;
-                                2, 0, 2;
-                                1, 2, 0];
+                2, 0, 2;
+                1, 2, 0];
             expectedReturn2b = [0, 1, 1;
-                                2, 0, 1;
-                                1, 2, 0];
+                2, 0, 1;
+                1, 2, 0];
             
             symbObj1 = SymbRepObject(durations1, symbols1);
             symbObj2 = SymbRepObject(durations2, symbols2);
@@ -365,7 +365,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             %output1a = symbObj1.genSymbMarkov;
             %output2a = symbObj2.genSymbMarkov;
             output1b = symbObj1.genSymbMarkov('Absolute', true);
-            output2b = symbObj2.genSymbMarkov('Absolute', true);            
+            output2b = symbObj2.genSymbMarkov('Absolute', true);
             
             %testCase.verifyEqual(output1a, expectedReturn1a);
             %testCase.verifyEqual(output2a, expectedReturn2a);
@@ -380,7 +380,7 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
             durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
             symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
-                       
+            
             expectedReturn1 = zeros(3, 3, 3);
             expectedReturn1(1, 2, 3) = 2;
             expectedReturn1(2, 3, 2) = 2;
@@ -401,8 +401,8 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbObj1 = SymbRepObject(durations1, symbols1);
             symbObj2 = SymbRepObject(durations2, symbols2);
             
-            output1 = symbObj1.genTrigramMatrix;  
-            output2 = symbObj2.genTrigramMatrix;  
+            output1 = symbObj1.genTrigramMatrix;
+            output2 = symbObj2.genTrigramMatrix;
             
             testCase.verifyEqual(output1, expectedReturn1);
             testCase.verifyEqual(output2, expectedReturn2);
@@ -485,20 +485,20 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
             % test empty non given symbol
             [a,b] = t.findSequence({'x'});
-             testCase.verifyEmpty( a);
-             testCase.verifyEmpty( b);
-             
+            testCase.verifyEmpty( a);
+            testCase.verifyEmpty( b);
+            
             % test single symbol
             
-             [a,b] = t.findSequence({'a'});
-             [a1,b1] = t.findSymbol('a');
-             testCase.verifyEqual(a, a1);
-             testCase.verifyEqual(b, b1);
+            [a,b] = t.findSequence({'a'});
+            [a1,b1] = t.findSymbol('a');
+            testCase.verifyEqual(a, a1);
+            testCase.verifyEqual(b, b1);
             
-             % test multiple symbols
-             [a,b] = t.findSequence({'a','c','a'});
-             testCase.verifyEqual(a, [7;21]);
-             testCase.verifyEqual(b, [10;6]);  
+            % test multiple symbols
+            [a,b] = t.findSequence({'a','c','a'});
+            testCase.verifyEqual(a, [7;21]);
+            testCase.verifyEqual(b, [10;6]);
             
         end
         
@@ -508,7 +508,43 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symsVec = categorical({'a','c','b','a','c','a', 'b','a','c','a','e'})';
             
             t = SymbRepObject(lenghtVec, symsVec);
-            testCase.verifyEqual(t.repetitions, lenghtVec); 
+            testCase.verifyEqual(t.repetitions, lenghtVec);
+        end
+        
+        function testPropertyRepetitionsMerge(testCase)
+            sym1 = 'a';
+            sym2 = 'b';
+            symFill = 'x';
+            lenghtrange= 100;
+            symsVec={};
+            lengthVec = [];
+            randRepVec = [];
+            for i =1:randi(20)
+                
+                randRep = randi(lenghtrange);
+                for j=1:randRep
+                    
+                    randi1 = randi(20)+1;
+                    randi2 = randi(20)+1;
+                    symsVec = [symsVec, {sym1, sym2}];
+                    lengthVec = [lengthVec, randi1, randi2];
+                end
+                randRepVec = [randRepVec, randRep];
+                
+                randiFill = randi(20);
+                symsVec = [symsVec, {symFill}];
+                lengthVec = [lengthVec, randiFill];
+                randRepVec = [randRepVec, randiFill];
+            end
+            
+            symsVecIn = categorical(symsVec)';
+            
+            t = SymbRepObject(lengthVec', symsVecIn);
+            testCase.verifyEqual(t.repetitions, lengthVec');
+            t1 = t.mergeSymbols({sym1, sym2}, [sym1, sym2]);
+            testCase.verifyEqual(t1.repetitions, randRepVec');
+            t2 = t.mergeSequence({sym1, sym2});
+            testCase.verifyEqual(t2.repetitions, randRepVec');
         end
         
     end
