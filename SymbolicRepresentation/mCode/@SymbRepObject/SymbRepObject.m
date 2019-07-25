@@ -66,7 +66,7 @@ classdef SymbRepObject
                 
             else
                 
-                obj.symbols = categorical(symbols, 'Protected', true, 'Ordinal', false);
+                obj.symbols = categorical(symbols, 'Protected', false, 'Ordinal', false);
                 
             end
             
@@ -192,7 +192,9 @@ classdef SymbRepObject
             
         end
         
-        function [startInds, durations] = findSequence(obj, symbSequence)
+        
+        
+        function [startInds, durations, compressedStartInds] = findSequence(obj, symbSequence)
             % Purpose : Find indices of a given
             % sequence
             %
@@ -254,6 +256,7 @@ classdef SymbRepObject
             for i=1:length(symbInd)
                 durations(i) = sum(obj.durations(symbInd(i):(symbInd(i) +nSymbSequence-1)));
             end
+            compressedStartInds = symbInd;
             
  
         end
@@ -414,19 +417,21 @@ classdef SymbRepObject
                 
                 obj.symbols = mergecats(obj.symbols, oldSymbols, newSymbol);
                 
-                for i = numel(obj.symbols) : -1 : 2
-                    
-                    if(isequal(obj.symbols(i), obj.symbols(i - 1)))
-%                         obj.repetitions(i-1) = 1;
-                        obj.durations(i - 1) = obj.durations(i) + obj.durations(i - 1);
-                        
-                        obj.durations(i) = [];
-                        obj.symbols(i) = [];
-
-                        
-                    end
-                    
-                end
+                obj = obj.compressSymbols(newSymbol);
+                
+%                 for i = numel(obj.symbols) : -1 : 2
+%                     
+%                     if(isequal(obj.symbols(i), obj.symbols(i - 1)))
+% %                         obj.repetitions(i-1) = 1;
+%                         obj.durations(i - 1) = obj.durations(i) + obj.durations(i - 1);
+%                         
+%                         obj.durations(i) = [];
+%                         obj.symbols(i) = [];
+% 
+%                         
+%                     end
+%                     
+%                 end
                 
             end
             
