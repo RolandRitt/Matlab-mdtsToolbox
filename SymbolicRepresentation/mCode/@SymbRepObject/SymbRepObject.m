@@ -191,76 +191,7 @@ classdef SymbRepObject
             
             
         end
-        
-        
-        
-        function [startInds, durations, compressedStartInds] = findSequence(obj, symbSequence)
-            % Purpose : Find indices of a given
-            % sequence
-            %
-            % Syntax :
-            %   SymbRepObject = SymbRepObject.mergeSequence(symbSequence)
-            %
-            % Input Parameters :
-            %   symbSequence : Sequence which is supposed to be merged to
-            %   one new categorical. Must be given as one dimensional cell
-            %   array of strings with an arbitrary number of elements
-            %
-            % Return Parameters :
-            %   SymbRepObject : Original object with merged symbolic
-            %   representation
-            warning('only a propetary function, maybe completle removed later');
-            if(isa(symbSequence, 'cell') && size(symbSequence, 2) == 1)
-                
-                symbSequence = symbSequence';
-                
-            elseif~(isa(symbSequence, 'cell') && size(symbSequence, 1) == 1)
-                
-                errID = 'mergeSequence:InvalidInput';
-                errMsg = 'The input symbSeqence must be a 1 x n cell array of strings, contining the symbols which are to be merged in a sequence!';
-                error(errID, errMsg);
-                
-            end
-            startInds = [];
-            durations = [];
-                
-            nSymbSequence = numel(symbSequence);
-            
-            addedBrackets = cellfun(@(x) ['{', x, '}'], symbSequence, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, '{[', '['), addedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, '{(', '('), removedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, ']}', ']'), removedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, ')}', ')'), removedBrackets, 'UniformOutput', false);
-            modifiedSequence = removedBrackets;
-            
-            joinedSequence = join(modifiedSequence, '');
-            newSequence = {['[', joinedSequence{1}, ']']};
-            tempRemoving = {'TempRemoving'};
-            tempRemovingCat = categorical(tempRemoving);
-            symbols = addcats(obj.symbols, [newSequence, tempRemoving]);
-            indArray = ones(numel(obj.symbols) + nSymbSequence - 1, 1);
-            
-            try
-                for i = 1 : nSymbSequence
-                    
-                    indArray = indArray .* [false(nSymbSequence - i, 1); symbols == symbSequence{i}; false(i - 1, 1)];
-                    
-                end
-            catch
-                
-                return
-            end
-            symbInd = find(indArray(nSymbSequence:end));
-            startInds = obj.getStartInd(symbInd);
-            durations = nan(length(symbInd),1);
-            for i=1:length(symbInd)
-                durations(i) = sum(obj.durations(symbInd(i):(symbInd(i) +nSymbSequence-1)));
-            end
-            compressedStartInds = symbInd;
-            
- 
-        end
-        
+             
         function obj = mergeSequence(obj, symbSequence)
             % Purpose : Merge symbols of one channel according to a given
             % sequence
