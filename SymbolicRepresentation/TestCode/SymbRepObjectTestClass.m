@@ -92,6 +92,79 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             symbObj5 = SymbRepObject(durations5, symbols5);
             symbObj6 = SymbRepObject(durations6, symbols6);
             
+            symbObj1 = symbObj1.mergeSequence(symbSequence1, 'bAllowOverlapping', true);
+            symbObj2 = symbObj2.mergeSequence(symbSequence2, 'bAllowOverlapping', true);
+            symbObj3 = symbObj3.mergeSequence(symbSequence3, 'bAllowOverlapping', true);
+            symbObj4 = symbObj4.mergeSequence(symbSequence4, 'bAllowOverlapping', true);
+            symbObj5 = symbObj5.mergeSequence(symbSequence5, 'bAllowOverlapping', true);
+            symbObj6 = symbObj6.mergeSequence(symbSequence6, 'bAllowOverlapping', true);
+            
+            testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
+            testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(categories(symbObj1.symbols), categories(expectedReturn1.symbols));
+            testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
+            testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(categories(symbObj2.symbols), categories(expectedReturn2.symbols));
+            testCase.verifyEqual(symbObj3.durations, expectedReturn3.durations);
+            testCase.verifyEqual(symbObj3.symbols, expectedReturn3.symbols);
+            testCase.verifyEqual(categories(symbObj3.symbols), categories(expectedReturn3.symbols));
+            testCase.verifyEqual(symbObj4.durations, expectedReturn4.durations);
+            testCase.verifyEqual(symbObj4.symbols, expectedReturn4.symbols);
+            testCase.verifyEqual(categories(symbObj4.symbols), categories(expectedReturn4.symbols));
+            testCase.verifyEqual(symbObj5.durations, expectedReturn5.durations);
+            testCase.verifyEqual(symbObj5.symbols, expectedReturn5.symbols);
+            testCase.verifyEqual(categories(symbObj5.symbols), categories(expectedReturn5.symbols));
+            testCase.verifyEqual(symbObj6.durations, expectedReturn6.durations);
+            testCase.verifyEqual(symbObj6.symbols, expectedReturn6.symbols);
+            testCase.verifyEqual(categories(symbObj6.symbols), categories(expectedReturn6.symbols));
+            
+            testCase.verifyError(@()symbObj1.mergeSequence('test1'), 'mergeSequence:InvalidInput');
+            testCase.verifyError(@()symbObj1.mergeSequence({'a', 'b'; 'c', 'd'}), 'mergeSequence:InvalidInput');
+            
+        end
+        
+        function testMergeSequenceNonOverlapping(testCase)
+            
+            durations1 = [1; 1; 3; 1; 2; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
+            durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
+            symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
+            durations3 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols3 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'c', 'b', 'c', 'a', 'b', 'c'})';
+            durations4 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols4 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'})';
+            durations5 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols5 = categorical({'a', 'b', 'a', 'b', 'a', 'b', 'c', 'b', 'c', 'b', 'a', 'b', 'a'})';
+            durations6 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols6 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'})';
+            
+            symbSequence1 = {'c', 'b'};
+            symbSequence2 = {'x', 'y'};
+            symbSequence3 = {'a', 'b', 'c'};
+            symbSequence4 = {'a', 'b', 'c'};
+            symbSequence5 = {'a', 'b', 'a'};
+            symbSequence6 = {'a', 'b', 'c', 'a'};
+            
+            expectedReturn1.symbols = categorical({'a', 'b', '[{c}{b}]', 'a', '[{c}{b}]'}, {'a', 'b', '[{c}{b}]'})';
+            expectedReturn1.durations = [1; 1; 4; 2; 10];
+            expectedReturn2.symbols = categorical({'[{x}{y}]', 'z', 'y', 'z', '[{x}{y}]', 'x', 'z'}, {'x', 'y', 'z', '[{x}{y}]'})';
+            expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
+            expectedReturn3.symbols = categorical({'[{a}{b}{c}]', 'a', 'c', 'b', 'c', '[{a}{b}{c}]'}, {'a', 'b', 'c', '[{a}{b}{c}]'})';
+            expectedReturn3.durations = [9; 2; 3; 4; 2; 6];
+            expectedReturn4.symbols = categorical({'[{a}{b}{c}]', 'a', 'b', 'a', 'b', '[{a}{b}{c}]'}, {'a', 'b', '[{a}{b}{c}]'})';
+            expectedReturn4.durations = [9; 2; 3; 4; 2; 6];
+            expectedReturn5.symbols = categorical({'[{a}{b}{a}]', 'b','a','b', 'c', 'b', 'c', 'b', '[{a}{b}{a}]'}, {'a', 'b', 'c', '[{a}{b}{a}]'})';
+            expectedReturn5.durations = [5; 1;2;1; 2; 3; 4; 2; 6];
+            expectedReturn6.symbols = categorical({'[{a}{b}{c}{a}]', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'}, {'a', 'b', 'c', '[{a}{b}{c}{a}]'})';
+            expectedReturn6.durations = [6; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            
+            symbObj1 = SymbRepObject(durations1, symbols1);
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            symbObj3 = SymbRepObject(durations3, symbols3);
+            symbObj4 = SymbRepObject(durations4, symbols4);
+            symbObj5 = SymbRepObject(durations5, symbols5);
+            symbObj6 = SymbRepObject(durations6, symbols6);
+            
             symbObj1 = symbObj1.mergeSequence(symbSequence1);
             symbObj2 = symbObj2.mergeSequence(symbSequence2);
             symbObj3 = symbObj3.mergeSequence(symbSequence3);
@@ -122,6 +195,77 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             testCase.verifyError(@()symbObj1.mergeSequence({'a', 'b'; 'c', 'd'}), 'mergeSequence:InvalidInput');
             
         end
+       function testMergeSequenceNonOverlappingNewSymbol(testCase)
+            
+            durations1 = [1; 1; 3; 1; 2; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'b', 'c', 'b'})';
+            durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
+            symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})';
+            durations3 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols3 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'c', 'b', 'c', 'a', 'b', 'c'})';
+            durations4 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols4 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'})';
+            durations5 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols5 = categorical({'a', 'b', 'a', 'b', 'a', 'b', 'c', 'b', 'c', 'b', 'a', 'b', 'a'})';
+            durations6 = [1; 1; 3; 1; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            symbols6 = categorical({'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'})';
+            
+            symbSequence1 = {'c', 'b'};
+            symbSequence2 = {'x', 'y'};
+            symbSequence3 = {'a', 'b', 'c'};
+            symbSequence4 = {'a', 'b', 'c'};
+            symbSequence5 = {'a', 'b', 'a'};
+            symbSequence6 = {'a', 'b', 'c', 'a'};
+            
+            expectedReturn1.symbols = categorical({'a', 'b', 'test1', 'a', 'test1'}, {'a', 'b', 'test1'})';
+            expectedReturn1.durations = [1; 1; 4; 2; 10];
+            expectedReturn2.symbols = categorical({'test2', 'z', 'y', 'z', 'test2', 'x', 'z'}, {'x', 'y', 'z', 'test2'})';
+            expectedReturn2.durations = [4; 1; 2; 1; 7; 1; 2];
+            expectedReturn3.symbols = categorical({'test3', 'a', 'c', 'b', 'c', 'test3'}, {'a', 'b', 'c', 'test3'})';
+            expectedReturn3.durations = [9; 2; 3; 4; 2; 6];
+            expectedReturn4.symbols = categorical({'test4', 'a', 'b', 'a', 'b', 'test4'}, {'a', 'b', 'test4'})';
+            expectedReturn4.durations = [9; 2; 3; 4; 2; 6];
+            expectedReturn5.symbols = categorical({'test5', 'b','a','b', 'c', 'b', 'c', 'b', 'test5'}, {'a', 'b', 'c', 'test5'})';
+            expectedReturn5.durations = [5; 1;2;1; 2; 3; 4; 2; 6];
+            expectedReturn6.symbols = categorical({'test6', 'b', 'c', 'a', 'b', 'a', 'b', 'a', 'b', 'c'}, {'a', 'b', 'c', 'test6'})';
+            expectedReturn6.durations = [6; 2; 1; 2; 3; 4; 2; 3; 1; 2];
+            
+            symbObj1 = SymbRepObject(durations1, symbols1);
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            symbObj3 = SymbRepObject(durations3, symbols3);
+            symbObj4 = SymbRepObject(durations4, symbols4);
+            symbObj5 = SymbRepObject(durations5, symbols5);
+            symbObj6 = SymbRepObject(durations6, symbols6);
+            
+            symbObj1 = symbObj1.mergeSequence(symbSequence1, 'newSymbol','test1');
+            symbObj2 = symbObj2.mergeSequence(symbSequence2, 'newSymbol','test2');
+            symbObj3 = symbObj3.mergeSequence(symbSequence3, 'newSymbol','test3');
+            symbObj4 = symbObj4.mergeSequence(symbSequence4, 'newSymbol','test4');
+            symbObj5 = symbObj5.mergeSequence(symbSequence5, 'newSymbol','test5');
+            symbObj6 = symbObj6.mergeSequence(symbSequence6, 'newSymbol','test6');
+            
+            testCase.verifyEqual(symbObj1.durations, expectedReturn1.durations);
+            testCase.verifyEqual(symbObj1.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(categories(symbObj1.symbols), categories(expectedReturn1.symbols));
+            testCase.verifyEqual(symbObj2.durations, expectedReturn2.durations);
+            testCase.verifyEqual(symbObj2.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(categories(symbObj2.symbols), categories(expectedReturn2.symbols));
+            testCase.verifyEqual(symbObj3.durations, expectedReturn3.durations);
+            testCase.verifyEqual(symbObj3.symbols, expectedReturn3.symbols);
+            testCase.verifyEqual(categories(symbObj3.symbols), categories(expectedReturn3.symbols));
+            testCase.verifyEqual(symbObj4.durations, expectedReturn4.durations);
+            testCase.verifyEqual(symbObj4.symbols, expectedReturn4.symbols);
+            testCase.verifyEqual(categories(symbObj4.symbols), categories(expectedReturn4.symbols));
+            testCase.verifyEqual(symbObj5.durations, expectedReturn5.durations);
+            testCase.verifyEqual(symbObj5.symbols, expectedReturn5.symbols);
+            testCase.verifyEqual(categories(symbObj5.symbols), categories(expectedReturn5.symbols));
+            testCase.verifyEqual(symbObj6.durations, expectedReturn6.durations);
+            testCase.verifyEqual(symbObj6.symbols, expectedReturn6.symbols);
+            testCase.verifyEqual(categories(symbObj6.symbols), categories(expectedReturn6.symbols));
+            
+            testCase.verifyError(@()symbObj1.mergeSequence(symbSequence1, 'newSymbol', 1), 'MATLAB:InputParser:ArgumentFailedValidation');
+            
+        end        
         
         function testFindSymbol(testCase)
             
@@ -216,8 +360,8 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
             symbSequence1 = {'c', 'b'};
             
-            expectedReturn1.symbols = categorical({'Word1', 'b', 'Word1'}, {'Word1', 'b'})';
-            expectedReturn1.durations = [1; 1; 16];
+            expectedReturn1.symbols = categorical({'a','b', 'Word1', '[{c}{b}]'}, {'a', 'b', '[{c}{b}]',  'Word1'})';
+            expectedReturn1.durations = [1; 1; 6; 10];
             
             symbObj1 = SymbRepObject(durations1, symbols1);
             
@@ -541,10 +685,60 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
             t = SymbRepObject(lengthVec', symsVecIn);
             testCase.verifyEqual(t.repetitions, lengthVec');
-            t1 = t.mergeSymbols({sym1, sym2}, [sym1, sym2]);
-            testCase.verifyEqual(t1.repetitions, randRepVec');
+
             t2 = t.mergeSequence({sym1, sym2});
             testCase.verifyEqual(t2.repetitions, randRepVec');
+            
+            t1 = t.mergeSymbols({sym1, sym2}, [sym1, sym2]);
+            testCase.verifyEqual(t1.repetitions, randRepVec');
+        end
+        
+        function testRepetitionsWithOverlapping(testCase)
+            sym1 = 'a';
+            sym2 = 'b';
+            nReps = randi(30)+2;
+            symsVec={};
+            lengthVec = [];
+            for i = 1:nReps
+                 randi1 = randi(20)+1;
+                 randi2 = randi(20)+1;
+                 symsVec = [symsVec, {sym1, sym2}];
+                 lengthVec = [lengthVec, randi1, randi2];
+            end
+            
+            symsVecIn = categorical(symsVec)';
+            
+            t = SymbRepObject(lengthVec', symsVecIn);
+            t = t.mergeSequence({sym1, sym2, sym1}, 'bAllowOverlapping', true);
+            testCase.verifyEqual(t.repetitions, [nReps-1, randi2]');
+        end
+        
+        function testRepetitionsWithOverlapping2(testCase)
+            symsVec={'a', 'b', 'c', 'a', 'b', 'c', 'a'};
+            lengthVec = randi(20, 1, numel(symsVec))+1;
+
+            
+            symsVecIn = categorical(symsVec)';
+            
+            t = SymbRepObject(lengthVec', symsVecIn);
+            t = t.mergeSequence({'a', 'b', 'c', 'a'}, 'bAllowOverlapping', true);
+            testCase.verifyEqual(t.repetitions, [2]');
+        end
+        
+        function testWithoutCompresssion(testCase)
+            symsVec={'a', 'b', 'c', 'a', 'a','b', 'c', 'a'};
+            lengthVec = randi(20, 1, numel(symsVec))+1;
+
+            
+            symsVecIn = categorical(symsVec)';
+            
+            t = SymbRepObject(lengthVec', symsVecIn);
+            t1 = t.mergeSequence({'a', 'b', 'c', 'a'}, 'bCompress', false);
+            testCase.verifyEqual(t1.repetitions, [1, 1]');
+            testCase.verifyEqual(t1.durations, [sum(lengthVec(1:4)), sum(lengthVec(5:8))]');
+            
+             testCase.verifyError(@()t.mergeSequence({'a', 'b', 'c', 'a'}, 'bCompress', false, 'bAllowOverlapping', true), 'mergeSymbols:bCompress');
+             testCase.verifyError(@()t.mergeSymbols({'a', 'b', 'c', 'a'}, 'abca','bCompress', false, 'bAllowOverlapping', true), 'mergeSymbols:bCompress');
         end
         
     end

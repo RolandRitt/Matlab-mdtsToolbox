@@ -192,7 +192,7 @@ classdef SymbRepObject
             
         end
              
-        function obj = mergeSequence(obj, symbSequence)
+        function obj = mergeSequence2(obj, symbSequence)
             % Purpose : Merge symbols of one channel according to a given
             % sequence
             %
@@ -322,7 +322,7 @@ classdef SymbRepObject
             
         end
         
-        function obj = mergeSymbols(obj, oldSymbols, newSymbol)
+        function obj = mergeSymbols(obj, oldSymbols, newSymbol, varargin)
             % Purpose : Merge given symbols in the symbolic representation
             %
             % Syntax :
@@ -346,24 +346,11 @@ classdef SymbRepObject
                 
             else
                 
-                obj.symbols = mergecats(obj.symbols, oldSymbols, newSymbol);
+                obj = obj.mergeSequence(oldSymbols, 'newSymbol', newSymbol, varargin{:});
                 
-                obj = obj.compressSymbols(newSymbol);
-                
-%                 for i = numel(obj.symbols) : -1 : 2
-%                     
-%                     if(isequal(obj.symbols(i), obj.symbols(i - 1)))
-% %                         obj.repetitions(i-1) = 1;
-%                         obj.durations(i - 1) = obj.durations(i) + obj.durations(i - 1);
-%                         
-%                         obj.durations(i) = [];
-%                         obj.symbols(i) = [];
-% 
-%                         
-%                     end
-%                     
-%                 end
-                
+%                 obj.symbols = mergecats(obj.symbols, oldSymbols, newSymbol);
+%                 
+%                 obj = obj.compressSymbols(newSymbol);                
             end
             
         end
