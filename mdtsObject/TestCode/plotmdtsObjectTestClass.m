@@ -56,7 +56,7 @@ classdef plotmdtsObjectTestClass < matlab.unittest.TestCase
             comment = {'This is'; 'a comment'};
             eventInfo1.eventTime = time1(10);
             eventInfo1.eventDuration = int32(0);
-            eventInfo2.eventTime = time1(100);
+            eventInfo2.eventTime = time1(100)+datenum(seconds(0.5));
             eventInfo2.eventDuration = int32(0);
             eventInfo3.eventTime = time1(750);
             eventInfo3.eventDuration = int32(0);

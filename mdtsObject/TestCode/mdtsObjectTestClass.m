@@ -887,7 +887,7 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             testCase.verifyError(@()returns.addEvent(eventName2, eventInfo1.eventTime, eventInfo1.eventDuration), 'addEvent:InvalidEventID');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo2.eventTime, eventInfo2.eventDuration), 'addEvent:TimesInconsistent');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo4.eventTime, eventInfo4.eventDuration), 'addEvent:InvalidEventDuration');
-            testCase.verifyError(@()returns.addEvent(eventName1, eventInfo5.eventTime, eventInfo5.eventDuration), 'addEvent:EventTimeNotAvailable');
+%             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo5.eventTime, eventInfo5.eventDuration), 'addEvent:EventTimeNotAvailable');
             
             
             

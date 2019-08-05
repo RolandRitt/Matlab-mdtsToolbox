@@ -442,12 +442,12 @@ classdef mdtsObject < mdtsCoreObject
                 errMsg = 'Event duration must be an integer (array)!';
                 error(errID, errMsg);
                 
-            elseif~prod(ismember(eventTimeDatenum, obj.time))
-                
-                errID = 'addEvent:EventTimeNotAvailable';
-                errMsg = 'Only time stemps available within the data set are permitted as eventTime!';
-                error(errID, errMsg);
-                
+%             elseif~prod(ismember(eventTimeDatenum, obj.time))
+%                 
+%                 errID = 'addEvent:EventTimeNotAvailable';
+%                 errMsg = 'Only time stemps available within the data set are permitted as eventTime!';
+%                 error(errID, errMsg);
+%                 
             end
             
             obj = addEvent@mdtsCoreObject(obj, eventID, eventTimeDatenum, eventDuration);

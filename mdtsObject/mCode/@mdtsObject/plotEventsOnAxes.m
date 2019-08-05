@@ -60,9 +60,9 @@ for i = 1 : nEvents
         eventTimeDatenum = eventTimeDatenumAllEv(j);
         if(eventTimeDatenum >= obj.time(1) && eventTimeDatenum <= obj.time(end))
             
-            if(obj.timeType == 2)
+            if(obj.timeType == 2)%datenum
                 
-                eventTime = datetime(datestr(eventTimeDatenum));
+                eventTime = datetime(eventTimeDatenum, 'ConvertFrom', 'datenum');
                 
             elseif(obj.timeType == 3)
                 
