@@ -8,7 +8,7 @@ function [paAll, tHandleAll] = plotOnAxes(SymbRepObj, axes_in, xTime, varargin)
 %   axes_in:= the axes, on which the symbolic representation should be
 %               plotted;
 %   SymbRepObj:= a SymbRepObject;
-%   xTime:= the original time axes where the SymbRepObject refers to;
+%   xTime:= (optional, if not given, take the x values of the first line in the axes)the original time axes where the SymbRepObject refers to;
 %   plotSymbolName:= (optional key-value)a boolean indicating if the Symbol name should be
 %                   shown in the plot;
 %   plotSymbolDuration:= (optional key-value)a boolean indicating if the Symbol duration should be
@@ -43,13 +43,13 @@ p = inputParser();
 p.KeepUnmatched=true;
 addRequired(p, 'SymbRepObj', @(x) isa(x, 'SymbRepObject')); %check if input is SymbRepObject
 addRequired(p, 'axes_in', @(x) isa(x, 'matlab.graphics.axis.Axes')||ishghandle(x)); %check if input is axes or handle object
-addRequired(p, 'xTime', @(x) isdatetime(x)|| isreal(x) || isduration(x));
+addOptional(p, 'xTime', false, @(x) isdatetime(x)|| isreal(x) || isduration(x));
 addParameter(p, 'plotSymbolName', false, @islogical);
 addParameter(p, 'plotSymbolDuration', false, @islogical);
 addParameter(p, 'plotSymbolNameMinLength', 0, @(x)isreal(x)&& isequal(size(x),[1,1]));
 addParameter(p, 'colorDismiss', [], @(x)(isreal(x)&& isequal(size(x),[1,3]))|| ischar(x));
 
-parse(p, SymbRepObj,axes_in,  xTime, varargin{:});
+parse(p, SymbRepObj,axes_in,varargin{:});
 
 tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
 UnmatchedArgs = reshape(tmp',[],1)';
@@ -91,6 +91,10 @@ gObjArr = axes_in;
 paAll = [];
 tHandleAll = [];
 
+bNoXTime = false;
+if ~p.Results.xTime
+    bNoXTime = true;
+end
 for i = 1 : nAxes
     if  isa( gObjArr(i), 'matlab.graphics.axis.Axes')
         tempAx = gObjArr(i);
@@ -103,7 +107,12 @@ for i = 1 : nAxes
     else
         error('something went wrong in visu Ranges');
     end
-    
+    %% if no xTime given, take xValues of first Children
+    if bNoXTime
+        tempLine = findall(tempAx.Children, 'Type', 'Line');
+        xTime = tempLine(1).XData';
+        
+    end
     %% check if there is a figureManagerRunning
     figH = ancestor(tempAx,'figure');
     fM = figH.UserData;
