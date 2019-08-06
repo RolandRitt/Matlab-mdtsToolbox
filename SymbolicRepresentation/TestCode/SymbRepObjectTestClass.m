@@ -741,6 +741,24 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
              testCase.verifyError(@()t.mergeSymbols({'a', 'b', 'c', 'a'}, 'abca','bCompress', false, 'bAllowOverlapping', true), 'mergeSymbols:bCompress');
         end
         
+        function testStartIndStopInd(testCase)
+            symsVec={'a', 'b', 'c', 'a', 'a','b', 'c', 'a'};
+             
+            symsVecIn = categorical(symsVec)';
+            lengthVec = [1,1,1,1,1,1,1,1];          
+            t = SymbRepObject(lengthVec', symsVecIn);
+            
+            lengthVec2 = randi(20, 1, length(lengthVec));          
+            t2 = SymbRepObject(lengthVec2', symsVecIn);
+            
+            testCase.verifyEqual(t.startInds, [cumsum(lengthVec) - lengthVec]' + 1);
+            testCase.verifyEqual(t.stopInds, cumsum(lengthVec)');
+%             temp1 =  cumsum(lengthVec2);
+            testCase.verifyEqual(t2.startInds,[cumsum(lengthVec2) - lengthVec2]' + 1);
+            testCase.verifyEqual(t2.stopInds, cumsum(lengthVec2)');
+       
+        end
+        
     end
     
 end
