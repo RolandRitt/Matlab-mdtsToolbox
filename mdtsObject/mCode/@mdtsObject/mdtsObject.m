@@ -422,6 +422,9 @@ classdef mdtsObject < mdtsCoreObject
             % Return Parameters :
             %   mdtsObject : Original object with the added event
             
+            if nargin <4
+                eventDuration = zeros(size(eventTime));
+            end
             eventTimeDatenum = obj.convert2Datenum(eventTime);
             
             if~isa(eventID, 'char')

@@ -868,6 +868,8 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             eventInfo4.eventTime = time(2);
             eventInfo5.eventTime = time(end) + 1;
             eventInfo6.eventTime = time(2);
+            eventInfo7.eventTime = datetime(time(2), 'ConvertFrom', 'datenum');
+            
             
             eventInfo1.eventDuration = 3;
             eventInfo2.eventDuration = [3; 4];
@@ -875,6 +877,10 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             eventInfo4.eventDuration = 3.3;
             eventInfo5.eventDuration = 3;
             eventInfo6.eventDuration = seconds(3);
+            eventInfo7.eventDuration = seconds(3);
+            eventInfo7n = eventInfo6;
+            eventInfo7n.eventDuration = 0;
+            
             
             returns = mdtsObject(time, data, tags, 'units', units, 'ts', ts, 'name', name, 'who', who, 'when', when, 'description', description, 'comment', comment, 'tsEvents', tsEvents, 'symbReps', symbReps);
             
@@ -883,6 +889,12 @@ classdef mdtsObjectTestClass < matlab.unittest.TestCase
             
             returns.addEvent(eventName1, eventInfo6.eventTime, eventInfo6.eventDuration);
             testCase.verifyEqual(returns.tsEvents(eventName1), eventInfo6);
+            
+            returns.addEvent(eventName1, eventInfo7.eventTime, eventInfo7.eventDuration);
+            testCase.verifyEqual(returns.tsEvents(eventName1), eventInfo6);
+            
+            returns.addEvent(eventName1, eventInfo7.eventTime);
+            testCase.verifyEqual(returns.tsEvents(eventName1), eventInfo7n);
             
             testCase.verifyError(@()returns.addEvent(eventName2, eventInfo1.eventTime, eventInfo1.eventDuration), 'addEvent:InvalidEventID');
             testCase.verifyError(@()returns.addEvent(eventName1, eventInfo2.eventTime, eventInfo2.eventDuration), 'addEvent:TimesInconsistent');
