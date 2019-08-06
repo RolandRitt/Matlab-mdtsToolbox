@@ -80,7 +80,7 @@ classdef SymbRepObject_findSequence_TestClass < matlab.unittest.TestCase
             
        end
         
-           function testfindSequence(testCase)
+           function testfindSequence2(testCase)
             
             t = SymbRepObject([1,2,3,4,5,1,4,3,2,1,5]', categorical({'a','c','b','a','c','a', 'b','a','c','a','e'})');
             
