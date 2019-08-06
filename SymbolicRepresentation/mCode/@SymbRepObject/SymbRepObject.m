@@ -185,10 +185,10 @@ classdef SymbRepObject
             % Return Parameters :
             %   startIndUncompressed : the start index of the uncompressed
             %   series
-            maxInd = max(indSymbCompressed);
-            cuSum = cumsum(obj.durations(1:maxInd));
-            startIndUncompressed = cuSum(indSymbCompressed) - obj.durations(indSymbCompressed) + 1;
-            
+%             maxInd = max(indSymbCompressed);
+%             cuSum = cumsum(obj.durations(1:maxInd));
+%             startIndUncompressed = cuSum(indSymbCompressed) - obj.durations(indSymbCompressed) + 1;
+            startIndUncompressed = obj.compressedInds2UncompressedInds(indSymbCompressed);
             
         end
              
