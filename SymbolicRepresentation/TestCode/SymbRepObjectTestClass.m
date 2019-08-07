@@ -483,6 +483,109 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
             
         end
         
+        
+       function testRemoveSymbolsCompressedInd(testCase)
+            
+            durations1 = [1; 1; 3; 1; 2; 1; 1; 2; 3; 4];
+            symbols1 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
+            durations2 = [1; 3; 1; 2; 1; 3; 4; 1; 2];
+            symbols2 = categorical({'x', 'y', 'z', 'y', 'z', 'x', 'y', 'x', 'z'})'; 
+            durations3 = [1; 1; 3; 1; 1; 1; 1; 2; 3; 4];
+            symbols3 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})'; 
+            durations4 = [15; 7; 15; 45; 7; 15; 15; 7; 45; 15];
+            symbols4 = categorical({'a', 'b', 'c', 'b', 'a', 'c', 'a', 'b', 'c', 'b'})';
+            durations5 = [4; 3; 4; 2; 2; 12; 2; 1; 2; 6];
+            symbols5 = categorical({'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'}, {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'})';
+            durations6 = [10; 15; 20; 12];
+            symbols6 = categorical({'a', 'b', 'c', 'd'}, {'a', 'b', 'c', 'd'})';
+            
+            shortSymbolLength1 = 1;
+            shortSymbolLength4 = 7;
+            shortSymbolLength5 = 3;
+            shortSymbolLength6 = 5;
+            maxNumberShortSymbols1 = 5;
+            maxNumberShortSymbols2 = 2;
+            maxNumberShortSymbols4 = 100;
+            maxNumberShortSymbols5 = 4;
+            maxShortSymbolSequenceLength5 = 4;
+            
+            expectedReturn1.symbols = categorical({'c', 'a', 'b', 'c', 'b'})';
+            expectedReturn1.durations = [6; 3; 3; 3; 4];
+            expectedReturn2.symbols = categorical({'y', 'x', 'y', 'z'})';
+            expectedReturn2.durations = [8; 3; 5; 2];
+            expectedReturn3.symbols = categorical({'c', 'NotDefined', 'b', 'c', 'b'}, {'b', 'c'})'; 
+            expectedReturn3.durations = [5; 4; 2; 3; 4];
+            expectedReturn4.symbols = categorical({'a', 'c', 'b', 'c', 'a', 'c', 'b'}, {'a', 'b', 'c'})';
+            expectedReturn4.durations = [19; 18; 50; 17; 17; 50; 15];
+            expectedReturn5.symbols = categorical({'a', 'c', 'f', 'NotDefined', 'j'}, {'a', 'c', 'f', 'j'})';
+            expectedReturn5.durations = [6; 6; 15; 5; 6];
+            expectedReturn6.symbols = categorical({'a', 'b', 'c', 'd'}, {'a', 'b', 'c', 'd'})';
+            expectedReturn6.durations = [10; 15; 20; 12];
+            
+            durations4 = [15; 7; 15; 45; 7; 15; 15; 7; 45; 15]; 
+            
+
+            symbObj1 = SymbRepObject(durations1, symbols1);
+            symbObj2 = SymbRepObject(durations2, symbols2);
+            symbObj3 = SymbRepObject(durations3, symbols3);
+            symbObj4 = SymbRepObject(durations4, symbols4);
+            symbObj5 = SymbRepObject(durations5, symbols5);
+            symbObj6 = SymbRepObject(durations6, symbols6);
+            
+            symbObj1t = symbObj1.removeSymbolsGivenCompressedIndes([1,2, 4, 6, 7]);  
+            symbObj1tn = symbObj1.removeSymbolsGivenCompressedIndes(logical([1,1, 0, 1,0,  1, 1, 0, 0,0]));
+            
+   
+            symbObj2t = symbObj2.removeSymbolsGivenCompressedIndes( [1,3,5,8]);  
+            symbObj2tn = symbObj2.removeSymbolsGivenCompressedIndes(logical([1; 0; 1; 0; 1; 0; 0; 1; 0]));
+            
+            symbObj3t = symbObj3.removeSymbolsGivenCompressedIndes( [1,2, 4, 5, 6,7] , 'maxNumberShortSymbols', maxNumberShortSymbols2);
+            symbObj3tn = symbObj3.removeSymbolsGivenCompressedIndes( logical([1; 1; 0; 1; 1; 1; 1; 0; 0; 0]) , 'maxNumberShortSymbols', maxNumberShortSymbols2);
+ 
+            symbObj4t = symbObj4.removeSymbolsGivenCompressedIndes( [2,5,8],'maxNumberShortSymbols', maxNumberShortSymbols4, 'SplittingMode', 'weighted');
+            symbObj4tn = symbObj4.removeSymbolsGivenCompressedIndes( logical([0; 7; 0; 0; 7; 0; 0; 7; 0; 0]),'maxNumberShortSymbols', maxNumberShortSymbols4, 'SplittingMode', 'weighted');
+            
+            symbObj5t = symbObj5.removeSymbolsGivenCompressedIndes([2,4,5,7,8,9], 'maxNumberShortSymbols', maxNumberShortSymbols5, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength5, 'SplittingMode', 'weighted');
+            symbObj5tn = symbObj5.removeSymbolsGivenCompressedIndes(logical([0; 3; 0; 2; 2; 0; 2; 1; 2; 0]), 'maxNumberShortSymbols', maxNumberShortSymbols5, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength5, 'SplittingMode', 'weighted');
+
+       
+            symbObj6t = symbObj6.removeSymbolsGivenCompressedIndes([]);
+            symbObj6tn = symbObj6.removeSymbolsGivenCompressedIndes(logical([0; 0; 0; 0]));
+            
+            testCase.verifyEqual(symbObj1t.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(symbObj1t.durations, expectedReturn1.durations);
+            testCase.verifyEqual(symbObj1tn.symbols, expectedReturn1.symbols);
+            testCase.verifyEqual(symbObj1tn.durations, expectedReturn1.durations);
+            
+            testCase.verifyEqual(symbObj2t.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(symbObj2t.durations, expectedReturn2.durations);
+            testCase.verifyEqual(symbObj2tn.symbols, expectedReturn2.symbols);
+            testCase.verifyEqual(symbObj2tn.durations, expectedReturn2.durations);
+            
+            testCase.verifyEqual(symbObj3t.symbols, expectedReturn3.symbols);
+            testCase.verifyEqual(symbObj3t.durations, expectedReturn3.durations);
+            testCase.verifyEqual(symbObj3tn.symbols, expectedReturn3.symbols);
+            testCase.verifyEqual(symbObj3tn.durations, expectedReturn3.durations);
+            
+            testCase.verifyEqual(symbObj4t.symbols, expectedReturn4.symbols);
+            testCase.verifyEqual(symbObj4t.durations, expectedReturn4.durations);
+            testCase.verifyEqual(symbObj4tn.symbols, expectedReturn4.symbols);
+            testCase.verifyEqual(symbObj4tn.durations, expectedReturn4.durations);            
+            
+            testCase.verifyEqual(symbObj5t.symbols, expectedReturn5.symbols);
+            testCase.verifyEqual(symbObj5t.durations, expectedReturn5.durations);
+            testCase.verifyEqual(symbObj5tn.symbols, expectedReturn5.symbols);
+            testCase.verifyEqual(symbObj5tn.durations, expectedReturn5.durations);
+            
+            testCase.verifyEqual(symbObj6t.symbols, expectedReturn6.symbols);
+            testCase.verifyEqual(symbObj6t.durations, expectedReturn6.durations);
+            testCase.verifyEqual(symbObj6tn.symbols, expectedReturn6.symbols);
+            testCase.verifyEqual(symbObj6tn.durations, expectedReturn6.durations); 
+
+
+            
+        end
+        
         function testGenSymbMarkov(testCase)
             
             durations1 = [1; 1; 3; 1; 2; 1; 1; 2; 3; 4];
@@ -756,6 +859,19 @@ classdef SymbRepObjectTestClass < matlab.unittest.TestCase
 %             temp1 =  cumsum(lengthVec2);
             testCase.verifyEqual(t2.startInds,[cumsum(lengthVec2) - lengthVec2]' + 1);
             testCase.verifyEqual(t2.stopInds, cumsum(lengthVec2)');
+       
+        end
+        
+        function testPropertynSyms(testCase)
+            symsVec={'a', 'b', 'c', 'a', 'a','b', 'c', 'a'};
+             
+            symsVecIn = categorical(symsVec)';
+            lengthVec = [1,1,1,1,1,1,1,1];          
+            t = SymbRepObject(lengthVec', symsVecIn);
+            
+           
+            testCase.verifyEqual(t.nSyms, 8);
+
        
         end
         

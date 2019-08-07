@@ -29,6 +29,7 @@ classdef SymbRepObject
         symbolDurations
         startInds
         stopInds
+        nSyms
     end
     methods
         
@@ -514,30 +515,28 @@ classdef SymbRepObject
             
         end
         
-        function obj = removeShortSymbols(obj, varargin)
-            % Purpose : Remove short symbols within the symbolic
-            % representation
+        function obj = removeSymbolsGivenCompressedIndes(obj,indsRemove, varargin)
+            % Purpose : Remove symbols within the symbolic
+            % representation given the compressedIndices
             %
             % Syntax :
-            %   SymbRepObject = SymbRepObject.removeShortSymbols()
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(shortSymbolLength)
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxNumberShortSymbols)
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxShortSymbolSequenceLength)
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, 'splittingMode', splittingMode)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(indsRemove)
+            %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'maxNumberShortSymbols', maxNumberShortSymbols)
+            %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength)
+            %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'splittingMode', splittingMode)
             %
             % Input Parameters :
-            %   shortSymbolLength : Length up to which a symbol sequence is
-            %   considered 'short', default is 1
+            %   indsRemove : Indices of the symbols to be removed
             %
             %   maxNumberShortSymbols : Maximum number of consecutive short
             %   symbols. If this length is exceeded by a
             %   sequence of short symbols, this sequence is denominated
-            %   unknown. Default is 5.
+            %   unknown. Default is inf.
             %
             %   maxShortSymbolSequenceLength : Maximum length of
             %   consecutive short symbols. If this length is exceeded by a
             %   sequence of short symbols, this sequence is denominated
-            %   unknown. Default is 10.
+            %   unknown. Default is inf.
             %
             %   splittingMode : Decision wether the range of a short symbol
             %   is splitted to the enclosing symbols equally or weighted
@@ -547,26 +546,34 @@ classdef SymbRepObject
             
             p = inputParser;
             
-            defaultshortSymbolLength = 1;
-            defaultMaxNumberShortSymbols = 5;
-            defaultMaxShortSymbolSequenceLength = 10;
+
+            defaultMaxNumberShortSymbols = inf;
+            defaultMaxShortSymbolSequenceLength = inf;
             defaultSplittingMode = 'equal';
             
-            addParameter(p, 'shortSymbolLength', defaultshortSymbolLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addRequired(p, 'indsRemove');
             addParameter(p, 'maxNumberShortSymbols', defaultMaxNumberShortSymbols, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'maxShortSymbolSequenceLength', defaultMaxShortSymbolSequenceLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'splittingMode', defaultSplittingMode, @(x)validateattributes(x, {'char'}, {'nonempty'}));
             
-            parse(p, varargin{:});
+            parse(p,indsRemove, varargin{:});
             
-            shortSymbolLength = p.Results.shortSymbolLength;
+
             maxNumberShortSymbols = p.Results.maxNumberShortSymbols;
             splittingMode = p.Results.splittingMode;
             maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
             
+            if ~islogical(indsRemove)
+                indsRemoveNew = false(size(obj.durations));
+                indsRemoveNew(indsRemove) = true;
+                indsRemove = indsRemoveNew;
+            end
+            allShortSymbolsInd = indsRemove;
+             allShortSymbolsInd = allShortSymbolsInd(:);
             allSymbols = cellstr(obj.symbols);
             allDurations = obj.durations;
-            allShortSymbolsInd = allDurations <= shortSymbolLength;
+            
+            
             allNonShortSymbolsInd = (allShortSymbolsInd -1) * -1;
             cumStartInd = cumsum([1; allDurations(1 : end - 1)]);
             
@@ -709,7 +716,210 @@ classdef SymbRepObject
             end
             
             obj.symbols = removecats(obj.symbols, tempWildcard);
+        end
+        
+        function obj = removeShortSymbols(obj, varargin)
+            % Purpose : Remove short symbols within the symbolic
+            % representation
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.removeShortSymbols()
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(shortSymbolLength)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxNumberShortSymbols)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxShortSymbolSequenceLength)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, 'splittingMode', splittingMode)
+            %
+            % Input Parameters :
+            %   shortSymbolLength : Length up to which a symbol sequence is
+            %   considered 'short', default is 1
+            %
+            %   maxNumberShortSymbols : Maximum number of consecutive short
+            %   symbols. If this length is exceeded by a
+            %   sequence of short symbols, this sequence is denominated
+            %   unknown. Default is 5.
+            %
+            %   maxShortSymbolSequenceLength : Maximum length of
+            %   consecutive short symbols. If this length is exceeded by a
+            %   sequence of short symbols, this sequence is denominated
+            %   unknown. Default is 10.
+            %
+            %   splittingMode : Decision wether the range of a short symbol
+            %   is splitted to the enclosing symbols equally or weighted
+            %
+            % Return Parameters :
+            %   SymbRepObject : Original object with removed short symbols
             
+            p = inputParser;
+            
+            defaultshortSymbolLength = 1;
+            defaultMaxNumberShortSymbols = 5;
+            defaultMaxShortSymbolSequenceLength = 10;
+            defaultSplittingMode = 'equal';
+            
+            addParameter(p, 'shortSymbolLength', defaultshortSymbolLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'maxNumberShortSymbols', defaultMaxNumberShortSymbols, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'maxShortSymbolSequenceLength', defaultMaxShortSymbolSequenceLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'splittingMode', defaultSplittingMode, @(x)validateattributes(x, {'char'}, {'nonempty'}));
+            
+            parse(p, varargin{:});
+            
+            shortSymbolLength = p.Results.shortSymbolLength;
+            maxNumberShortSymbols = p.Results.maxNumberShortSymbols;
+            splittingMode = p.Results.splittingMode;
+            maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
+            
+            allSymbols = cellstr(obj.symbols);
+            allDurations = obj.durations;
+            allShortSymbolsInd = allDurations <= shortSymbolLength;
+            
+            
+            obj = removeSymbolsGivenCompressedIndes(obj,allShortSymbolsInd, 'maxNumberShortSymbols',maxNumberShortSymbols,...
+                'maxShortSymbolSequenceLength',  maxShortSymbolSequenceLength, 'splittingMode', splittingMode)
+            
+            %%%%%%%%%%%%%%%%%%%%%
+%             allNonShortSymbolsInd = (allShortSymbolsInd -1) * -1;
+%             cumStartInd = cumsum([1; allDurations(1 : end - 1)]);
+%             
+%             cumsumSymb = cumsum(allShortSymbolsInd');
+%             index  = strfind([allShortSymbolsInd', 0] ~= 0, [true, false]);
+%             
+%             if isempty(index)
+%                 
+%                 return;
+%                 
+%             end
+%             
+%             allNumberShortSymbols = [cumsumSymb(index(1)), diff(cumsumSymb(index))]';
+%             allEndInd = index';
+%             allStartInd = allEndInd - allNumberShortSymbols + 1;
+%             
+%             allShortSymbolsLength = zeros(numel(allStartInd), 1);
+%             
+%             for i = 1 : numel(allStartInd)
+%                 
+%                 allShortSymbolsLength(i) = sum(obj.durations(allStartInd(i) : allEndInd(i)));
+%                 
+%             end
+%             
+%             shortLongSeparationNumber = allNumberShortSymbols <= maxNumberShortSymbols;
+%             
+%             shortLongSeparationLength = allShortSymbolsLength <= maxShortSymbolSequenceLength;
+%             
+%             shortLongSeparation = shortLongSeparationNumber .* shortLongSeparationLength;
+%             
+%             tempWildcard = 'NotDefined'; % Wildcard - will be removed from the categorical at the end of the method
+%             
+%             for i = 1 : numel(allStartInd)
+%                 
+%                 % Wildcard - will be removed from the categorical at the end of the method
+%                 % Used for all short and undefined symbols
+%                 tempSymbol = tempWildcard;
+%                 
+%                 if(allStartInd(i) == 1)
+%                     
+%                     if(shortLongSeparation(i))
+%                         
+%                         tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1)};
+%                         
+%                     end
+%                     
+%                     tempRange = [cumStartInd(allStartInd(1)), cumStartInd(allEndInd(1)) + allDurations(allEndInd(1)) - 1];
+%                     
+%                     obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+%                     
+%                 elseif(allEndInd(i) == numel(allSymbols))
+%                     
+%                     if(shortLongSeparation(i))
+%                         
+%                         tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1, 'last')};
+%                         
+%                     end
+%                     
+%                     tempRange = [cumStartInd(allStartInd(end)), cumStartInd(allEndInd(end)) + allDurations(allEndInd(end)) - 1];
+%                     
+%                     obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+%                     
+%                 else
+%                     
+%                     if(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>') && strcmp(allSymbols{allEndInd(i) + 1}, '<undefined>'))
+%                         
+%                         tempRange = [cumStartInd(allStartInd(i)), cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
+%                         
+%                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+%                         
+%                     elseif(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>'))
+%                         
+%                         tempSymbol = allSymbols{allEndInd(i) + 1};
+%                         
+%                         startPoint = cumStartInd(allStartInd(i));
+%                         endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+%                         
+%                         tempRange = [startPoint, endPoint];
+%                         
+%                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+%                         
+%                     elseif(shortLongSeparation(i) && strcmp(allSymbols{allEndInd(i) + 1}, '<undefined>'))
+%                         
+%                         tempSymbol = allSymbols{allStartInd(i) - 1};
+%                         
+%                         startPoint = cumStartInd(allStartInd(i));
+%                         endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+%                         
+%                         tempRange = [startPoint, endPoint];
+%                         
+%                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+%                         
+%                     elseif(shortLongSeparation(i))
+%                         
+%                         tempSymbol1 = allSymbols{allStartInd(i) - 1};
+%                         tempSymbol2 = allSymbols{allEndInd(i) + 1};
+%                         
+%                         if(strcmp(splittingMode, 'equal'))
+%                             
+%                             startPoint = cumStartInd(allStartInd(i));
+%                             endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+%                             
+%                             splittingPoint = floor((cumStartInd(allStartInd(i)) + cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1) / 2);
+%                             
+%                             tempRange1 = [startPoint, splittingPoint];
+%                             tempRange2 = [splittingPoint + 1, endPoint];
+%                             
+%                         elseif(strcmp(splittingMode, 'weighted'))
+%                             
+%                             startPoint = cumStartInd(allStartInd(i));
+%                             endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+%                             
+%                             weightingFactor = allDurations(allStartInd(i) - 1) / (allDurations(allStartInd(i) - 1) + allDurations(allEndInd(i) + 1));
+%                             splittingPoint = round(startPoint + (endPoint - startPoint + 1) * weightingFactor - 1);
+%                             
+%                             tempRange1 = [startPoint, splittingPoint];
+%                             tempRange2 = [splittingPoint + 1, endPoint];
+%                             
+%                         else
+%                             
+%                             errID = 'removeShortSymbols:InvalidSplittingMode';
+%                             errMsg = 'Input SplittingMode must be either equal or weighted!';
+%                             error(errID, errMsg);
+%                             
+%                         end
+%                         
+%                         obj = obj.setSymbolsInRange(tempSymbol1, tempRange1);
+%                         obj = obj.setSymbolsInRange(tempSymbol2, tempRange2);
+%                         
+%                     else
+%                         
+%                         tempRange = [cumStartInd(allStartInd(i)), cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
+%                         
+%                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+%                         
+%                     end
+%                     
+%                 end
+%                 
+%             end
+%             
+%             obj.symbols = removecats(obj.symbols, tempWildcard);
+%             
         end
         
         function [occurenceM, markovM] = genSymbMarkov(obj, varargin)
@@ -1215,6 +1425,10 @@ classdef SymbRepObject
         function stopInds = get.stopInds(obj)
             stopInds =cumsum(obj.durations);
         end
+        
+       function stopInds = get.nSyms(obj)
+            stopInds =numel(obj.durations);
+       end
         
            
     end
