@@ -1,4 +1,4 @@
-function [out, fM, ph] = plot(inputObject, varargin)
+function [axesH, fM, ph] = plot(inputObject, varargin)
 % plot
 %
 % Purpose : plot channels of the given mdtsObject
@@ -107,17 +107,17 @@ indsUnits = ~cellfun(@isempty,inputObject.units);
 
 tagsLabel(indsUnits) =  strcat(inputObject.tags(indsUnits), ' [', inputObject.units(indsUnits), ']');
 
-[out, ph] = plotMulti(xTime, inputObject.data, 'time', tagsLabel,'yLabelsLatex',false, UnmatchedArgs{:});
+[axesH, ph] = plotMulti(xTime, inputObject.data, 'time', tagsLabel,'yLabelsLatex',false, UnmatchedArgs{:});
 
 shouldAddold = fM.shouldAdd;
 fM.shouldAdd = false; %% otherwise it is too slow!!!
-title(out(1), inputObject.name, 'Interpreter', 'none');
+title(axesH(1), inputObject.name, 'Interpreter', 'none');
 
 %% Plot Symbolic Representation
 
 % gObjArr = plotSymRepObjectOnAllAxes(out, inputObject.symbReps{1}, xTime, p.Results.plotSymbolName, p.Results.plotSymbolDuration, plotSymbolNameMinLength, get(ph(1), 'Color'));
 
-gObjArr = plotSymRepObjectOnAxes(out, inputObject.symbReps, xTime, 'plotSymbolName',p.Results.plotSymbolName, 'plotSymbolDuration',...
+gObjArr = plotSymRepObjectOnAxes(axesH, inputObject.symbReps, xTime, 'plotSymbolName',p.Results.plotSymbolName, 'plotSymbolDuration',...
     p.Results.plotSymbolDuration, 'plotSymbolNameMinLength', plotSymbolNameMinLength, 'colorDismiss', get(ph(1), 'Color'));
  
 
@@ -206,7 +206,7 @@ end
 
 %% Plot Events
 
-[ph2]= inputObject.plotEventsOnAxes(out);
+[ph2]= inputObject.plotEventsOnAxes(axesH);
 % 
 % eventKeys = keys(inputObject.tsEvents);
 % nEvents = length(eventKeys);
