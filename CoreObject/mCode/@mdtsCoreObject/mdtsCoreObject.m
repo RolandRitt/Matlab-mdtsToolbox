@@ -41,8 +41,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         uniform
         ts
         isSubset = false;
-        nChannels
-        nDataPoints
+        
         
         
     end
@@ -53,6 +52,8 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         timeRelative
         timeDateTime
         timeDateTimeRelative
+        nChannels
+        nDataPoints
         
     end
     
