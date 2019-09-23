@@ -326,6 +326,9 @@ These functions can only be called within the class or a subclass.
 	\item \textbf{obj = keepTagsOfData(tagsIndices)}\\
 	Delete all data (columns) oftags which are not given in \textit{tagsIndices}. \textit{tagsIndices} are the numeric indices of the columns to be kept.
 	
+	\item \textbf{extractRowsOfSymbReps(intervalIndices)}\\
+	Extract all symbols and druations from the symbRepObjects of all channels, according to the input \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept. The symbReps are overwritten with the trimmed version.
+	
 \end{enumerate}
 
 \subsection{mdtsObject}
