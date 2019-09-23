@@ -439,7 +439,7 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             % Return Parameters :
             %   tagIndices : Indices of the required tags as array
             if ~iscell(tagList)
-                tagList = {tagList}
+                tagList = {tagList};
             end
             
             [isAlias] = ismember(tagList,obj.aliasTable.Properties.RowNames);            
