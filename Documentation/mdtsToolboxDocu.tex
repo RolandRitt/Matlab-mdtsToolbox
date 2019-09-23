@@ -427,6 +427,12 @@ newObject = originalObject(4, 1 : 3); % time stamp 4, tags 1 - 3
 newObject = originalObject(2 : 5, 2); % time stamps 2 - 5, tag 2
 \end{lstlisting}
 additional times and tags/alias names can be used for indexing
+\begin{lstlisting}[frame=single]
+newObject = originalObject(2 : 4, 1 : 3); % time stamps 2 - 4, tags 1 - 3
+newObject = originalObject(1 : 4, 2 : 3); % time stamps 1 - 4, tags 2 - 3
+newObject = originalObject(4, 1 : 3); % time stamp 4, tags 1 - 3
+newObject = originalObject(2 : 5, 2); % time stamps 2 - 5, tag 2
+\end{lstlisting}
 
 \item \textbf{obj = addEvent(eventID, eventTime, eventDuration)}\\
 Validates if \textit{eventID} is a character vector (string), \textit{eventTime} is an array of time stamps available in \textit{time} and \textit{eventDuration} is an array of integers or durations and of the same size as \textit{eventTime}. Valid values will be passed to the \textit{addEvent} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
