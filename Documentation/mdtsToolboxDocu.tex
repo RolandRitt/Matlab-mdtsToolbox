@@ -308,8 +308,11 @@ Adds the symbRepObject \textit{symbObj} to all elements of \textit{symbReps}. If
 Stores the segmentsObject \textit{segmentsObj} in the \textit{segments} property of the mdtsObject.
 
 \item \textbf{obj = addSegmentsToAllChannels(segmentsObj, keepExistentSegReps)}\\
-Assignes the segmentsObject \textit{segmentsObj} to all channels in the \textit{segments} property of the mdtsObject. If \textit{keepExistentSegReps} is true, already existent segmentsObjs within \textit{segments} will be preserved, if set to false, all elements in \textit{segments} will be overwritten.
-	
+Assigns the segmentsObject \textit{segmentsObj} to all channels in the \textit{segments} property of the mdtsObject. If \textit{keepExistentSegReps} is true, already existent segmentsObjs within \textit{segments} will be preserved, if set to false, all elements in \textit{segments} will be overwritten.
+
+\item \textbf{obj = addSegmentsToChannels(segmentsObj, channelNumber)}\\
+Assigns the segmentsObject \textit{segmentsObj} to  \textit{segments} the property of the mdtsObject for only the given channelNumber(s).
+
 \end{enumerate}
 
 \subsection{mdtsObject}
