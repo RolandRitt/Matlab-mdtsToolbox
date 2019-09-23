@@ -762,8 +762,8 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         
         end
         
-        function keepTagsOfData(obj, tagsI)
-            % Purpose : Delete all data of tags which are not given
+        function keepTagsOfData(obj, tagsIndices)
+            % Purpose : Delete all data of tags (channels) which are not given
             %
             % Syntax :
             %   keepTagsOfData(tagsI)
@@ -774,11 +774,11 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
             %
             % Return Parameters :
                    
-            obj.data = obj.data(:, tagsI);
-            obj.tags = obj.tags(tagsI);
-            obj.units = obj.units(tagsI);
-            obj.symbReps = obj.symbReps(tagsI);
-            obj.segments = obj.segments(tagsI);
+            obj.data = obj.data(:, tagsIndices);
+            obj.tags = obj.tags(tagsIndices);
+            obj.units = obj.units(tagsIndices);
+            obj.symbReps = obj.symbReps(tagsIndices);
+            obj.segments = obj.segments(tagsIndices);
         
         end
         
@@ -859,6 +859,19 @@ classdef mdtsCoreObject < matlab.mixin.Copyable
         end
         
         function tags = alias2tag(obj, aliases)
+            % Purpose : returns the tag names which is assigned to the
+            % aliases
+            %
+            % Syntax :
+            %   tags = obj.alias2tag(aliases)
+            %
+            % Input Parameters :
+            %   aliases : A cell array containing the strings of the
+            %   alliases
+            %
+            % Return Parameters :
+            %   tags: a cell array containing the according tags which are
+            %   assigned to the aliases
             tags = obj.aliasTable{aliases,:}'; 
         end
         
