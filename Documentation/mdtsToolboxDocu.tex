@@ -329,6 +329,14 @@ These functions can only be called within the class or a subclass.
 	\item \textbf{extractRowsOfSymbReps(intervalIndices)}\\
 	Extract all symbols and druations from the symbRepObjects of all channels, according to the input \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept. The symbReps are overwritten with the trimmed version.
 	
+	\item \textbf{extractRowsOfSegsReps(intervalIndices)}\\
+	Extract all segments and druations from the segmentsObject of all channels, according to the input \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept. The segments are overwritten with the trimmed version.
+	
+	\item \textbf{extractIntervalOfEvents(intervalIndices)}\\
+	Extract all events from the eventsStruct of all channels, according to the input \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept. The events are overwritten with the trimmed version. ATTENTION: This method is not yet implemented.
+	
+	\item \textbf{tags = alias2tag(tags)}\\
+	returns the tag names which is assigned to the \textit{aliases}. \textit{tags} are the original tag names which are assigned to the aliases.
 \end{enumerate}
 
 \subsection{mdtsObject}
