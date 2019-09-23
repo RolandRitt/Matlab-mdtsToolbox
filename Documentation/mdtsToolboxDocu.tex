@@ -449,6 +449,9 @@ This function checks, if a table \textit{tIn} is a valid aliasTable with respect
 	\item \textbf{bValid = isValidAliasTableTags(tIn, tags)}\\
 	This function checks, if a table \textit{tIn} is a valid aliasTable with respect to the given \textit{tags}. It checks if the table has exactly one column \textit{OrigTag} and if the entries in this column can be found in \textit{tags}.
 	
+	\item \textbf{isInList = isTagWithinTagList(tags, taglist)}\\
+	This function checks, if the \textit{tags} (cell array) are within the cell-array  \textit{taglist}. It returns a boolean list \textit{isInList} with the same size as \textit{tags} where the value 1 indicates if the tags are available in the given \textit{taglist}.
+	
 	\item \textbf{bValid = isTagWithinTagList(tags, taglist)}\\
 	This function checks, if the \textit{tags} (cell array) are within the cell-array  \textit{taglist}. It returns a boolean list with the same size as \textit{tags} where the value 1 indicates if the tags are available in the given \textit{taglist}.
 \end{enumerate}
