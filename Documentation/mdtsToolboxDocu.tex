@@ -315,6 +315,16 @@ Assigns the segmentsObject \textit{segmentsObj} to  \textit{segments} the proper
 
 \end{enumerate}
 
+\subsubsection{Methods (Protected)}
+These functions can only be called within the class or a subclass.
+
+\begin{enumerate}
+	
+	\item \textbf{obj = keepRowsOfData(intervalIndices)}\\
+	Delete all data (rows) of time stamps which are not given in \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept.
+	
+\end{enumerate}
+
 \subsection{mdtsObject}
 
 As mentioned in section \ref{ChpIDDataStorage}, the mdtsObject inherits from the mdtsCoreObject. Thus, this object has the same properties available as the mdtsCoreObject in addition to the properties stated here.
