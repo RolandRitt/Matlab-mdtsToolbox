@@ -428,13 +428,16 @@ newObject = originalObject(2 : 5, 2); % time stamps 2 - 5, tag 2
 newObject = originalObject(:, 2); % all time stamps , tag 2
 newObject = originalObject(2 : 5, :); % time stamps 2-5 , all tags
 \end{lstlisting}
-additional datetimes and tags/alias names can be used for indexing
+additional tags/alias names can be used for indexing
 \begin{lstlisting}[frame=single]
-newObject = originalObject({datetime(2019,8,12), datetime(2019,9,12) },{'tag1', 'tag3'}); % all data extracted between 2019-08-12 and 2019-09-12 (including start and end date), columns (channels) with name 'tag1' and 'tag3'
+newObject = originalObject(:,{'tag1', 'tag3'}); % all data extracted for channels named with 'tag1' and 'tag3'
+newObject = originalObject(:,{'tag1', 'alias3'}); % all data extracted for channels named with 'tag1' and the alias 'alias3'
+\end{lstlisting}
 
-newObject = originalObject(:,{'tag1', 'tag3'}); % all data extracted for columns (channels) with name 'tag1' and 'tag3'
+In case a datetime vector was used for generating the mdtsObject, datetimes  can be used for row-indexing
 
-newObject = originalObject({datetime(2019,8,12), datetime(2019,9,12) },:); % all data extracted between 2019-08-12 and 2019-09-12 (including start and end date), all columns 
+\begin{lstlisting}[frame=single]
+newObject = originalObject({datetime(2019,8,12), datetime(2019,9,12) },:); % all data extracted between 2019-08-12 and 2019-09-12 (including start and end date),
 \end{lstlisting}
 
 \item \textbf{obj = addEvent(eventID, eventTime, eventDuration)}\\
