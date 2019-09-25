@@ -453,6 +453,9 @@ Validates if \textit{symbObj} is a symbRepObject and \textit{channelNumber} is n
 \item \textbf{obj = addSymbRepToAllChannels(symbObj, varargin)}\\
 Validates if \textit{symbObj} is a symbRepObject and passes valid parameters to the \textit{addSymbRepToAllChannels} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}. Optional parameter \textit{keepExistentSymbReps} can be passed as logical scalar through a name-value-pair.
 
+\item \textbf{obj = addSegmentsToAllChannels(segmentsObj, varargin)}\\
+Validates if \textit{segmentsObj} is a segmentsObj and \textit{nTimestamps} in \textit{segmentsObj} is the same as the number of elements in \textit{time} of the mdtsObject and passes valid parameters to the \textit{addSegmentsToAllChannels} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
+
 \item \textbf{obj = addSegments(segmentsObj)}\\
 Validates if \textit{segmentsObj} is a segmentsObj and \textit{nTimestamps} in \textit{segmentsObj} is the same as the number of elements in \textit{time} of the mdtsObject and passes valid parameters to the \textit{addSegments} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
 
