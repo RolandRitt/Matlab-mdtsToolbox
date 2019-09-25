@@ -11,9 +11,14 @@ function [pa, tHandleAll] = markRangeOnAxes_givenIndexStatic(xVals, axes_in, sta
 %   axes_in : the axes which should be marked
 %   startInds: the start inds of the range to be marked
 %   stopInds: the stop inds of the range to be marked
+%   colorSpec: colorSpec of the patches
+%   textToShow: (optional key-value pair) a char or cell-array with text to
+%   be shown within the patch
+%   varargin := (other key-value pairs) will be forwarded to the fill command
 %   
-%
 % Return Parameters :
+%   pa:= the handles to the patches objects
+%   tHandleAll := the handles to all text objects
 %
 % Description :
 %   given the start and stop values, the y-limits are automatically fetched
