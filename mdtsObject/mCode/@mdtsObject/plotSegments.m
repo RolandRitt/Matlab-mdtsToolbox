@@ -1,16 +1,28 @@
-function [out, fM, ph] = plotSegments(inputObject, segmentTag, varargin)
-% plot
+function [axesOut, fM, ph] = plotSegments(inputObject, segmentTag, varargin)
 %
-% Purpose : plot segments of the given mdtsObject
+% Purpose : plot segments of the given mdtsObject, a new figure will be
+% generated which shows the time series as line plots and the according
+% segments as semi-transparent patches; this will maybe deprecated in
+% future
 %
-% Syntax : plotSegments(inputObject, varargin)
+% Syntax : plotSegments(inputObject, segmentTag, varargin)
 %
 % Input Parameters :
 %   inputObject : mdtsObject (with multiple channels) to be plotted
 %
-%   segmentTag : tag of the required segment as string (character array)
+%   segmentTag := tag of the required segment as string (character array)
+%
+%   Size (optional key-value pair) := the size (height, width) of the plot 
+%       im centimeters. Default Value: [8.8cm, 11.7cm] 
+%
+%   FontSize (optional key-value pair) :=   the font Size in pt used for
+%       figure. Default value: 10pt
 %
 % Return Parameters :
+%       axesH := the handles to the axes
+%       fM :=   the figureManager used on the figure to handle large data sets (figureManager-toolbox)
+%       ph :=  the handles to the plotted segments (patches objects).
+
 %
 % Description :
 %   Use the plotMulti function to plot the segments of the given object
@@ -31,7 +43,7 @@ function [out, fM, ph] = plotSegments(inputObject, segmentTag, varargin)
 % --------------------------------------------------------
 
 %% Parse inputs
-
+warning('the function plotSegment of the mdtsObject will be deprecated in future. please use the plotting function of the SegmentsObject');
 p = inputParser();
 p.KeepUnmatched=true;
 addRequired(p, 'inputObject', @(x) isa(x, 'mdtsObject')); %check if input is mdtsObject
@@ -52,51 +64,17 @@ figH = figureGen(p.Results.Size(1), p.Results.Size(2), p.Results.FontSize);
 
 fM = FigureManager;
 
-[out, ph] = plotMulti(xTime, inputObject.data, 'time', inputObject.tags,'yLabelsLatex',false, UnmatchedArgs{:});
-title(out(1), inputObject.name, 'Interpreter', 'none');
+[axesOut, ph] = plotMulti(xTime, inputObject.data, 'time', inputObject.tags,'yLabelsLatex',false, UnmatchedArgs{:});
+title(axesOut(1), inputObject.name, 'Interpreter', 'none');
 
 
-pa = plotSegmentsOnAxes(inputObject, out, segmentTag);
-% shouldAddold = fM.shouldAdd;
-% fM.shouldAdd = false; %% otherwise it is too slow!!!
-% 
-% 
-% %% Highlight Segments
-% 
-% % segmentsObj = inputObject.segments;
-% % 
-% % tagNo = find(ismember(segmentsObj.tags, segmentTag));
-% 
-% 
-% 
-% 
-% for j = 1 : numel(out)
-%     
-%     segmentsObj = inputObject.segments{j};
-%     if ~isempty(segmentsObj)
-%         tagNo = find(ismember(segmentsObj.tags, segmentTag));
-%         starts = segmentsObj.starts{tagNo};
-%         durations = segmentsObj.durations{tagNo};
-%         xStart = inputObject.timeInFormat(starts);
-%         xEnd = inputObject.timeInFormat(starts + durations - 1);
-%         XStart = [xStart';xEnd'; xEnd'; xStart'];
-%         yLim = out(j).YLim;
-%         yMin = yLim(1);
-%         yMax = yLim(2);
-%         
-%         hold(out(j), 'on');
-%         
-%         pa = fill(out(j), XStart, [yMin, yMin, yMax, yMax], 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'r');
-%     end
-%     
-% end
-% fM.shouldAdd = shouldAddold;
+pa = plotSegmentsOnAxes(inputObject, axesOut, segmentTag);
 
 %%
 %%
 for i=1:numel(ph)
     uistack(ph(i), 'top');
-    set(out(i), 'Layer', 'top');
+    set(axesOut(i), 'Layer', 'top');
 end
 
 
