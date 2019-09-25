@@ -1212,6 +1212,7 @@ The structure of the \textit{segmentsObject} is illustrated in an example in fig
 \end{figure}
 
 This example shows two segments in the segmentsObject: One with the tag label "Machine Running" and one with "Machine Error". The segment "Machine Running" shows two instances of this segment: From time stamp 1 to time stamp 4 and from time stamp 8 to time stamp 9. "Machine Error" shows only one instance from time stamp 12 to time stamp 14. Note that the label in this object refers to the name of the segments - they do not correlate with the tags of the mdtsObject in any way!
+To each channel of the mdtsObject one segmentsObject can be assigned.
 
 \subsection{segmentsObject}
 \label{ChpDescriptionSegmentsObject}
@@ -1288,14 +1289,17 @@ This example shows two segments in the segmentsObject: One with the tag label "M
 	
 	Extracts the time stamps given in \textit{intervalIndices} as $1 \times 2$ vector from all segments of the according object and returns the extracted segmentsObject.
 	
-	\item \textbf{[pa, tHandleAll] = plotOnAxes(axes_in, xTime, varargin)}
+	\item \textbf{[pa, tHandleAll] = plotOnAxes(axes\_in, xTime, varargin)}
 	\item \textbf{ph = plotSegmentsOnAxes(axesIn, segmentTag, varargin)}\\
 	Will be deprecated in future. This function plots the assigned segments on the given \textit{axesIn} as semi-transparent patches.
 	The input arguments are:
 	\begin{enumerate}
-		\item \textbf{axesIn}: the axes on which the segments should be plotted
-		\item \textbf{segmentTag}: the name of the segment which should be plotted
-		\item \textbf{other key-value pairs}: are forwarded to segmentsObject.plotOnAxes.
+		\item \textbf{axes\_in}: the axes on which the segments should be plotted
+		\item \textbf{xTime}: the abscissae values used for plotting the patches and the indexes are referring to
+		\item \textbf{segmentTags}:optional key-value pair;  the names (nameIDs) of the segments to be plotted on all of the axes
+		\item \textbf{colorDismiss}:optional key-value pair;  color to be not used as patch color
+		\item \textbf{plotSegName}:optional key-value pair;  color to be not used as patch color
+		
 	\end{enumerate}
 	returned are:
 	\begin{enumerate}
