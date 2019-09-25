@@ -513,7 +513,7 @@ is a deprecated method which currently forwards \textit{varargin} to the \textit
 
 \item \textbf{[axesOut, fM, ph] = plotSegments(segmentTag, varargin)}\\
 Will be deprecated in future. This function generates a new plot of the multidimensional time series where the assigned segments are marked as semi-transparent patches.
-The inputarguments are:
+The input arguments are:
 \begin{enumerate}
 	\item \textbf{segmentTag}: the name of the segment which should be plotted
 	\item \textbf{Size}: optional; the size (height, width) of the plot im centimeters. Default Value: [8.8cm, 11.7cm] 
@@ -527,7 +527,21 @@ returned are:
 	\item \textbf{ph}: the handles to the plotted segments (handles to the patches objects objects).
 \end{enumerate}
 
-
+\item \textbf{[axesOut, fM, ph] = plotSegmentsOnAxes(axesIn, segmentTag, varargin)}\\
+Will be deprecated in future. This function plots the assigned segments on the given \textit{axesIn} as semi-transparent patches.
+The input arguments are:
+\begin{enumerate}
+	\item \textbf{segmentTag}: the name of the segment which should be plotted
+	\item \textbf{Size}: optional; the size (height, width) of the plot im centimeters. Default Value: [8.8cm, 11.7cm] 
+	\item \textbf{FontSize}: optional; the font Size in pt used for figure. Default value: 10pt
+	\item \textbf{other key-value pairs}: re forwarded to the plotMulti function of the graphics-toolbox.
+\end{enumerate}
+returned are:
+\begin{enumerate}
+	\item \textbf{axesH}: the handles to the axes
+	\item \textbf{fM}: the figureManager used on the figure to handle large data sets (figureManager-toolbox)
+	\item \textbf{ph}: the handles to the plotted segments (handles to the patches objects objects).
+\end{enumerate}
 
 \end{enumerate}
 
