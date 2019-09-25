@@ -1,4 +1,4 @@
-function [ph ]= plotEventsOnAxes(obj, axesIn)
+function ph = plotEventsOnAxes(obj, axesIn)
 % Events, vertical lines, markers
 %
 % Purpose : plots event on given axes as a dashed line at the point of
