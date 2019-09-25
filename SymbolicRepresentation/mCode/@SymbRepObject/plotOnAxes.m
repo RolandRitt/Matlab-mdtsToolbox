@@ -1,4 +1,4 @@
-function [paAll, tHandleAll] = plotOnAxes(SymbRepObj, axes_in, xTime, varargin)
+function [paAll, tHandleAll] = plotOnAxes(SymbRepObj, axes_in,  varargin)
 % Purpose :
 %
 % Syntax :
@@ -43,13 +43,13 @@ p = inputParser();
 p.KeepUnmatched=true;
 addRequired(p, 'SymbRepObj', @(x) isa(x, 'SymbRepObject')); %check if input is SymbRepObject
 addRequired(p, 'axes_in', @(x) isa(x, 'matlab.graphics.axis.Axes')||ishghandle(x)); %check if input is axes or handle object
-addOptional(p, 'xTime', false, @(x) isdatetime(x)|| isreal(x) || isduration(x));
+addParameter(p, 'xTime', false, @(x) isdatetime(x)|| isreal(x) || isduration(x));
 addParameter(p, 'plotSymbolName', false, @islogical);
 addParameter(p, 'plotSymbolDuration', false, @islogical);
 addParameter(p, 'plotSymbolNameMinLength', 0, @(x)isreal(x)&& isequal(size(x),[1,1]));
 addParameter(p, 'colorDismiss', [], @(x)(isreal(x)&& isequal(size(x),[1,3]))|| ischar(x));
 
-parse(p, SymbRepObj,axes_in,varargin{:});
+parse(p, SymbRepObj,axes_in, varargin{:});
 
 tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
 UnmatchedArgs = reshape(tmp',[],1)';
@@ -92,8 +92,10 @@ paAll = [];
 tHandleAll = [];
 
 bNoXTime = false;
-if ~p.Results.xTime
-    bNoXTime = true;
+if ~(isdatetime(p.Results.xTime) & ~isempty(p.Results.xTime))
+    if ~p.Results.xTime
+        bNoXTime = true;
+    end
 end
 for i = 1 : nAxes
     if  isa( gObjArr(i), 'matlab.graphics.axis.Axes')
