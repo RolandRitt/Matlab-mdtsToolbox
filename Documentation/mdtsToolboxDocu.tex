@@ -1245,7 +1245,11 @@ This example shows two segments in the segmentsObject: One with the tag label "M
 	
 	\item \textbf{obj = addSegmentVector(tagName, bVec)}
 	
-	Adds a new segment given in the logical vector \textit{bVec} with label \textit{tagName}.
+	Adds new segments  given in the logical vector \textit{bVec} with label \textit{tagName} to the segmentsObject.
+	
+	\item \textbf{obj = addSegmentVectorStartDuration(tagName, startInds, durations)}
+	
+	Adds new segments  definded by the vectors \textit{startInds} and \textit{durations} with label \textit{tagName} to the segmentsObject.
 	
 	\item \textbf{bVec = getLogicalVector(tagName)}
 	
