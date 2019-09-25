@@ -1,16 +1,19 @@
-function [ph ]= plotEventsOnAxes(obj, axesIn, varargin)
-% <keywords>
+function [ph ]= plotEventsOnAxes(obj, axesIn)
+% Events, vertical lines, markers
 %
-% Purpose : plots event on given axes
+% Purpose : plots event on given axes as a dashed line at the point of
+% occurence
 %
 % Syntax :
-%
+%   [ph ]= plotEventsOnAxes(obj, axesIn);
 % Input Parameters :
+%   axesIn := the axes on which the Events should be plotted
 %
 % Return Parameters :
+%   ph := the handles to the event-lines (line-objects)
 %
 % Description :
-%
+%   
 % Author : 
 %    Roland Ritt
 %
@@ -80,20 +83,13 @@ for i = 1 : nEvents
         end
 
     end
-%        if isempty(xev)
-%            xevAdd ={};
-%            evTagAdd = {};
-%        else
-%            xevAdd = {xev};
-%            evTagAdd = eventKeys(i);
-%        end
+
     xevAll = [xevAll; {xev}];
     legendEntries = [legendEntries; eventKeys(i)];
         
 end
 
 nEventsToPlot = numel(legendEntries);
-%eventColors = distinguishable_colors(nEventsToPlot, {'w', get(ph(1), 'Color')});
 eventColors = distinguishable_colors(nEventsToPlot, {'w', [0    0.4470    0.7410]});
 phLegend = [];
 legEntriesPlot = {};
