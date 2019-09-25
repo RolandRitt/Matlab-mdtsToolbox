@@ -485,7 +485,7 @@ This function marks a given range as a semitransparent patch. It forwards the in
 (see \textit{mdtsOjbect} \ref{sssec:mdtsObj:MethodsStatic} \nameref{sssec:mdtsObj:MethodsStatic})
 
 \item \textbf{arrayOfmdtsObjects = extractSegments(segmentTag, extractTagID, varargin)}\\
-This functions extracts segments from the segments  structure and returns them as mdtsObjects (cell array of mdtsObjects \textit{arrayOfmdtsObjects}). \textit{segmentTag} is the name of the Segment which should be extracted. 
+This functions extracts segments from the segments  structure and returns them as mdtsObjects (cell array of mdtsObjects \textit{arrayOfmdtsObjects}). \textit{segmentTag} is the name of the Segment which should be extracted. \textit{frameLength} (optional key-value pair; default value = 0) defining how much data points should be additionally returned at the beginning and at the end of each segment.
 
 
 \end{enumerate}
