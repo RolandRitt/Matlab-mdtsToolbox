@@ -480,9 +480,14 @@ This function checks if the given \textit{tags} are aliases defined in the alias
 \item \textbf{obj = addAliases(aliases, tags)}\\
 This function adds new aliases to the aliasTable. aliases is a list of new names which can be used to index the mdtsObject. Tags is the original tag name which is used to index the mdtsObject.
 
+\item \textbf{obj = markRangeOnAxes\_givenIndex(axes\_in, startInds, stopInds, colorSpec, varargin)}\\
+This function marks a given range as a semitransparent patch. It forwards the input parameters to the Static-Method \textit{markRangeOnAxes\_givenIndexStatic} and takes the time values from the mdtsObject.
+(see \ref{sssec:mdtsObj:MethodsStatic})
+
 \end{enumerate}
 
 \subsubsection{Methods (Static)}
+\label{sssec:mdtsObj:MethodsStatic}
 \begin{enumerate}
 	
 	\item \textbf{bValid = isValidAliasTableTags(tIn, tags)}\\
