@@ -471,6 +471,9 @@ This function checks, if a table \textit{tIn} is a valid aliasTable with respect
 \item \textbf{isTagList = isTag(obj, tags)}\\
 This function checks, if the given \textit{tags} can be found within the taglist of the object or within the aliasTable. It returns a logical array of the same size as \textit{isTagList} indicating if a tag is can be found and used for indexing.
 
+\item \textbf{obj =  setAliasTable(obj, tIn)}\\
+This function assignes a new aliasTable \textit{tIn} to the mdtsObject. All aliases defined before are deleted in this manner.
+
 \end{enumerate}
 
 \subsubsection{Methods (Static)}
