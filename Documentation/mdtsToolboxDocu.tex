@@ -478,7 +478,7 @@ This function assignes a new aliasTable \textit{tIn} to the mdtsObject. All alia
 This function checks if the given \textit{tags} are aliases defined in the aliasTable of the instance. A logical array \textit{isInList} of the same size as \textit{tags} is returned, indicating which tags are aliases.
 
 \item \textbf{obj = addAliases(aliases, tags)}\\
-This function checks if the given \textit{tags} are aliases defined in the aliasTable of the instance. A logical array \textit{isInList} of the same size as \textit{tags} is returned, indicating which tags are aliases.
+This function adds new aliases to the aliasTable. aliases is a list of new names which can be used to index the mdtsObject. Tags is the original tag name which is used to index the mdtsObject.
 
 \end{enumerate}
 
@@ -493,6 +493,11 @@ This function checks if the given \textit{tags} are aliases defined in the alias
 	
 	\item \textbf{bValid = isTagWithinAliasTable(tags, aliasTab)}\\
 	This function checks, if the \textit{tags} (cell array) are within the alias table  \textit{aliasTab}. It returns a boolean list with the same size as \textit{tags} where the value 1 indicates if the tags are available in the given \textit{aliasTab}.
+	
+	\item \textbf{markRangeOnAxes_givenIndexStatic(xVals, axes_in, startInds,stopInds, colorSpec, varargin)}\\
+	This function checks, if the \textit{tags} (cell array) are within the alias table  \textit{aliasTab}. It returns a boolean list with the same size as \textit{tags} where the value 1 indicates if the tags are available in the given \textit{aliasTab}.
+	
+	
 \end{enumerate}
 
 \section{Symbolic Representation}
