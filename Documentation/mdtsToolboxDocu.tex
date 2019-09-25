@@ -465,19 +465,19 @@ Validates if \textit{segmentsObj} is a segmentsObj and \textit{nTimestamps} in \
 \item \textbf{timeDateNum = convert2Datenum(timeInput)}\\
 Converts a time in \textit{timeInput} from datetime or duration to datenum (if \textit{timeInput} is given as datenum, then \textit{timeDateNum = timeInput}).
 
-\item \textbf{bValid = isValidAliasTable(obj, tIn)}\\
+\item \textbf{bValid = isValidAliasTable(tIn)}\\
 This function checks, if a table \textit{tIn} is a valid aliasTable with respect to the tags of the mdtsObject \textit{obj.tags}. It checks if the table has exactly one column \textit{OrigTag} and if the entries in this column can be found in \textit{obj.tags}.
 
-\item \textbf{isTagList = isTag(obj, tags)}\\
+\item \textbf{isTagList = isTag(tags)}\\
 This function checks, if the given \textit{tags} can be found within the taglist of the object or within the aliasTable. It returns a logical array of the same size as \textit{isTagList} indicating if a tag is can be found and used for indexing.
 
-\item \textbf{obj =  setAliasTable(obj, tIn)}\\
+\item \textbf{obj =  setAliasTable(tIn)}\\
 This function assignes a new aliasTable \textit{tIn} to the mdtsObject. All aliases defined before are deleted in this manner.
 
-\item \textbf{isInList = isAlias(obj, tags)}\\
+\item \textbf{isInList = isAlias( tags)}\\
 This function checks if the given \textit{tags} are aliases defined in the aliasTable of the instance. A logical array \textit{isInList} of the same size as \textit{tags} is returned, indicating which tags are aliases.
 
-\item \textbf{isInList = isAlias(obj, tags)}\\
+\item \textbf{obj = addAliases(aliases, tags)}\\
 This function checks if the given \textit{tags} are aliases defined in the aliasTable of the instance. A logical array \textit{isInList} of the same size as \textit{tags} is returned, indicating which tags are aliases.
 
 \end{enumerate}
