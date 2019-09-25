@@ -468,8 +468,8 @@ Converts a time in \textit{timeInput} from datetime or duration to datenum (if \
 \item \textbf{bValid = isValidAliasTable(obj, tIn)}\\
 This function checks, if a table \textit{tIn} is a valid aliasTable with respect to the tags of the mdtsObject \textit{obj.tags}. It checks if the table has exactly one column \textit{OrigTag} and if the entries in this column can be found in \textit{obj.tags}.
 
-\item \textbf{bValid = isValidAliasTable(obj, tIn)}\\
-This function checks, if a table \textit{tIn} is a valid aliasTable with respect to the tags of the mdtsObject \textit{obj.tags}. It checks if the table has exactly one column \textit{OrigTag} and if the entries in this column can be found in \textit{obj.tags}.
+\item \textbf{isTagList = isTag(obj, tags)}\\
+This function checks, if the given \textit{tags} can be found within the taglist of the object or within the aliasTable. It returns a logical array of the same size as \textit{isTagList}
 \end{enumerate}
 
 \subsubsection{Methods (Static)}
