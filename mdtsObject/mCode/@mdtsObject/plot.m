@@ -1,17 +1,41 @@
 function [axesH, fM, ph] = plot(inputObject, varargin)
 % plot
 %
-% Purpose : plot channels of the given mdtsObject
+% Purpose : plot channels of the given mdtsObject; additionally the symbolic time series
+% representation and the assigned Events are plotted
 %
-% Syntax : plot(inputObject)
-%          inputObject.plot();
-%          inputObject.plot;
-%          inputObject.plot(varargin);
+% Syntax : [axesH, fM, ph] = plot(inputObject)
+%          [axesH, fM, ph] = inputObject.plot();
+%          [axesH, fM, ph] = inputObject.plot;
+%          [axesH, fM, ph] = inputObject.plot(varargin);
 %
 % Input Parameters :
-%   inputObject : mdtsObject (with multiple channels) to be plotted
+%   inputObject := mdtsObject (with multiple channels) to be plotted
+%
+%   Size (optional key-value):=  the size (height, width) of the plot im centimeters.
+%       Default Value: [8.8cm, 11.7cm]
+%   FontSize (optional key-value): the font Size in pt used for figure. Default value: 10pt
+%
+%   plotSymbolName(optional key-value) := boolean flag indicating if the symbol should be plotted 
+%       on the semi transparent patches (if a SymbolicRepresentation is defined). Default: false
+%
+%   plotSymbolDuration (optional key-value):=  boolean flag indicating if the symbol duration
+%       should be plotted on the semi transparent patches (if a SymbolicRepresentation is defined). Default: false
+%
+%   plotSymbolNameMinLengthRelative (optional key-value):= the minimum length of a symbolic
+%       representation to show the symbol name and duration defined as a
+%       relative value of the entire length of the time series. Default:
+%       0.05; this can be used to avoid clattering of the plot in case of
+%       short symbols.
+%
+%   figureH (optional key-value):=  a handle to a figure which should be used for plotting. 
+%       Default: a new figure is created with \textit{figureGen} of the
+%       graphics-toolbox.
 %
 % Return Parameters :
+%       axesH := the handles to the axes
+%       fM :=   the figureManager used on the figure to handle large data sets (figureManager-toolbox)
+%       ph :=  the handles to the plotted timeseries (handles to the line objects).
 %
 % Description : 
 %   Use the plot function to plot the channels of the given object
