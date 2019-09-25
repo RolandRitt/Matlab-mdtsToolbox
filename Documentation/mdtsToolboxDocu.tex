@@ -511,6 +511,15 @@ This function plots the event assigned to the mdtsObject on given axes  (\textit
 \item \textbf{[axesOut, fM, ph] = plotmdtsObject(inputObject, varargin)}\\
 is a deprecated method which currently forwards \textit{varargin} to the \textit{plot} function of \textit{mdtsObject}.
 
+\item \textbf{[axesOut, fM, ph] = plotSegments(segmentTag, varargin)}\\
+Will be deprecated in future. This function generates a plot of the multidimensional time series where the assigned segments are marked as semi-transparent patches.
+The inputarguments are:
+\begin{enumerate}
+	\item \textbf{segmentTag}: the name of the segment which should be plotted
+	\item \textbf{Size}: optional; the size (height, width) of the plot im centimeters. Default Value: [8.8cm, 11.7cm] 
+	\item \textbf{FontSize}: optional; the font Size in pt used for figure. Default value: 10pt
+\end{enumerate}
+
 
 
 \end{enumerate}
