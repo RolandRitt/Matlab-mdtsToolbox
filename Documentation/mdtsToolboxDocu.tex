@@ -1214,12 +1214,21 @@ This example shows two segments in the segmentsObject: One with the tag label "M
 \label{ChpDescriptionSegmentsObject}
 
 \subsubsection{Properties}
-
 \begin{enumerate}
-	\item \textbf{nTimeStamps:} Total number of time stamps in the segments. Must correlate with the number of time stamps in the data of the according mdtsObject.
-	\item \textbf{tags:} Names of the segments as row vector.
-	\item \textbf{starts:} Start indices of all instances of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all start indices of the according segment.
-	\item \textbf{durations:} Number of time stamps of every instance of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all durations of the according segment.
+	\item Core Data
+	\begin{enumerate}
+		\item \textbf{nTimeStamps:} Total number of time stamps in the segments. Must correlate with the number of time stamps in the data of the according mdtsObject.
+		\item \textbf{tags:} Names of the segments as row vector.
+		\item \textbf{starts:} Will be renamed in future. Start indices of all instances of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all start indices of the according segment.
+		\item \textbf{durations:} Number of time stamps of every instance of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all durations of the according segment.
+	\end{enumerate}
+
+	\item Dependend Properties
+	\begin{enumerate}
+		\item \textbf{startInds:} Start indices of all instances of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all start indices of the according segment. 
+		\item \textbf{durations:} Number of time stamps of every instance of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all durations of the according segment.
+	\end{enumerate}
+	
 \end{enumerate}
 
 \subsubsection{Constructor}
