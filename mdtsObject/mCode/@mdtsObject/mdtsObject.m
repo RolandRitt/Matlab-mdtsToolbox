@@ -33,31 +33,69 @@ classdef mdtsObject < mdtsCoreObject
     
     methods (Static)
         function bValid = isValidAliasTableTags(tIn, tags)
+            % Purpose : This function checks, if a table \textit{tIn} is a
+            % valid aliasTable with respect to the given \textit{tags}.
+            % It checks if the table has exactly one column \textit{OrigTag}
+            % and if the entries in this column can be found in \textit{tags}.
+            %
+            % Syntax : bValid = mdtsObject.isValidAliasTableTags(tIn, tags)
+            %
+            % Input Parameters :
+            %   tIn := a matlab table representing the alias table. I
+            %   should contain only one column with the name 'OrigTag'
+            %   tags := a cell array of tags which can occur in 'OrigTag'
+            %
+            % Return Parameters :
+            %   bValid : boolean flag indicating if the given table
+            %   contains only tags given in 'tags'
+            
             bValid = false;
             if istable(tIn)
                 if isequal(tIn.Properties.VariableNames,{'OrigTag'})
                     tagList = tIn{:, 'OrigTag'};
-                    if mdtsObject.isTagWithinTagList(tagList, tags);
+                    if mdtsObject.isTagWithinTagList(tagList, tags)
                         bValid = true;
                     end
-                    %                      correctTagInput = ismember(tagList, tags);
-                    %
-                    %                     if(correctTagInput)
-                    %                         bValid = true;
-                    %                     end
                 end
             end
         end
         
         function [isInList] = isTagWithinTagList(tags, taglist)
-            %              bValid = false;
+            % Purpose : This function checks, if the 'tags' can be found
+            % within the given 'taglist'. It returns a boolean array which
+            % tags can be found in 'taglist'
+            %
+            % Syntax : bValid = mdtsObject.isTagWithinTagList(tags, taglist)
+            %
+            % Input Parameters :
+            %   tags := a cell array of tags (chars) which should be
+            %   checked for if they exist in taglist.
+            %   taglist := a cell array of tags which are valid for the
+            %   check.
+            %
+            % Return Parameters :
+            %   isInList : boolean array of same size as 'tags' indicating
+            % if the given 'tags' are contained in taglist
             isInList = ismember(tags, taglist);
-            %             if(isInList)
-            %                 bValid = true;
-            %             end
         end
         
         function isInList = isTagWithinAliasTable(tags, aliasTab)
+            % Purpose : This function checks, if the 'tags' can be found
+            % within the given alias table 'aliasTab'. It returns a boolean array which
+            % tags can be found in 'aliasTab'.
+            %
+            % Syntax : bValid = mdtsObject.isTagWithinAliasTable(tags, aliasTab)
+            %
+            % Input Parameters :
+            %   tags := a cell array of tags (chars) which should be
+            %   checked for if they exist in taglist.
+            %   aliasTab := a table (alias table) which is used to check
+            %   the given tags.
+            %
+            %
+            % Return Parameters :
+            %   isInList : boolean array of same size as 'tags' indicating
+            % if the given 'tags' are contained in taglist
             isInList = mdtsObject.isTagWithinTagList(tags, aliasTab.Properties.RowNames);
         end
     end
@@ -287,7 +325,7 @@ classdef mdtsObject < mdtsCoreObject
                 tagList = {tagList};
                 
             end
-
+            
             correctTagInput = obj.isTag(tagList);
             
             if(correctTagInput)
@@ -445,12 +483,12 @@ classdef mdtsObject < mdtsCoreObject
                 errMsg = 'Event duration must be an integer (array)!';
                 error(errID, errMsg);
                 
-%             elseif~prod(ismember(eventTimeDatenum, obj.time))
-%                 
-%                 errID = 'addEvent:EventTimeNotAvailable';
-%                 errMsg = 'Only time stemps available within the data set are permitted as eventTime!';
-%                 error(errID, errMsg);
-%                 
+                %             elseif~prod(ismember(eventTimeDatenum, obj.time))
+                %
+                %                 errID = 'addEvent:EventTimeNotAvailable';
+                %                 errMsg = 'Only time stemps available within the data set are permitted as eventTime!';
+                %                 error(errID, errMsg);
+                %
             end
             
             obj = addEvent@mdtsCoreObject(obj, eventID, eventTimeDatenum, eventDuration);
@@ -686,7 +724,19 @@ classdef mdtsObject < mdtsCoreObject
             
         end
         function bValid = isValidAliasTable(obj, tIn)
-            %test if the given input is a valid Alias Table
+            % Purpose : checks if a given table tIn is a valid aliasTable
+            % aliasTable
+            %
+            % Syntax :
+            %   [bValid] = isValidAliasTable(obj,tIn)
+            %
+            % Input Parameters :
+            %   tIn : the table which should be checked
+            %
+            % Return Parameters :
+            %   bValid : logical value indicating if the given table is a
+            %   valid aliasTable
+            %
             bValid = obj.isValidAliasTableTags( tIn, obj.tags);
         end
         
@@ -711,6 +761,18 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function obj =  setAliasTable(obj, tIn)
+            % Purpose : assignes a new alias table tIn to the mdtsObject.
+            % It overwrites already assigned aliases
+            %
+            % Syntax :
+            %   obj =  setAliasTable(obj, tIn)
+            %
+            % Input Parameters :
+            %   tIn : alias table which should be assigned to the
+            %   mdtsObject
+            %
+            % Return Parameters :
+            
             if obj.isValidAliasTable(tIn)
                 obj.aliasTable = tIn;
             else
@@ -722,6 +784,18 @@ classdef mdtsObject < mdtsCoreObject
         end
         
         function  isInList = isAlias(obj, tags)
+            % Purpose : checks if given tags are an alias within the aliasTable
+            %
+            % Syntax :
+            %   isInList = isAlias(obj, tags)
+            %
+            % Input Parameters :
+            %   tags : char or cell array of tags which should be checked
+            %
+            % Return Parameters :
+            %   isInList:= a logical array of same size as tags, indicating
+            %   which of the tags is an alias
+            
             isInList = mdtsObject.isTagWithinAliasTable(tags, obj.aliasTable);
         end
         
@@ -733,11 +807,12 @@ classdef mdtsObject < mdtsCoreObject
             %
             % Input Parameters :
             %
-            %   tags : char,string or cellArray of tags to be checked
+            %   aliases: char,string or cellArray of the names of the aliases which can be used to
+            %   index the mdtsObject instead of the tag
+            %   tags : char,string or cellArray of tags which are requested
+            %   in case an alias is used for indexing
             %
             % Return Parameters :
-            %   isTagList : logical list idicating if tags{i} is a Tag or
-            %   alias
             %
             if ischar(aliases)||isstring(aliases)
                 aliases = {aliases};
@@ -768,8 +843,6 @@ classdef mdtsObject < mdtsCoreObject
             aliases = [aliases(:)]';
             if any(bIsAlias)
                 tagsOverwritten = strjoin(aliases(bIsAlias), ', ');
-%                 temp = [tagsOverwritten(:)];
-%                 tagsOverwritten = temp';
                 warnID = 'addAliases:AliasesOverwritten:AliasAlreadyExist';
                 warnMsg = ['The aliases ''', tagsOverwritten,  ''' are already defined and overwritten with the new value'];
                 warning(warnID,warnMsg);
@@ -793,14 +866,31 @@ classdef mdtsObject < mdtsCoreObject
             end
             
             obj.aliasTable(aliases,'OrigTag') = tags(:);
-            
-            
-            
-            
-            
-            
         end
         
+        
+    end
+    methods (Static)
+        [pa, tHandleAll] = markRangeOnAxes_givenIndexStatic(xVals, axes_in, startInds,stopInds, colorSpec, varargin);
+        % Purpose : marks a given range(s) as patch(es) on the given axes
+        %
+        % Syntax : markRangeOnAxes_givenIndexStatic(xVals, axes_in, startInds,stopInds, colorSpec, varargin);
+        %
+        % Input Parameters :
+        %   obj : mdtsObject (with multiple channels), this is used to extract the
+        %       x values to be used for plotting
+        %   axes_in : the axes which should be marked
+        %   startInds: the start inds of the range to be marked
+        %   stopInds: the stop inds of the range to be marked
+        %   colorSpec: colorSpec of the patches
+        %   textToShow: (optional key-value pair) a char or cell-array with text to
+        %   be shown within the patch
+        %   varargin := (other key-value pairs) will be forwarded to the fill command
+        %
+        %
+        % Return Parameters :
+        %   pa:= the handles to the patches objects
+        %   tHandleAll := the handles to all text objects
     end
     
 end
