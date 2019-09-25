@@ -1,4 +1,4 @@
-function arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, extractTagID, varargin)
+function arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, tagName, varargin)
 % data handling
 %
 % Purpose : extract segments of the given mdtsObject
@@ -9,6 +9,11 @@ function arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, extractTa
 %   inputObject : mdtsObject (with multiple channels)
 %
 %   segmentTag : Tag of the required segment as string (character array)
+%   tagName : tag/channel name to which the segments are assigned
+%   frameLength : (optional key-value pair, default = 0) defining how much 
+%   data points should be additionally returned to the beginning and at the
+%   end of each segment.
+%   
 %
 % Return Parameters :
 %   arrayOfmdtsObjects : Cell array of mdtsObject
@@ -34,23 +39,23 @@ function arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, extractTa
 
 %% Parse inputs
 
-defaultFrameLength = 10;
+defaultFrameLength = 0;
 
 p = inputParser();
 addRequired(p, 'inputObject', @(x) isa(x, 'mdtsObject')); %check if input is mdtsObject
 addRequired(p, 'segmentTag', @(x) isa(x, 'char')); %check if tag is a char array
-addRequired(p, 'extractTagID', @(x) isa(x, 'char')); %check if tag is a char array
+addRequired(p, 'tagName', @(x) isa(x, 'char')); %check if tag is a char array
 addParameter(p, 'frameLength', defaultFrameLength, @(x)isnumeric(x));
 
-parse(p, inputObject, segmentTag, extractTagID, varargin{:});
+parse(p, inputObject, segmentTag, tagName, varargin{:});
 
 inputObject = p.Results.inputObject;
 segmentTag = p.Results.segmentTag;
 frameLength = p.Results.frameLength;
-extractTagID = p.Results.extractTagID;
+tagName = p.Results.tagName;
 
 %% Extract Data
-ChannelNr = inputObject.getTagIndices(extractTagID);
+ChannelNr = inputObject.getTagIndices(tagName);
 segmentsObj = inputObject.segments{ChannelNr};
 
 
