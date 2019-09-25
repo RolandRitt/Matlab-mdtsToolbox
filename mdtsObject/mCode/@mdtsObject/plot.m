@@ -32,6 +32,9 @@ function [axesH, fM, ph] = plot(inputObject, varargin)
 %       Default: a new figure is created with \textit{figureGen} of the
 %       graphics-toolbox.
 %
+%   additional key-value pairs := are forwarded to the plotMulti function
+%   of the graphics-toolbox
+%
 % Return Parameters :
 %       axesH := the handles to the axes
 %       fM :=   the figureManager used on the figure to handle large data sets (figureManager-toolbox)
