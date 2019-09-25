@@ -490,7 +490,7 @@ This functions extracts segments from the segments  structure and returns them a
 \item \textbf{summaryTable = getSummaryTable}\\
 This functions returns a \textit{summaryTable} for the given mdtsObject. Therefore, the according toolbox (\textit{summaryTable}) need to be on the matlab path.
 
-\item \textbf{summaryTable = plot(varargin)}\\
+\item \textbf{[axesH, fM, ph] = plot(varargin)}\\
 This functions plots the mdtsObject (stacked plot with Events and Symbolic Time Series represented as Semi-Transparent patches). The optional input arguments (key-value pairs) are:
 	\begin{enumerate}
 		\item \textbf{Size}: the size (height, width) of the plot im centimeters. Default Value: [8.8cm, 11.7cm] 
@@ -499,6 +499,12 @@ This functions plots the mdtsObject (stacked plot with Events and Symbolic Time 
 		\item \textbf{plotSymbolDuration}: boolean flag indicating if the symbol duration should be plotted on the semi transparent patches (if a SymbolicRepresentation is defined). Default: false
 		\item \textbf{plotSymbolNameMinLengthRelative}: the minimum length of a symbolic representation to show the symbol name and duration defined as a relative value of the entire length of the time series. Default: 0.05; this can be used to avoid clattering of the plot in case of short symbols.
 		\item \textbf{figureH}: a handle to a figure which should be used for plotting. Default: a new figure is created with \textit{figureGen} of the graphics-toolbox.
+	\end{enumerate}
+returned are:
+	\begin{enumerate}
+		\item \textbf{axesH}: the handles to the axes
+		\item \textbf{fM}: the figureManager used on the figure to handle large data sets (figureManager-toolbox)
+		\item \textbf{ph}: the handles to the plotted timeseries (handles to the line objects).
 	\end{enumerate}
 
 \end{enumerate}
