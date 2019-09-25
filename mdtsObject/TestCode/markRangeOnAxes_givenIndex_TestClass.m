@@ -95,8 +95,17 @@ classdef markRangeOnAxes_givenIndex_TestClass < matlab.unittest.TestCase
             [ax] = returns1.plot;
             returns1.markRangeOnAxes_givenIndex(ax([1,4]), [1,200, 465, 800], [100, 250, 589, returns.nDataPoints], 'r');
             
-            [out, fM, ph] = plotSegments(returns, plotTag);
+            [ax] = returns1.plot;
+            returns1.markRangeOnAxes_givenIndex(ax([1,4]), [1,200, 465, 800], [100, 250, 589, returns.nDataPoints], 'r','textToShow', 'asdf');
             
+             [ax] = returns1.plot;
+             str4 = ['\begin{tabular}{c} ', 'teststr', '\\', 'line2', ' \end{tabular}'];
+            returns1.markRangeOnAxes_givenIndex(ax([1,4]), [1,200, 465, 800], [100, 250, 589, returns.nDataPoints], 'r','textToShow', {'asdf','2', '3',str4} );
+            testCase.verifyError(@() returns1.markRangeOnAxes_givenIndex(ax([1,4]), [1,200, 465, 800], ...
+                [100, 250, 589, returns.nDataPoints], 'r','textToShow', {'asdf','2',str4} ), 'mdtsObject:markRangeOnAxes_givenIndes:InvalidInputSize');
+            
+            testCase.verifyError(@() returns1.markRangeOnAxes_givenIndex(ax([1,4]), [1,200, 465, 800], ...
+                [100, 250, 589, returns.nDataPoints], 'r','textToShow', {'asdf','2',str4,2} ), 'MATLAB:InputParser:ArgumentFailedValidation');
         end
         
     end
