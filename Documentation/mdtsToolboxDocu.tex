@@ -1298,7 +1298,11 @@ To each channel of the mdtsObject one segmentsObject can be assigned.
 		\item \textbf{xTime}: the abscissae values used for plotting the patches and the indexes are referring to
 		\item \textbf{segmentTags}:optional key-value pair;  the names (nameIDs) of the segments to be plotted on all of the axes
 		\item \textbf{colorDismiss}:optional key-value pair;  color to be not used as patch color
-		\item \textbf{plotSegName}:optional key-value pair;  color to be not used as patch color
+		\item \textbf{plotSegName}:optional key-value pair;  boolean flag indicating if the segment name (segTag) should be annotated as text within the patch
+		\item \textbf{plotSegDuration}:optional key-value pair;  boolean flag indicating if the segment duration should be annotated as text within the patch
+		\item \textbf{plotSegDuration}:optional key-value pair;  minimum number of datapoints (duration) within a segment to annotate the segment name and/or duration
+		
+		
 		
 	\end{enumerate}
 	returned are:
