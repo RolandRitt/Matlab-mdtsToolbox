@@ -353,6 +353,12 @@ As mentioned in section \ref{ChpIDDataStorage}, the mdtsObject inherits from the
 		\begin{enumerate}
 			
 			\item \textbf{timeType:} Scalar which holds the information about the original time format which was used to initialize the object. Possible variants are datetime, duration, datenum or other numerical representations. This property will be set by the constructor of the mdtsObject automatically, according to the type of the given time vector.
+			\begin{enumerate}
+				\item \textbf{timeType == 0, timeType == 1}: the time was given as numeric values; and are treated like this --> no datetime representation is used for plotting etc.
+				\item \textbf{timeType == 2}: the time was given as datetime values; and are treated like this in plotting
+				\item \textbf{timeType == 3}: the time was given as duration values; and are treated like this in plotting
+			\end{enumerate}
+			
 			
 		\end{enumerate}
 	
