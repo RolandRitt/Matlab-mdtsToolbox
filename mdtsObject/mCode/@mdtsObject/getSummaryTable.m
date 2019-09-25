@@ -4,6 +4,7 @@ function summaryTable = getSummaryTable(obj)
 % Purpose : generates the summarytable for the given mdtsObject
 %
 % Syntax :
+%   summaryTable = getSummaryTable(obj)
 %
 % Input Parameters :
 %   obj: and instance of an mdtsObj
