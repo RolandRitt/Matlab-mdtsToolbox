@@ -1289,7 +1289,19 @@ This example shows two segments in the segmentsObject: One with the tag label "M
 	Extracts the time stamps given in \textit{intervalIndices} as $1 \times 2$ vector from all segments of the according object and returns the extracted segmentsObject.
 	
 	\item \textbf{[pa, tHandleAll] = plotOnAxes(axes_in, xTime, varargin)}
-	
+	\item \textbf{ph = plotSegmentsOnAxes(axesIn, segmentTag, varargin)}\\
+	Will be deprecated in future. This function plots the assigned segments on the given \textit{axesIn} as semi-transparent patches.
+	The input arguments are:
+	\begin{enumerate}
+		\item \textbf{axesIn}: the axes on which the segments should be plotted
+		\item \textbf{segmentTag}: the name of the segment which should be plotted
+		\item \textbf{other key-value pairs}: are forwarded to segmentsObject.plotOnAxes.
+	\end{enumerate}
+	returned are:
+	\begin{enumerate}
+		\item \textbf{pa}: the handles to the plotted segments (handles to the patches objects objects).
+		\item \textbf{tHandleAll}: the handles to annotated text objects.
+	\end{enumerate}
 	
 \end{enumerate}
 %
