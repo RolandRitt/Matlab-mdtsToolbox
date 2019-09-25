@@ -484,6 +484,9 @@ This function marks a given range as a semitransparent patch. It forwards the in
 \item \textbf{arrayOfmdtsObjects = extractSegments(segmentTag, tagName, varargin)}\\
 This functions extracts segments from the segments  structure and returns them as mdtsObjects (cell array of mdtsObjects \textit{arrayOfmdtsObjects}). \textit{segmentTag} is the name of the Segment which should be extracted. \textit{tagName} is the name of the channel to which the \textit{segmentTag} is assigned. \textit{frameLength} (optional key-value pair; default value = 0) defining how much data points should be additionally returned to the beginning and at the end of each segment.
 
+
+
+
 \item \textbf{summaryTable = getSummaryTable}\\
 This functions returns a \textit{summaryTable} for the given mdtsObject. Therefore, the according toolbox (\textit{summaryTable}) need to be on the matlab path.
 
@@ -1286,45 +1289,45 @@ This example shows two segments in the segmentsObject: One with the tag label "M
 	Extracts the time stamps given in \textit{intervalIndices} as $1 \times 2$ vector from all segments of the according object and returns the extracted segmentsObject.
 	
 \end{enumerate}
-
-\subsection{extractSegments}
-
-\subsubsection{Function Signature:}
-
-\begin{center}
-	arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, varargin)
-\end{center}
-
-\subsubsection{Purpose}
-
-Extract all instances of a certain segment
-
-\subsubsection{Input Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	inputObject & The mdtsObject containing the segmentsObject\\ \hline
-	segmentTag & The tag name of the required segment within the segmentsObject\\ \hline
-	varargin & The following parameters are available:
-	\begin{enumerate}
-		\item \textbf{frameLength:} Number of time stamps before the start and after the end of an instance of the segment, which define the range in which the instance is plotted. Default is 10.
-	\end{enumerate} \\ \hline
-\end{longtabu}
-
-\subsubsection{Return Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	arrayOfmdtsObjects & Cell array of mdtsObjects, where every object represents one instance of the required segment\\ \hline
-\end{longtabu}
-
-\subsubsection{Description}
-
-Extracts every instance of the segment specified in \textit{segmentTag} and initializes a new mdtsObject for every such an instance from $start - frameLength$ to $start + duration + frameLength$ of the according instance. Embraces all initialized mdtsObjects in a cell array of mdtsObjects and returns this cell array.
+%
+%\subsection{extractSegments}
+%
+%\subsubsection{Function Signature:}
+%
+%\begin{center}
+%	arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, varargin)
+%\end{center}
+%
+%\subsubsection{Purpose}
+%
+%Extract all instances of a certain segment
+%
+%\subsubsection{Input Parameters:}
+%
+%\begin{longtabu} to \textwidth {|c|X|}
+%	\hline
+%	\textbf{Parameter} & \textbf{Description} \\ \hline
+%	\endhead
+%	inputObject & The mdtsObject containing the segmentsObject\\ \hline
+%	segmentTag & The tag name of the required segment within the segmentsObject\\ \hline
+%	varargin & The following parameters are available:
+%	\begin{enumerate}
+%		\item \textbf{frameLength:} Number of time stamps before the start and after the end of an instance of the segment, which define the range in which the instance is plotted. Default is 10.
+%	\end{enumerate} \\ \hline
+%\end{longtabu}
+%
+%\subsubsection{Return Parameters:}
+%
+%\begin{longtabu} to \textwidth {|c|X|}
+%	\hline
+%	\textbf{Parameter} & \textbf{Description} \\ \hline
+%	\endhead
+%	arrayOfmdtsObjects & Cell array of mdtsObjects, where every object represents one instance of the required segment\\ \hline
+%\end{longtabu}
+%
+%\subsubsection{Description}
+%
+%Extracts every instance of the segment specified in \textit{segmentTag} and initializes a new mdtsObject for every such an instance from $start - frameLength$ to $start + duration + frameLength$ of the according instance. Embraces all initialized mdtsObjects in a cell array of mdtsObjects and returns this cell array.
 
 \section{Supporting Functions}
 
