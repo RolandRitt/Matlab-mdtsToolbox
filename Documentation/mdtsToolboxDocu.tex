@@ -626,13 +626,11 @@ returned are:
 		
 		The input arguments are:
 		\begin{enumerate}
-			\item \textbf{symbol}: the axes on which the segments should be plotted
-			\item \textbf{segmentTag}: the name of the segment which should be plotted
-			\item \textbf{other key-value pairs}: are forwarded to segmentsObject.plotOnAxes.
+			\item \textbf{symbol}: the symbol to be found within the instance (char)
 		\end{enumerate}
 		returned are:
 		\begin{enumerate}
-			\item \textbf{ph}: the handles to the plotted segments (handles to the patches objects objects).
+			\item \textbf{startInds}: the start indices of the occurrances of the symbol within the symbolic representation. The indices are with respect to the datapoint indices.
 		\end{enumerate}
 		
 	\item \textbf{symbRepVec = symbRepVec}\\
