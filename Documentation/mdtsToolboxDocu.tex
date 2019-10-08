@@ -634,7 +634,27 @@ returned are:
 			\item \textbf{durations}: the durations of the occurrances of the symbol within the symbolic representation.
 			\item \textbf{repetitions}: the repetitions of the occurrances of the symbol within the symbolic representation.
 		\end{enumerate}
-		
+	
+	\item \textbf{symbInd = findSymbolVec(symbol)}\\
+	Returns a boolean array of the size of \textit{symbRepVec} with ``true'' elements on all positions of \textit{symbol}. The result is with respect to the uncompressed symbolic sequence, e.g.
+	\begin{verbatim}
+	>> symbols = categorical({'a'; 'b'; 'c'});
+	>> durations = [2; 3; 1];
+	>> symbolicObject = SymbRepObject(durations, symbols);
+	>> symbInd = symbolicObject.findSymbolVec('a')
+	
+	symbInd =
+	
+	6x1 logical array
+	
+	1
+	1
+	0
+	0
+	0
+	0
+	\end{verbatim}
+	
 	\item \textbf{symbRepVec = symbRepVec}\\
 	Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
 	\begin{verbatim}
@@ -659,25 +679,7 @@ returned are:
 	
 
 	
-	\item \textbf{symbInd = findSymbolVec(symbol)}\\
-	Returns a boolean array of the size of \textit{symbRepVec} with ``true'' elements on all positions of \textit{symbol}, e.g.
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'c'});
-	>> durations = [2; 3; 1];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> symbInd = symbolicObject.findSymbolVec('a')
-	
-	symbInd =
-	
-	  6x1 logical array
-	
-	   1
-	   1
-	   0
-	   0
-	   0
-	   0
-	\end{verbatim}
+
 	
 	\item \textbf{obj = mergeSequence(symbSequence)}\\
 	Searches for all incidences of \textit{symbSequence} sequences of symbols in \textit{symbols}. Replaces the symbols of such a sequence by one new symbol, which name is assembled of the symbols of this sequence. Original symbols in such a sequence are identified by enclosing '\{\}', new symbols which represent a merged sequence are identified by enclosing '[]'. Merged symbols can be merged again, thus the function is ready for nested use. \textit{symbSequence} must be given as $1 \times 2$ cell array of strings, representing one symbol of the sequence in every element of the cell array. The durations of the replaced symbols are summed over the complete sequence and set as duration of the new symbol.
