@@ -603,8 +603,8 @@ returned are:
 \subsubsection{Methods}
 
 \begin{enumerate}
-	\item \textbf{[startInds, durations] = obj.findSymbol(symbol)}\\
-		Returns all indices of the first element of repetitive \textit{symbol} in \textit{symbRepVec} together with the according durations, e.g.
+	\item \textbf{[startInds, durations, repetitions] = obj.findSymbol(symbol)}\\
+		Returns all indices of the first element of repetitive \textit{symbol} in \textit{symbRepVec} together with the according durations and repetitions, e.g.
 		\begin{verbatim}
 		>> symbols = categorical({'a'; 'b'; 'a'; 'b'; 'a'});
 		>> durations = [2; 4; 3; 5; 2];
@@ -632,6 +632,7 @@ returned are:
 		\begin{enumerate}
 			\item \textbf{startInds}: the start indices of the occurrances of the symbol within the symbolic representation. The indices are with respect to the datapoints and not to the compressed symbolic structure.
 			\item \textbf{durations}: the durations of the occurrances of the symbol within the symbolic representation. The indices are with respect to the datapoints and not to the compressed symbolic structure.
+			\item \textbf{repetitions}: the durations of the occurrances of the symbol within the symbolic representation. The indices are with respect to the datapoints and not to the compressed symbolic structure.
 		\end{enumerate}
 		
 	\item \textbf{symbRepVec = symbRepVec}\\
