@@ -1289,23 +1289,22 @@ To each channel of the mdtsObject one segmentsObject can be assigned.
 	
 	Extracts the time stamps given in \textit{intervalIndices} as $1 \times 2$ vector from all segments of the according object and returns the extracted segmentsObject.
 	
-	\item \textbf{[pa, tHandleAll] = plotOnAxes(axes\_in, xTime, varargin)}
-	\item \textbf{ph = plotSegmentsOnAxes(axesIn, segmentTag, varargin)}\\
-	Will be deprecated in future. This function plots the assigned segments on the given \textit{axesIn} as semi-transparent patches.
+	\item \textbf{[pa, tHandleAll] = plotOnAxes(axes\_in, xTime, varargin)}\\
+	This function plots  segments (segments object) on the given \textit{axesIn} as semi-transparent patches.
 	The input arguments are:
 	\begin{enumerate}
 		\item \textbf{axes\_in}: the axes on which the segments should be plotted
 		\item \textbf{xTime}: the abscissae values used for plotting the patches and the indexes are referring to
-		\item \textbf{segmentTags}:optional key-value pair;  the names (nameIDs) of the segments to be plotted on all of the axes
-		\item \textbf{colorDismiss}:optional key-value pair;  color to be not used as patch color
-		\item \textbf{plotSegName}:optional key-value pair;  boolean flag indicating if the segment name (segTag) should be annotated as text within the patch
-		\item \textbf{plotSegDuration}:optional key-value pair;  boolean flag indicating if the segment duration should be annotated as text within the patch
-		\item \textbf{plotSegDuration}:optional key-value pair;  minimum number of datapoints (duration) within a segment to annotate the segment name and/or duration
-		\item \textbf{additional key-value pairs}: these are forwarded to the Matlab
+		\item \textbf{segmentTags}: optional key-value pair;  the names (nameIDs) of the segments to be plotted on all of the axes
+		\item \textbf{colorDismiss}: optional key-value pair;  color to be not used as patch color
+		\item \textbf{plotSegName}: optional key-value pair;  boolean flag indicating if the segment name (segTag) should be annotated as text within the patch
+		\item \textbf{plotSegDuration}: optional key-value pair;  boolean flag indicating if the segment duration should be annotated as text within the patch
+		\item \textbf{plotSegNameMinLength}: optional key-value pair;  minimum number of datapoints (duration) within a segment to annotate the segment name and/or duration
+		\item \textbf{additional key-value pairs}: these are forwarded to the Matlab fill command.
 	\end{enumerate}
 	returned are:
 	\begin{enumerate}
-		\item \textbf{pa}: the handles to the plotted segments (handles to the patches objects objects).
+		\item \textbf{paAll}: the handles to the plotted segments (handles to the patches objects objects).
 		\item \textbf{tHandleAll}: the handles to annotated text objects.
 	\end{enumerate}	
 \end{enumerate}
