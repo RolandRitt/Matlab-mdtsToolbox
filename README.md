@@ -25,6 +25,3 @@ This project is licensed under the MIT License - see the [license](LICENSE) file
 This plot shows a multi-dimensional time series overlaid with a symbolic time series representation.
 
 <img src="avatar.png" width="600">
-
-
-teest
