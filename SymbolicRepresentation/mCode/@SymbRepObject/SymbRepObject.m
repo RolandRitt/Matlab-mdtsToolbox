@@ -1,4 +1,4 @@
-classdef SymbRepObject 
+classdef SymbRepObject
     %
     % Description : Represents one channel of an mdtsObject as symbols
     %
@@ -18,11 +18,30 @@ classdef SymbRepObject
     % --------------------------------------------------
     %
     
-    properties 
+    properties
         durations
         symbols
         name
         repetitions
+        %       symbols:
+        %           Complete data of the according channel as sequence of
+        %           symbols in a n x 1 categorical array. Repetitive symbols are merged
+        %           to one symbol and the number of repretitions is stored in 'durations'
+        %           (e.g. three repetitions \{'a', 'a', 'a'\} of the symbol 'a' will be
+        %           merged to one symbol 'a' with a duration of spanning all three
+        %           symbols and repetition value is set to 3).
+        % 		durations:
+        %           Number of timestamps (datapoints, span of datapoints) of every
+        %           symbol as n x 1 array. $durations(i)$ represents the number of
+        %           repetitions of the symbol $symbols(i)$. The sum of this array
+        %           correlates with the number of time stamps (datapoints) in the channel data.
+        % 		name:
+        %           A string (char) of the name of the Symbolic Representation.
+        %           Can be set with the function \textit{setName}.
+        % 		repetitions:
+        %           an array, which contains the number of repetitions of the symbol.
+        %           Initially, this is set to duration. After merge, this is updated.
+        
     end
     
     properties(Dependent)
@@ -30,10 +49,23 @@ classdef SymbRepObject
         startInds
         stopInds
         nSyms
+        usedSymbols
+        %       symbolDurations:
+        %           The sum of all durations of the set of unique categories. The
+        %           duration of all (unique) symbols (categories) are summed up.
+        % 		startInds:
+        %           returns a list of the start indices of each symbol (categorie).
+        % 		stoptInds:
+        %           returns a list of the stop indices of each symbol (categorie).
+        % 		nSyms:
+        %           returns the number of elements in the symbols-array.
     end
+    
+    
     methods
         
         function obj = SymbRepObject(durations, symbols)
+            
             
             if~iscategorical(symbols)
                 
@@ -55,12 +87,6 @@ classdef SymbRepObject
                 
             end
             
-%             if size(symbols, 1)~= 1
-%                 symbols = symbols';
-%                 durations = durations';
-%             end
-
-            
             if(isprotected(symbols) && ~isordinal(symbols))
                 
                 obj.symbols = symbols;
@@ -77,15 +103,28 @@ classdef SymbRepObject
         end
         
         function obj = setName(obj, name)
+            % Purpose : sets a name for the SymbRepObject
+            %
+            % Syntax : SymbRepObject = SymbRepObject.setName(name)
+            %
+            % Input Parameters :
+            %   name : string (char) of the name to be used
+            %
+            % Return Parameters :
+            %   SymbRepObject : the modified SymbRepObject
             if ischar(name)||isstring(name)
                 obj.name = name;
             else
                 error('InputChk:setName:notaString', 'input must be a String');
             end
-
+            
+        end
+        
+        function usedSymbols = get.usedSymbols(obj)
+            usedSymbols = categories(obj.symbols);
         end
         function symbolDurations = get.symbolDurations(obj)
-            allCat = categories(obj.symbols);
+            allCat = obj.usedSymbols;
             symbolDurations = NaN(size(allCat));
             for i=1:length(allCat)
                 symbolDurations(i) = sum(obj.durations(obj.symbols==allCat{i}));
@@ -123,10 +162,10 @@ classdef SymbRepObject
             % Syntax : [startInd durations] = SymbRepObject.findSymbol(symbol)
             %
             % Input Parameters :
-            %   symbol : required symbol as character array
+            %   symbol : the symbol to be found within the instance (char)
             %
             % Return Parameters :
-            %   startInd : all start indices of occurrances of the symbol
+            %   startInd : the start indices of occurrances of the symbol
             %   durations : all durations of occurrances of the symbol
             
             if ~ischar(symbol)
@@ -186,13 +225,13 @@ classdef SymbRepObject
             % Return Parameters :
             %   startIndUncompressed : the start index of the uncompressed
             %   series
-%             maxInd = max(indSymbCompressed);
-%             cuSum = cumsum(obj.durations(1:maxInd));
-%             startIndUncompressed = cuSum(indSymbCompressed) - obj.durations(indSymbCompressed) + 1;
+            %             maxInd = max(indSymbCompressed);
+            %             cuSum = cumsum(obj.durations(1:maxInd));
+            %             startIndUncompressed = cuSum(indSymbCompressed) - obj.durations(indSymbCompressed) + 1;
             startIndUncompressed = obj.compressedInds2UncompressedInds(indSymbCompressed);
             
         end
-             
+        
         function obj = mergeSequence2(obj, symbSequence)
             % Purpose : Merge symbols of one channel according to a given
             % sequence
@@ -349,9 +388,9 @@ classdef SymbRepObject
                 
                 obj = obj.mergeSequence(oldSymbols, 'newSymbol', newSymbol, varargin{:});
                 
-%                 obj.symbols = mergecats(obj.symbols, oldSymbols, newSymbol);
-%                 
-%                 obj = obj.compressSymbols(newSymbol);                
+                %                 obj.symbols = mergecats(obj.symbols, oldSymbols, newSymbol);
+                %
+                %                 obj = obj.compressSymbols(newSymbol);
             end
             
         end
@@ -546,7 +585,7 @@ classdef SymbRepObject
             
             p = inputParser;
             
-
+            
             defaultMaxNumberShortSymbols = inf;
             defaultMaxShortSymbolSequenceLength = inf;
             defaultSplittingMode = 'equal';
@@ -558,7 +597,7 @@ classdef SymbRepObject
             
             parse(p,indsRemove, varargin{:});
             
-
+            
             maxNumberShortSymbols = p.Results.maxNumberShortSymbols;
             splittingMode = p.Results.splittingMode;
             maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
@@ -569,7 +608,7 @@ classdef SymbRepObject
                 indsRemove = indsRemoveNew;
             end
             allShortSymbolsInd = indsRemove;
-             allShortSymbolsInd = allShortSymbolsInd(:);
+            allShortSymbolsInd = allShortSymbolsInd(:);
             allSymbols = cellstr(obj.symbols);
             allDurations = obj.durations;
             
@@ -777,149 +816,149 @@ classdef SymbRepObject
                 'maxShortSymbolSequenceLength',  maxShortSymbolSequenceLength, 'splittingMode', splittingMode)
             
             %%%%%%%%%%%%%%%%%%%%%
-%             allNonShortSymbolsInd = (allShortSymbolsInd -1) * -1;
-%             cumStartInd = cumsum([1; allDurations(1 : end - 1)]);
-%             
-%             cumsumSymb = cumsum(allShortSymbolsInd');
-%             index  = strfind([allShortSymbolsInd', 0] ~= 0, [true, false]);
-%             
-%             if isempty(index)
-%                 
-%                 return;
-%                 
-%             end
-%             
-%             allNumberShortSymbols = [cumsumSymb(index(1)), diff(cumsumSymb(index))]';
-%             allEndInd = index';
-%             allStartInd = allEndInd - allNumberShortSymbols + 1;
-%             
-%             allShortSymbolsLength = zeros(numel(allStartInd), 1);
-%             
-%             for i = 1 : numel(allStartInd)
-%                 
-%                 allShortSymbolsLength(i) = sum(obj.durations(allStartInd(i) : allEndInd(i)));
-%                 
-%             end
-%             
-%             shortLongSeparationNumber = allNumberShortSymbols <= maxNumberShortSymbols;
-%             
-%             shortLongSeparationLength = allShortSymbolsLength <= maxShortSymbolSequenceLength;
-%             
-%             shortLongSeparation = shortLongSeparationNumber .* shortLongSeparationLength;
-%             
-%             tempWildcard = 'NotDefined'; % Wildcard - will be removed from the categorical at the end of the method
-%             
-%             for i = 1 : numel(allStartInd)
-%                 
-%                 % Wildcard - will be removed from the categorical at the end of the method
-%                 % Used for all short and undefined symbols
-%                 tempSymbol = tempWildcard;
-%                 
-%                 if(allStartInd(i) == 1)
-%                     
-%                     if(shortLongSeparation(i))
-%                         
-%                         tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1)};
-%                         
-%                     end
-%                     
-%                     tempRange = [cumStartInd(allStartInd(1)), cumStartInd(allEndInd(1)) + allDurations(allEndInd(1)) - 1];
-%                     
-%                     obj = obj.setSymbolsInRange(tempSymbol, tempRange);
-%                     
-%                 elseif(allEndInd(i) == numel(allSymbols))
-%                     
-%                     if(shortLongSeparation(i))
-%                         
-%                         tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1, 'last')};
-%                         
-%                     end
-%                     
-%                     tempRange = [cumStartInd(allStartInd(end)), cumStartInd(allEndInd(end)) + allDurations(allEndInd(end)) - 1];
-%                     
-%                     obj = obj.setSymbolsInRange(tempSymbol, tempRange);
-%                     
-%                 else
-%                     
-%                     if(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>') && strcmp(allSymbols{allEndInd(i) + 1}, '<undefined>'))
-%                         
-%                         tempRange = [cumStartInd(allStartInd(i)), cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
-%                         
-%                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
-%                         
-%                     elseif(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>'))
-%                         
-%                         tempSymbol = allSymbols{allEndInd(i) + 1};
-%                         
-%                         startPoint = cumStartInd(allStartInd(i));
-%                         endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
-%                         
-%                         tempRange = [startPoint, endPoint];
-%                         
-%                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
-%                         
-%                     elseif(shortLongSeparation(i) && strcmp(allSymbols{allEndInd(i) + 1}, '<undefined>'))
-%                         
-%                         tempSymbol = allSymbols{allStartInd(i) - 1};
-%                         
-%                         startPoint = cumStartInd(allStartInd(i));
-%                         endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
-%                         
-%                         tempRange = [startPoint, endPoint];
-%                         
-%                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
-%                         
-%                     elseif(shortLongSeparation(i))
-%                         
-%                         tempSymbol1 = allSymbols{allStartInd(i) - 1};
-%                         tempSymbol2 = allSymbols{allEndInd(i) + 1};
-%                         
-%                         if(strcmp(splittingMode, 'equal'))
-%                             
-%                             startPoint = cumStartInd(allStartInd(i));
-%                             endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
-%                             
-%                             splittingPoint = floor((cumStartInd(allStartInd(i)) + cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1) / 2);
-%                             
-%                             tempRange1 = [startPoint, splittingPoint];
-%                             tempRange2 = [splittingPoint + 1, endPoint];
-%                             
-%                         elseif(strcmp(splittingMode, 'weighted'))
-%                             
-%                             startPoint = cumStartInd(allStartInd(i));
-%                             endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
-%                             
-%                             weightingFactor = allDurations(allStartInd(i) - 1) / (allDurations(allStartInd(i) - 1) + allDurations(allEndInd(i) + 1));
-%                             splittingPoint = round(startPoint + (endPoint - startPoint + 1) * weightingFactor - 1);
-%                             
-%                             tempRange1 = [startPoint, splittingPoint];
-%                             tempRange2 = [splittingPoint + 1, endPoint];
-%                             
-%                         else
-%                             
-%                             errID = 'removeShortSymbols:InvalidSplittingMode';
-%                             errMsg = 'Input SplittingMode must be either equal or weighted!';
-%                             error(errID, errMsg);
-%                             
-%                         end
-%                         
-%                         obj = obj.setSymbolsInRange(tempSymbol1, tempRange1);
-%                         obj = obj.setSymbolsInRange(tempSymbol2, tempRange2);
-%                         
-%                     else
-%                         
-%                         tempRange = [cumStartInd(allStartInd(i)), cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
-%                         
-%                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
-%                         
-%                     end
-%                     
-%                 end
-%                 
-%             end
-%             
-%             obj.symbols = removecats(obj.symbols, tempWildcard);
-%             
+            %             allNonShortSymbolsInd = (allShortSymbolsInd -1) * -1;
+            %             cumStartInd = cumsum([1; allDurations(1 : end - 1)]);
+            %
+            %             cumsumSymb = cumsum(allShortSymbolsInd');
+            %             index  = strfind([allShortSymbolsInd', 0] ~= 0, [true, false]);
+            %
+            %             if isempty(index)
+            %
+            %                 return;
+            %
+            %             end
+            %
+            %             allNumberShortSymbols = [cumsumSymb(index(1)), diff(cumsumSymb(index))]';
+            %             allEndInd = index';
+            %             allStartInd = allEndInd - allNumberShortSymbols + 1;
+            %
+            %             allShortSymbolsLength = zeros(numel(allStartInd), 1);
+            %
+            %             for i = 1 : numel(allStartInd)
+            %
+            %                 allShortSymbolsLength(i) = sum(obj.durations(allStartInd(i) : allEndInd(i)));
+            %
+            %             end
+            %
+            %             shortLongSeparationNumber = allNumberShortSymbols <= maxNumberShortSymbols;
+            %
+            %             shortLongSeparationLength = allShortSymbolsLength <= maxShortSymbolSequenceLength;
+            %
+            %             shortLongSeparation = shortLongSeparationNumber .* shortLongSeparationLength;
+            %
+            %             tempWildcard = 'NotDefined'; % Wildcard - will be removed from the categorical at the end of the method
+            %
+            %             for i = 1 : numel(allStartInd)
+            %
+            %                 % Wildcard - will be removed from the categorical at the end of the method
+            %                 % Used for all short and undefined symbols
+            %                 tempSymbol = tempWildcard;
+            %
+            %                 if(allStartInd(i) == 1)
+            %
+            %                     if(shortLongSeparation(i))
+            %
+            %                         tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1)};
+            %
+            %                     end
+            %
+            %                     tempRange = [cumStartInd(allStartInd(1)), cumStartInd(allEndInd(1)) + allDurations(allEndInd(1)) - 1];
+            %
+            %                     obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+            %
+            %                 elseif(allEndInd(i) == numel(allSymbols))
+            %
+            %                     if(shortLongSeparation(i))
+            %
+            %                         tempSymbol = allSymbols{find(allNonShortSymbolsInd, 1, 'last')};
+            %
+            %                     end
+            %
+            %                     tempRange = [cumStartInd(allStartInd(end)), cumStartInd(allEndInd(end)) + allDurations(allEndInd(end)) - 1];
+            %
+            %                     obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+            %
+            %                 else
+            %
+            %                     if(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>') && strcmp(allSymbols{allEndInd(i) + 1}, '<undefined>'))
+            %
+            %                         tempRange = [cumStartInd(allStartInd(i)), cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
+            %
+            %                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+            %
+            %                     elseif(shortLongSeparation(i) && strcmp(allSymbols{allStartInd(i) - 1}, '<undefined>'))
+            %
+            %                         tempSymbol = allSymbols{allEndInd(i) + 1};
+            %
+            %                         startPoint = cumStartInd(allStartInd(i));
+            %                         endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+            %
+            %                         tempRange = [startPoint, endPoint];
+            %
+            %                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+            %
+            %                     elseif(shortLongSeparation(i) && strcmp(allSymbols{allEndInd(i) + 1}, '<undefined>'))
+            %
+            %                         tempSymbol = allSymbols{allStartInd(i) - 1};
+            %
+            %                         startPoint = cumStartInd(allStartInd(i));
+            %                         endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+            %
+            %                         tempRange = [startPoint, endPoint];
+            %
+            %                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+            %
+            %                     elseif(shortLongSeparation(i))
+            %
+            %                         tempSymbol1 = allSymbols{allStartInd(i) - 1};
+            %                         tempSymbol2 = allSymbols{allEndInd(i) + 1};
+            %
+            %                         if(strcmp(splittingMode, 'equal'))
+            %
+            %                             startPoint = cumStartInd(allStartInd(i));
+            %                             endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+            %
+            %                             splittingPoint = floor((cumStartInd(allStartInd(i)) + cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1) / 2);
+            %
+            %                             tempRange1 = [startPoint, splittingPoint];
+            %                             tempRange2 = [splittingPoint + 1, endPoint];
+            %
+            %                         elseif(strcmp(splittingMode, 'weighted'))
+            %
+            %                             startPoint = cumStartInd(allStartInd(i));
+            %                             endPoint = cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1;
+            %
+            %                             weightingFactor = allDurations(allStartInd(i) - 1) / (allDurations(allStartInd(i) - 1) + allDurations(allEndInd(i) + 1));
+            %                             splittingPoint = round(startPoint + (endPoint - startPoint + 1) * weightingFactor - 1);
+            %
+            %                             tempRange1 = [startPoint, splittingPoint];
+            %                             tempRange2 = [splittingPoint + 1, endPoint];
+            %
+            %                         else
+            %
+            %                             errID = 'removeShortSymbols:InvalidSplittingMode';
+            %                             errMsg = 'Input SplittingMode must be either equal or weighted!';
+            %                             error(errID, errMsg);
+            %
+            %                         end
+            %
+            %                         obj = obj.setSymbolsInRange(tempSymbol1, tempRange1);
+            %                         obj = obj.setSymbolsInRange(tempSymbol2, tempRange2);
+            %
+            %                     else
+            %
+            %                         tempRange = [cumStartInd(allStartInd(i)), cumStartInd(allEndInd(i)) + allDurations(allEndInd(i)) - 1];
+            %
+            %                         obj = obj.setSymbolsInRange(tempSymbol, tempRange);
+            %
+            %                     end
+            %
+            %                 end
+            %
+            %             end
+            %
+            %             obj.symbols = removecats(obj.symbols, tempWildcard);
+            %
         end
         
         function [occurenceM, markovM] = genSymbMarkov(obj, varargin)
@@ -1365,7 +1404,7 @@ classdef SymbRepObject
                 
                 %%%
                 maxM = occurenceM(Ind);
-
+                
                 [I, J] = ind2sub(size(markovM), Ind);
                 
                 allCats = categories(SymbObj.symbols);
@@ -1419,18 +1458,18 @@ classdef SymbRepObject
             
         end
         function startInds = get.startInds(obj)
-            startInds = obj.stopInds - obj.durations + 1; 
+            startInds = obj.stopInds - obj.durations + 1;
         end
         
         function stopInds = get.stopInds(obj)
             stopInds =cumsum(obj.durations);
         end
         
-       function stopInds = get.nSyms(obj)
+        function stopInds = get.nSyms(obj)
             stopInds =numel(obj.durations);
-       end
+        end
         
-           
+        
     end
     
     methods (Static)
