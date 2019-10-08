@@ -571,12 +571,20 @@ returned are:
 \label{ChpDescriptionSymbRepObject}
 
 \subsubsection{Properties}
-
 \begin{enumerate}
-	\item \textbf{symbols:} Complete data of the according channel as sequence of symbols in a n x 1 categorical array. Repetitive symbols are merged to one symbol and the number of repretitions is stored in 'durations' (e.g. three repetitions \{'a', 'a', 'a'\} of the symbol 'a' will be merged to one symbol 'a' with a duration of three).
-	\item \textbf{durations:} Number of timestamps (datapoints, span of datapoints) of every symbol as n x 1 array. $durations(i)$ represents the number of repetitions of the symbol $symbols(i)$. The sum of this array correlates with the number of time stamps (datapoints) in the channel data.
-	\item \textbf{name:} A string (char) of the name of the SymbolicRepresentation. Can be set with the function \textit{setName}.
+	\item Core Properties:
+		\begin{enumerate}
+			\item \textbf{symbols:} Complete data of the according channel as sequence of symbols in a n x 1 categorical array. Repetitive symbols are merged to one symbol and the number of repretitions is stored in 'durations' (e.g. three repetitions \{'a', 'a', 'a'\} of the symbol 'a' will be merged to one symbol 'a' with a duration of spanning all three symbols and repetition value is set to 3).
+			\item \textbf{durations:} Number of timestamps (datapoints, span of datapoints) of every symbol as n x 1 array. $durations(i)$ represents the number of repetitions of the symbol $symbols(i)$. The sum of this array correlates with the number of time stamps (datapoints) in the channel data.
+			\item \textbf{name:} A string (char) of the name of the SymbolicRepresentation. Can be set with the function \textit{setName}.
+			\item \textbf{repetitions:} an array, which contains the number of repetitions of the symbol. Initially, this is set to duration. After merge, this is updated.
+		\end{enumerate}
+	\item Dependet Properties:
+	
+	
 \end{enumerate}
+
+
 
 \subsubsection{Constructor}
 
