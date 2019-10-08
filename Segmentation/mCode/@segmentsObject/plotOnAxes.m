@@ -1,17 +1,28 @@
-function [pa, tHandleAll] = plotOnAxes(obj, axes_in, xTime, varargin)
+function [paAll, tHandleAll] = plotOnAxes(obj, axes_in, xTime, varargin)
 % plot
 %
-% Purpose : plot segments of the given mdtsObject
+% Purpose : plot segments on given axes
 %
-% Syntax : plotSegments(inputObject, varargin)
+% Syntax : plotOnAxes(axes_in, xTime, varargin)
 %
 % Input Parameters :
-%   inputObject : mdtsObject (with multiple channels) to be plotted
-%
-%   segmentTag : tag of the required segment as string (character array)
+%   axes_in : the axes on which the segments should be plotted
+%   xTime : the abscissae values used for plotting the patches and the 
+%       indexes are referring to
+%   segmentTags : optional key-value pair;  the names (nameIDs) of the 
+%       segments to be plotted on all of the axes
+%   colorDismiss : optional key-value pair;  color to be not used as patch color
+%   plotSegName : optional key-value pair;  boolean flag indicating if the 
+%       segment name (segTag) should be annotated as text within the patch
+%   plotSegDuration : optional key-value pair;  boolean flag indicating if 
+%       the segment duration should be annotated as text within the patch
+%   plotSegNameMinLength : optional key-value pair;  minimum number of 
+%       datapoints (duration) within a segment to annotate the segment name
+%       and/or duration
+%   additional key-value pairs : these are forwarded to the Matlab fill command.
 %
 % Return Parameters :
-%   pa := the handles to the plotted segments (handles to the patches objects objects).
+%   paAll := the handles to the plotted segments (handles to the patches objects objects).
 %   tHandleAll := handle to the plotted text annotations
 %
 % Description :
@@ -108,10 +119,6 @@ for i = 1 : nAxes
 end
 
 
-
-%         tagNo = find(ismember(segmentsObj.tags, segmentTag));
-
-
 for j = 1 : nSymbols
     segmentTag = segmentTags{j};
     
@@ -159,15 +166,7 @@ for j = 1 : nSymbols
         pa=[];
         pa = fill(XStart, [ymin(i), ymin(i), ymax(i), ymax(i)]',...
             symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', gObjArr(i), UnmatchedArgs{:});
-        %
-        %         if plotSymbolName||plotSymbolDuration
-        %             yText = (ymin(i) + (ymax(i) - ymin(i)) * 0.25) * ones(size(xSymbol));
-        %
-        %             tHandle = text(tempAx{i}, xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
-        %             if bishggroup
-        %                 set(tHandle, 'Parent', gObjArr(i));
-        %             end
-        %         end
+
         if plotSegName||plotSegDuration
             yText = (ymin(i) + (ymax(i) - ymin(i)) * 0.25) * ones(size(xText));
             
