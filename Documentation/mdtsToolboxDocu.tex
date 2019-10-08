@@ -603,7 +603,38 @@ returned are:
 \subsubsection{Methods}
 
 \begin{enumerate}
-	
+	\item \textbf{[startInds, durations] = obj.findSymbol(symbol)}\\
+		Returns all indices of the first element of repetitive \textit{symbol} in \textit{symbRepVec} together with the according durations, e.g.
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'a'; 'b'; 'a'});
+		>> durations = [2; 4; 3; 5; 2];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> [startInds, durations] = symbolicObject.findSymbol('a')
+		
+		startInds =
+		
+		1
+		7
+		15	
+		
+		durations =
+		
+		2
+		3
+		2
+		\end{verbatim}
+		
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{symbol}: the axes on which the segments should be plotted
+			\item \textbf{segmentTag}: the name of the segment which should be plotted
+			\item \textbf{other key-value pairs}: are forwarded to segmentsObject.plotOnAxes.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{ph}: the handles to the plotted segments (handles to the patches objects objects).
+		\end{enumerate}
+		
 	\item \textbf{symbRepVec = symbRepVec}\\
 	Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
 	\begin{verbatim}
@@ -626,26 +657,7 @@ returned are:
 	     c 
 	\end{verbatim}
 	
-	\item \textbf{[startInds, durations] = findSymbol(symbol)}\\
-	Returns all indices of the first element of repetitive \textit{symbol} in \textit{symbRepVec} together with the according durations, e.g.
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'a'; 'b'; 'a'});
-	>> durations = [2; 4; 3; 5; 2];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> [startInds, durations] = symbolicObject.findSymbol('a')
-	
-	startInds =
-	
-	   1
-	   7
-	   15	
-	
-	durations =
-	
-	   2
-	   3
-	   2
-	\end{verbatim}
+
 	
 	\item \textbf{symbInd = findSymbolVec(symbol)}\\
 	Returns a boolean array of the size of \textit{symbRepVec} with ``true'' elements on all positions of \textit{symbol}, e.g.
