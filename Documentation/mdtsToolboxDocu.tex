@@ -635,7 +635,7 @@ returned are:
 			\item \textbf{repetitions}: the repetitions of the occurrances of the symbol within the symbolic representation.
 		\end{enumerate}
 	
-	\item \textbf{symbInd = findSymbolVec(symbol)}\\
+	\item \textbf{symbInd = obj.findSymbolVec(symbol)}\\
 		Returns a boolean array of the size of \textit{symbRepVec} with ``true'' elements on all positions of \textit{symbol}. The result is with respect to the uncompressed symbolic sequence, e.g.
 		\begin{verbatim}
 		>> symbols = categorical({'a'; 'b'; 'c'});
@@ -664,32 +664,42 @@ returned are:
 			\item \textbf{symbInd}:Boolean array indicating on which positions the symbol is contained in the uncompressed symbolic representation. The index can be used for indexing the underlaying time series
 		\end{enumerate}
 	
+	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = SymbObj.genHierarchicalCompounding(varargin)}
+	This function is under development. It performs hierarchical compounding on the given SymbObj. Therefore, word pairs, which occur often are compounded to a new word. This is done iteratively.
+	
+			The input arguments are:
+	\begin{enumerate}
+		\item \textbf{maxLevel}: (optional key-value) integer defining the maximum number of levels to be calculated.
+	\end{enumerate}
+	returned are:
+	\begin{enumerate}
+		\item \textbf{allSymbRepObjects}: Array of SymbRepObjects. Array(i) is the i-th level of hierarchicalCompounding
+		\item \textbf{imageMatrix}: Matrix which contains in each row the categorie of each datapoint (symbol) for one level. This can be used to plot the hierarchical development.
+		\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
+		\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
+	\end{enumerate}
+	
 	\item \textbf{symbRepVec = symbRepVec}\\
-	Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'c'});
-	>> durations = [2; 4; 3];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> fullVector = symbolicObject.symbRepVec
-	fullVector = 
-	
-	  9x1 categorical array
-	
-	     a 
-	     a 
-	     b 
-	     b 
-	     b 
-	     b 
-	     c 
-	     c 
-	     c 
-	\end{verbatim}
-	
-
-	
-
-	
+		Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'c'});
+		>> durations = [2; 4; 3];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> fullVector = symbolicObject.symbRepVec
+		fullVector = 
+		
+		  9x1 categorical array
+		
+		     a 
+		     a 
+		     b 
+		     b 
+		     b 
+		     b 
+		     c 
+		     c 
+		     c 
+		\end{verbatim}		
 	\item \textbf{obj = mergeSequence(symbSequence)}\\
 	Searches for all incidences of \textit{symbSequence} sequences of symbols in \textit{symbols}. Replaces the symbols of such a sequence by one new symbol, which name is assembled of the symbols of this sequence. Original symbols in such a sequence are identified by enclosing '\{\}', new symbols which represent a merged sequence are identified by enclosing '[]'. Merged symbols can be merged again, thus the function is ready for nested use. \textit{symbSequence} must be given as $1 \times 2$ cell array of strings, representing one symbol of the sequence in every element of the cell array. The durations of the replaced symbols are summed over the complete sequence and set as duration of the new symbol.
 	Example:
