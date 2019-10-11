@@ -678,7 +678,23 @@ returned are:
 		\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
 		\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
 	\end{enumerate}
-	
+
+	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = SymbObj.genHierarchicalCompounding2(SymbObjFunStrg, varargin)}
+	This function is under development. It is an updated version of \textit{genHierarchicalCompounding}. It performs hierarchical compounding on the given SymbObj. Therefore, word pairs, which occur often are compounded to a new word. This is done iteratively.
+
+	The input arguments are:
+	\begin{enumerate}
+		\item \textbf{SymbObjFunStrg}: name (string) of a function of the SymbRepObject to be used to calculate the symbols to be merged. Currently the following functions are possible:  genLengthWeightedMatrix, genSymbMarkov, genWeightedMatrixChangedLength
+		\item \textbf{maxLevel}: (optional key-value) integer defining the maximum number of levels to be calculated.
+	\end{enumerate}
+	returned are:
+	\begin{enumerate}
+		\item \textbf{allSymbRepObjects}: Array of SymbRepObjects. Array(i) is the i-th level of hierarchicalCompounding
+		\item \textbf{imageMatrix}: Matrix which contains in each row the categorie of each datapoint (symbol) for one level. This can be used to plot the hierarchical development.
+		\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
+		\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
+	\end{enumerate}
+		
 	\item \textbf{symbRepVec = symbRepVec}\\
 		Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
 		\begin{verbatim}
