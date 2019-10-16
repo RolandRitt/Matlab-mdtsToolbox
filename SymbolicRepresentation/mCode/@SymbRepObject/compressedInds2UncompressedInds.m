@@ -13,7 +13,6 @@ function [startInds, stopInds] = compressedInds2UncompressedInds(obj, indsCompre
 % Return Parameters :
 %   startInds: start indices of the uncompressed series
 %   stopInds: stop indices of the uncompressed series
-%   durations: durations of the uncompressed series
 %
 % Description :
 %
