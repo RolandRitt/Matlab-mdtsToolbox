@@ -603,7 +603,7 @@ returned are:
 \subsubsection{Methods}
 
 \begin{enumerate}
-	\item \textbf{[startInds, durations, repetitions] = obj.findSymbol(symbol)}\\
+	\item \textbf{[startInds, durations, repetitions] = SymbObj.findSymbol(symbol)}\\
 		Returns all indices of the first element of repetitive \textit{symbol} in \textit{symbRepVec} together with the according durations and repetitions, e.g.
 		\begin{verbatim}
 		>> symbols = categorical({'a'; 'b'; 'a'; 'b'; 'a'});
@@ -635,7 +635,7 @@ returned are:
 			\item \textbf{repetitions}: the repetitions of the occurrances of the symbol within the symbolic representation.
 		\end{enumerate}
 	
-	\item \textbf{symbInd = obj.findSymbolVec(symbol)}\\
+	\item \textbf{symbInd = SymbObj.findSymbolVec(symbol)}\\
 		Returns a boolean array of the size of \textit{symbRepVec} with ``true'' elements on all positions of \textit{symbol}. The result is with respect to the uncompressed symbolic sequence, e.g.
 		\begin{verbatim}
 		>> symbols = categorical({'a'; 'b'; 'c'});
@@ -664,37 +664,50 @@ returned are:
 			\item \textbf{symbInd}:Boolean array indicating on which positions the symbol is contained in the uncompressed symbolic representation. The index can be used for indexing the underlaying time series
 		\end{enumerate}
 	
-	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = SymbObj.genHierarchicalCompounding(varargin)}
-	This function is under development. It performs hierarchical compounding on the given SymbObj. Therefore, word pairs, which occur often are compounded to a new word. This is done iteratively.
+	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = \\SymbObj.genHierarchicalCompounding(varargin)}\\
+		This function is under development. It performs hierarchical compounding on the given SymbObj. Therefore, word pairs, which occur often are compounded to a new word. This is done iteratively.
 	
-			The input arguments are:
-	\begin{enumerate}
-		\item \textbf{maxLevel}: (optional key-value) integer defining the maximum number of levels to be calculated.
-	\end{enumerate}
-	returned are:
-	\begin{enumerate}
-		\item \textbf{allSymbRepObjects}: Array of SymbRepObjects. Array(i) is the i-th level of hierarchicalCompounding
-		\item \textbf{imageMatrix}: Matrix which contains in each row the categorie of each datapoint (symbol) for one level. This can be used to plot the hierarchical development.
-		\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
-		\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
-	\end{enumerate}
+				The input arguments are:
+		\begin{enumerate}
+			\item \textbf{maxLevel}: (optional key-value) integer defining the maximum number of levels to be calculated.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{allSymbRepObjects}: Array of SymbRepObjects. Array(i) is the i-th level of hierarchicalCompounding
+			\item \textbf{imageMatrix}: Matrix which contains in each row the categorie of each datapoint (symbol) for one level. This can be used to plot the hierarchical development.
+			\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
+			\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
+		\end{enumerate}
 
-	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = SymbObj.genHierarchicalCompounding2(SymbObjFunStrg, varargin)}
-	This function is under development. It is an updated version of \textit{genHierarchicalCompounding}. It performs hierarchical compounding on the given SymbObj. Therefore, word pairs, which occur often are compounded to a new word. This is done iteratively.
-
-	The input arguments are:
-	\begin{enumerate}
-		\item \textbf{SymbObjFunStrg}: name (string) of a function of the SymbRepObject to be used to calculate the symbols to be merged. Currently the following functions are possible:  genLengthWeightedMatrix, genSymbMarkov, genWeightedMatrixChangedLength
-		\item \textbf{maxLevel}: (optional key-value) integer defining the maximum number of levels to be calculated.
-	\end{enumerate}
-	returned are:
-	\begin{enumerate}
-		\item \textbf{allSymbRepObjects}: Array of SymbRepObjects. Array(i) is the i-th level of hierarchicalCompounding
-		\item \textbf{imageMatrix}: Matrix which contains in each row the categorie of each datapoint (symbol) for one level. This can be used to plot the hierarchical development.
-		\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
-		\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
-	\end{enumerate}
-		
+	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = \\SymbObj.genHierarchicalCompounding2(SymbObjFunStrg, varargin)}\\
+		This function is under development. It is an updated version of \textit{genHierarchicalCompounding}. It performs hierarchical compounding on the given SymbObj. Therefore, word pairs, which occur often are compounded to a new word. This is done iteratively.
+	
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{SymbObjFunStrg}: name (string) of a function of the SymbRepObject to be used to calculate the symbols to be merged. Currently the following functions are possible:  genLengthWeightedMatrix, genSymbMarkov, genWeightedMatrixChangedLength
+			\item \textbf{maxLevel}: (optional key-value) integer defining the maximum number of levels to be calculated.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{allSymbRepObjects}: Array of SymbRepObjects. Array(i) is the i-th level of hierarchicalCompounding
+			\item \textbf{imageMatrix}: Matrix which contains in each row the category of each datapoint (symbol) for one level. This can be used to plot the hierarchical development.
+			\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
+			\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
+		\end{enumerate}
+	
+	\item \textbf{markovM = genLengthWeightedMatrix(varargin)}\\
+		\textit{Only for development purposes!} Generate a markov type  matrix for all symbolic combinations with weighted length difference (if the length of symbols to be merged are similar, thei are weighted more). This function can also be used in the method \textit{genHierarchicalCompounding2}.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
+			\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$
+			\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
+			\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
+		\end{enumerate}
 	\item \textbf{symbRepVec = symbRepVec}\\
 		Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
 		\begin{verbatim}
@@ -838,8 +851,7 @@ returned are:
 	\item \textbf{symbMarkov3D = genTrigramMatrix}\\
 	\textit{Only for development purposes!}
 	
-	\item \textbf{markovM = genLengthWeightedMatrix(varargin)}\\
-	\textit{Only for development purposes!}
+
 	
 	\item \textbf{markovM = genWeightedMatrixChangedLength(varargin)}\\
 	\textit{Only for development purposes!}
