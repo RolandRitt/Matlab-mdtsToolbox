@@ -859,7 +859,7 @@ returned are:
 		sets a \textit{name} for the SymbRepObject. This corresponds to the property \textit{SymbObj.name}.
 	
 	\item \textbf{SymbObj = SymbObj.setSymbolsInRange(newSymbol, range)}\\
-		Sets all symbols in \textit{symbRepVec} in the range \textit{range} to \textit{newSymbol}, which is given as character array. Range must be given as array of the form [startIndex, endIndex], where \textit{startIndex} represent the index of the first element of the range and \textit{endIndex} represents the last element of the range, e.g.
+		Sets all symbols in \textit{symbRepVec} in the range \textit{range} to \textit{newSymbol}, which is given as character array. Range must be given as array of the form [startIndex, endIndex], where \textit{startIndex} represent the index of the first element of the range and \textit{endIndex} represents the last element of the range in the uncompressed symbolic series, e.g.
 		\begin{verbatim}
 		>> symbols = categorical({'a'; 'b'; 'c'});
 		>> durations = [1; 3; 4];
