@@ -832,6 +832,25 @@ returned are:
 			5
 			6
 			\end{verbatim}
+			
+			
+	\item \textbf{obj = SymbObj.removeSymbolsGivenCompressedIndes(indsRemove, varargin)}\\
+			Removes symbols defined in indsRemove. The duration of the deleted symbol is distributed to the enclosing symbols. Multiple successive deleted symbols will be treated as one symbol and the sum of the durations will be distributed to the enclosing symbols.
+			The following arguments are available:
+			\begin{enumerate}
+				\item \textbf{indsRemove: } Indices of the symbols to be removed
+				\item \textbf{shortSymbolLength: } Definition of a short symbol. All symbols with a length smaller or equal to \textit{shortSymbolLength} will be removed or splitted, respecitvely. Default is 1.
+				\item \textbf{maxNumberShortSymbols: } If the number of a sequence of multiple successive short symbols exceeds \textit{maxNumberShortSymbols}, the sequence of these symbols will not be split, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 5.
+				\item \textbf{maxShortSymbolSequenceLength: } If the sum of all durations of multiple successive short symbols exceeds \textit{maxShortSymbolSequenceLength}, the sequence of these symbols will not be splitted, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 10.
+				\item \textbf{SplittingMode: } Name-Value-Pair. Defines how the duration of short symbols is distributed. Available options: 
+				\begin{enumerate}
+					\item \textbf{'equal':} durations will be distributed 1 : 1 to the enclosing symbols
+					\item \textbf{'weighted':} durations will be distributed due to the length of the two enclosing symbols
+				\end{enumerate}
+				Default is 'equal'.	
+			\end{enumerate}
+			
+			\textbf{Note:} If a sequence does not exceed the limits in \textit{maxNumberShortSymbols} or \textit{maxShortSymbolSequenceLength} but contains an unlabelled symbol ('$<$undefined$>$' in Matlab), this symbol will be treated as normal symbol and the complete sequence will be distributed to the enclosing symbols.
 	
 	\item \textbf{symbRepVec = symbRepVec}\\
 		Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
