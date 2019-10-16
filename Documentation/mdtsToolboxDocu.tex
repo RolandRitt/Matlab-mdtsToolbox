@@ -784,7 +784,7 @@ returned are:
 			\item \textbf{SymbObj}:  Original object (SymbRepObject) with merged symbols.
 		\end{enumerate}
 	
-		\item \textbf{obj = removeShortSymbols(varargin)}\\
+		\item \textbf{obj = SymbObj:removeShortSymbols(varargin)}\\
 			Removes short symbols (symbols with a small duration). The duration of the short symbol is distributed to the enclosing symbols. Multiple successive short symbols will be treated as one short symbol and the sum of the durations will be distributed to the enclosing symbols. The following arguments are available:
 			\begin{enumerate}
 				\item \textbf{shortSymbolLength: } Definition of a short symbol. All symbols with a length smaller or equal to \textit{shortSymbolLength} will be removed or splitted, respecitvely. Default is 1.
