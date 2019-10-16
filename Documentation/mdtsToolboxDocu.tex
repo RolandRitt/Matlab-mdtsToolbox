@@ -709,6 +709,19 @@ returned are:
 			\item \textbf{sumLength2M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $j$ in the merged sequences of symbol $i-j$.
 		\end{enumerate}
 	
+	
+	\item \textbf{symbMarkov = genSymbMarkov(varargin)}\\
+	\textit{Only for development purposes!} Generates a markov matrix for the transition from any symbol to any other symbol.
+	The following input arguments are available:
+	\begin{enumerate}
+		\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
+	\end{enumerate}
+		returned are:
+	\begin{enumerate}
+		\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
+		\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$
+	\end{enumerate}
+
 	\item \textbf{symbRepVec = symbRepVec}\\
 		Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
 		\begin{verbatim}
@@ -840,11 +853,6 @@ returned are:
          6
     \end{verbatim}
     
-    \item \textbf{symbMarkov = genSymbMarkov(varargin)}\\
-    Generates a markov matrix for the transition from any symbol to any other symbol. The following arguments are available:
-    \begin{enumerate}
-    	\item \textbf{Absolute: } If set to true, the number of transitions will not be normalized to a transition probability. Instead, the total number of transitions will be returned. Default is false.
-    \end{enumerate}
 
     \item \textbf{newObj = getTimeInterval(intervalIndices)}\\
 	Extracts \textit{durations} and \textit{symbols} within the time interval given in \textit{intervalIndices} as indices and returns the extracted data in a new symbRepObject \textit{newObj}.
