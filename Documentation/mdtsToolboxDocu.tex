@@ -910,31 +910,31 @@ returned are:
 		
 		
 	\item \textbf{obj = mergeSequence(symbSequence)}\\
-	Searches for all incidences of \textit{symbSequence} sequences of symbols in \textit{symbols}. Replaces the symbols of such a sequence by one new symbol, which name is assembled of the symbols of this sequence. Original symbols in such a sequence are identified by enclosing '\{\}', new symbols which represent a merged sequence are identified by enclosing '[]'. Merged symbols can be merged again, thus the function is ready for nested use. \textit{symbSequence} must be given as $1 \times 2$ cell array of strings, representing one symbol of the sequence in every element of the cell array. The durations of the replaced symbols are summed over the complete sequence and set as duration of the new symbol.
-	Example:
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'c'; 'a'; 'b'; 'a'; 'b'});
-	>> durations = [2; 3; 1; 2; 1; 3; 2];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> symbolicObject = symbolicObject.mergeSequence({'a'; 'b'});
-	>> symbolicObject.symbols
-	
-	ans = 
-	
-	  3x1 categorical array
-	
-	     [{a}{b}] 
-	     c 
-	     [{a}{b}] 
-	
-	>> symbolicObject.durations
-	
-	ans =
-	
-	     5
-	     1
-	     8	
-	\end{verbatim}
+		Searches for all incidences of \textit{symbSequence} sequences of symbols in \textit{symbols}. Replaces the symbols of such a sequence by one new symbol, which name is assembled of the symbols of this sequence. Original symbols in such a sequence are identified by enclosing '\{\}', new symbols which represent a merged sequence are identified by enclosing '[]'. Merged symbols can be merged again, thus the function is ready for nested use. \textit{symbSequence} must be given as $1 \times 2$ cell array of strings, representing one symbol of the sequence in every element of the cell array. The durations of the replaced symbols are summed over the complete sequence and set as duration of the new symbol.
+		Example:
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'c'; 'a'; 'b'; 'a'; 'b'});
+		>> durations = [2; 3; 1; 2; 1; 3; 2];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> symbolicObject = symbolicObject.mergeSequence({'a'; 'b'});
+		>> symbolicObject.symbols
+		
+		ans = 
+		
+		  3x1 categorical array
+		
+		     [{a}{b}] 
+		     c 
+		     [{a}{b}] 
+		
+		>> symbolicObject.durations
+		
+		ans =
+		
+		     5
+		     1
+		     8	
+		\end{verbatim}
 	
 	
 	
@@ -955,16 +955,16 @@ returned are:
 			\end{enumerate}
 		
 		\item \textbf{markovMcleared = clearMarkovM(markovM, occurenceM)}\\
-		Replaces all entries in the markovM where sum(occurenceM,1) ==1 with a probability of 0 (this would correspond that a symbol occurse only once in a symbolic time series). Otherwise, a single occurrence would have probability of 100  which causes problems when merging symbols.
-		The input arguments are:
-		\begin{enumerate}
-			\item \textbf{markovM}: a markov type matrix, which contains the probability that the symbol i is followed by symbol j in the entry markovM(j,i).
-			\item \textbf{occurenceM}: The number of occurances of the word pair symbol i followed by symbol j can be found in entry occurenceM(j,i).
-		\end{enumerate}
-		returned are:
-		\begin{enumerate}
-			\item \textbf{markovMcleared}: The 'cleared' markovMatrix. This removes 100\% probabilities from the markov Matrix. Since a single occurrence of one symbol i causes a probability of 	100\% of the sequence symbol (i) + symbol (i+1).  
-		\end{enumerate}
+			Replaces all entries in the markovM where sum(occurenceM,1) ==1 with a probability of 0 (this would correspond that a symbol occurse only once in a symbolic time series). Otherwise, a single occurrence would have probability of 100  which causes problems when merging symbols.
+			The input arguments are:
+			\begin{enumerate}
+				\item \textbf{markovM}: a markov type matrix, which contains the probability that the symbol i is followed by symbol j in the entry markovM(j,i).
+				\item \textbf{occurenceM}: The number of occurances of the word pair symbol i followed by symbol j can be found in entry occurenceM(j,i).
+			\end{enumerate}
+			returned are:
+			\begin{enumerate}
+				\item \textbf{markovMcleared}: The 'cleared' markovMatrix. This removes 100\% probabilities from the markov Matrix. Since a single occurrence of one symbol i causes a probability of 	100\% of the sequence symbol (i) + symbol (i+1).  
+			\end{enumerate}
 		
 	\end{enumerate}
 
