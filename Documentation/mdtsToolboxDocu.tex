@@ -705,9 +705,10 @@ returned are:
 		\begin{enumerate}
 			\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
 			\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$
-			\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
-			\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
+			\item \textbf{sumLength1M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $i$ in the merged sequences of symbol $i-j$.
+			\item \textbf{sumLength2M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $j$ in the merged sequences of symbol $i-j$.
 		\end{enumerate}
+	
 	\item \textbf{symbRepVec = symbRepVec}\\
 		Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
 		\begin{verbatim}
