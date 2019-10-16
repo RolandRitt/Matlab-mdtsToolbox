@@ -760,7 +760,7 @@ returned are:
 			\item \textbf{startIndUncompressed}:  the start index (indices) of the uncompressed series.	
 		\end{enumerate}
 	
-	\item \textbf{newSymbObj = getTimeInterval(obj, intervalIndices)}\\
+	\item \textbf{newSymbObj = SymbObj.getTimeInterval(obj, intervalIndices)}\\
 		This returns a snipped of the time series object, given numerical indices of the uncompressed series.
 		The input arguments are:
 		\begin{enumerate}
@@ -769,6 +769,18 @@ returned are:
 		returned are:
 		\begin{enumerate}
 			\item \textbf{newSymbObj}:  instance of SymbRepObj which contains only the interval to be requested.
+		\end{enumerate}
+	
+	\item \textbf{SymbObj = SymbObj.mergeSymbols(symbolsToMerge, newSymbol, varargin)}\\
+		Merges all \textit{symbolsToMerge} symbols (given as cell array of strings) to one new \textit{newSymbol}.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{symbolsToMerge}: Symbols existent in the symbolic representation,  which have to be merged. Input given as cell array of strings.
+			\item \textbf{newSymbol}:  New symbol name for the merged symbol sequence, given as  string
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{SymbObj}:  Original object (SymbRepObject) with merged symbols.
 		\end{enumerate}
 	
 	\item \textbf{symbRepVec = symbRepVec}\\
@@ -822,8 +834,7 @@ returned are:
 	\item \textbf{obj = renameSymbol(oldSymbol, newSymbol)}\\
 	Renames all \textit{oldSymbol} symbols to \textit{newSymbol}.
 	
-	\item \textbf{obj = mergeSymbols(oldSymbols, newSymbol)}\\
-	Merges all \textit{oldSymbols} symbols (given as cell array of strings) to one new \textit{newSymbol}.
+
 	
 	\item \textbf{obj = setSymbolsInRange(newSymbol, range)}\\
 	Sets all symbols in \textit{symbRepVec} in the range \textit{range} to \textit{newSymbol}, which is given as character array. Range must be given as array of the form [startIndex, endIndex], where \textit{startIndex} represent the index of the first element of the range and \textit{endIndex} represents the last element of the range, e.g.
