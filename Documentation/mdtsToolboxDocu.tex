@@ -906,7 +906,9 @@ returned are:
 		     c 
 		     c 
 		     c 
-		\end{verbatim}		
+		\end{verbatim}
+		
+		
 	\item \textbf{obj = mergeSequence(symbSequence)}\\
 	Searches for all incidences of \textit{symbSequence} sequences of symbols in \textit{symbols}. Replaces the symbols of such a sequence by one new symbol, which name is assembled of the symbols of this sequence. Original symbols in such a sequence are identified by enclosing '\{\}', new symbols which represent a merged sequence are identified by enclosing '[]'. Merged symbols can be merged again, thus the function is ready for nested use. \textit{symbSequence} must be given as $1 \times 2$ cell array of strings, representing one symbol of the sequence in every element of the cell array. The durations of the replaced symbols are summed over the complete sequence and set as duration of the new symbol.
 	Example:
@@ -957,19 +959,31 @@ returned are:
 
 \subsubsection{Methods (Static)}
 
-\begin{enumerate}
-	\item \textbf{markovM = SymbRepObject.occurenceM2markovM(occurenceM)}\\
-		Takes a occurenceM and returns a markov type matrix by normalizing each column.
+	\begin{enumerate}
+		\item \textbf{markovM = SymbRepObject.occurenceM2markovM(occurenceM)}\\
+			Takes a occurenceM and returns a markov type matrix by normalizing each column.
+			The input arguments are:
+			\begin{enumerate}
+				\item \textbf{occurenceM}: a occurance matrix returned from the functions genLengthWeightedMatrix, genSymbMarkov, genWeightedMatrixChangedLength.
+			\end{enumerate}
+			returned are:
+			\begin{enumerate}
+				\item \textbf{markovM}:  a matrix which is normalized by each column. (sum of each column = 1). Therefor, this matrix can be used to  calculate the probability of the next symbol, eg.  newSymbolPropability = markovM*currentSymbolProbabilityVec
+			\end{enumerate}
+		
+		\item \textbf{markovMcleared = clearMarkovM(markovM, occurenceM)}\\
+		Replaces all entries in the markovM where sum(occurenceM,1) ==1 with a probability of 0 (this would correspond that a symbol occurse only once in a symbolic time series). Otherwise, a single occurrence would have probability of 100  which causes problems when merging symbols.
 		The input arguments are:
 		\begin{enumerate}
-			\item \textbf{occurenceM}: a occurance matrix returned from the functions genLengthWeightedMatrix, genSymbMarkov, genWeightedMatrixChangedLength.
+			\item \textbf{markovM}: a markov type matrix, which contains the probability that the symbol i is followed by symbol j in the entry markovM(j,i).
+			\item \textbf{occurenceM}: The number of occurances of the word pair symbol i followed by symbol j can be found in entry occurenceM(j,i).
 		\end{enumerate}
 		returned are:
 		\begin{enumerate}
-			\item \textbf{markovM}:  a matrix which is normalized by each column. (sum of each column = 1). Therefor, this matrix can be used to  calculate the probability of the next symbol, eg.  newSymbolPropability = markovM*currentSymbolProbabilityVec
+			\item \textbf{markovMcleared}: Since a single occurrence of one symbol i causes a probability of 100\% of the sequence symbol (i) + symbol (i+19 
 		\end{enumerate}
-	
-\end{enumerate}
+		
+	\end{enumerate}
 
 \subsection{symbRepChannel}
 
