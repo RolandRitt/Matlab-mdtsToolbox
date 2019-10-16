@@ -696,7 +696,7 @@ returned are:
 		\end{enumerate}
 	
 	\item \textbf{markovM = genLengthWeightedMatrix(varargin)}\\
-		\textit{Only for development purposes!} Generate a markov type  matrix for all symbolic combinations with weighted length difference (if the length of symbols to be merged are similar, thei are weighted more). This function can also be used in the method \textit{genHierarchicalCompounding2}.
+		\textit{Only for development purposes!} Generate a markov type  matrix for all symbolic combinations with weighted length difference (if the length of symbols to be merged are similar, thei are weighted more, this minimizes the problem that a small symbol effects large parts of the symbolic time series). This function can also be used in the method \textit{genHierarchicalCompounding2}.
 		The input arguments are:
 		\begin{enumerate}
 			\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
