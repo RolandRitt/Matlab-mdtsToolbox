@@ -7,18 +7,18 @@ function [startInds, durations, compressedStartInds, compressedStopInds] = findS
 % Syntax :
 %
 % Input Parameters :
-%   symbSequence : Sequence which is supposed to be merged to
-%   one new categorical. Must be given as one dimensional cell
-%   array of strings with an arbitrary number of elements
+%   symbSequence : Sequence (cell array) of symbols, which is to be
+%       found within the compressed symbolic time series. Must be
+%       given as one dimensional cell an arbitrary number of elements
 % Return Parameters :
-%   startInds : index in the original time series where the sequences
-%   start;
-%   durations : the number of samples in the original time series the
-%   sequence lasts;
+%   startInds : index in the original uncompressed time series where the sequences
+%       start;
+%   durations : the number of samples in the original uncompressed time series the
+%       sequence lasts;
 %   compressedStartInds : the indices where the symbSequence starts in the
-%   compressed symbolic representation
+%       compressed symbolic representation
 %   compressedEndInds : the indices  where the symbSequence stops in the
-%   compressed symbolic representation
+%       compressed symbolic representation
 % Description :
 %
 % Author :
