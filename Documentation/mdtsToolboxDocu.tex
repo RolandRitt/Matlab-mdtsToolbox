@@ -757,7 +757,18 @@ returned are:
 		\end{enumerate}
 		returned are:
 		\begin{enumerate}
-			\item \textbf{startIndUncompressed}:  the start index(es) of the uncompressed series.	
+			\item \textbf{startIndUncompressed}:  the start index (indices) of the uncompressed series.	
+		\end{enumerate}
+	
+	\item \textbf{newSymbObj = getTimeInterval(obj, intervalIndices)}\\
+		This returns a snipped of the time series object, given numerical indices of the uncompressed series.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{intervalIndices}: an array containing the start and end index of the snipped to be extracted. The indices are with  respect to the uncompressed series.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{newSymbObj}:  instance of SymbRepObj which contains only the interval to be requested.
 		\end{enumerate}
 	
 	\item \textbf{symbRepVec = symbRepVec}\\
