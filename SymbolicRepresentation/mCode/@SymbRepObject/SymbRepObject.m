@@ -228,7 +228,7 @@ classdef SymbRepObject
             
         end
         
-  
+        
         
         function obj = renameSymbol(obj, oldSymbol, newSymbol)
             % Purpose : Rename a symbol in the symbolic representation
@@ -238,9 +238,9 @@ classdef SymbRepObject
             %
             % Input Parameters :
             %   oldSymbol : Symbol existent in the symbolic representation,
-            %   which has to be renamed. Input given as string.
+            %       which has to be renamed. Input given as string.
             %   newSymbol : New symbol name for the old symbol, given as
-            %   string
+            %       string
             %
             % Return Parameters :
             %   SymbRepObject : Original object with renamed symbol
@@ -317,20 +317,7 @@ classdef SymbRepObject
                 error(errID, errMsg);
                 
             else
-                
-                %                 newSymbRepVec = cellstr(obj.symbRepVec);
-                %                 newSymbRepVec(range(1) : range(2)) = {newSymbol};
-                %
-                %                 numRepr = grp2idx(newSymbRepVec);
-                %                 symbolChange = [true; diff(numRepr) ~= 0];
-                %                 compressedSymbols = newSymbRepVec(symbolChange);
-                %                 symbolLength = diff(find([symbolChange; 1]));
-                %
-                %                 allCats = unique(compressedSymbols);
-                %                 allCats(strcmp(allCats, '<undefined>')) = [];
-                %                 obj.symbols = categorical(compressedSymbols, allCats, 'Protected', true);
-                %                 obj.durations = symbolLength;
-                
+                                
                 cumDurations = cumsum(obj.durations);
                 
                 allEnds = cumDurations;
@@ -452,7 +439,7 @@ classdef SymbRepObject
             % representation given the compressedIndices
             %
             % Syntax :
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(indsRemove)
+            %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(indsRemove)
             %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'maxNumberShortSymbols', maxNumberShortSymbols)
             %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength)
             %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'splittingMode', splittingMode)
@@ -700,7 +687,6 @@ classdef SymbRepObject
             splittingMode = p.Results.splittingMode;
             maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
             
-            allSymbols = cellstr(obj.symbols);
             allDurations = obj.durations;
             allShortSymbolsInd = allDurations <= shortSymbolLength;
             
@@ -708,7 +694,7 @@ classdef SymbRepObject
             obj = removeSymbolsGivenCompressedIndes(obj,allShortSymbolsInd, 'maxNumberShortSymbols',maxNumberShortSymbols,...
                 'maxShortSymbolSequenceLength',  maxShortSymbolSequenceLength, 'splittingMode', splittingMode);
             
-
+            
         end
         
         function [occurenceM, markovM] = genSymbMarkov(obj, varargin)
@@ -832,9 +818,9 @@ classdef SymbRepObject
             %       is followed by symbol j in the entry occurenceM(j,i);
             %   markovM:= matrix cotaining a value for the occurence of two
             %       symbols in a row
-            %   sumLength1M := a matrix containing in the entry (i,j) the 
+            %   sumLength1M := a matrix containing in the entry (i,j) the
             %       overall length of symbol i in the merged sequences of symbol i-j.
-            %   sumLength1M := a matrix containing in the entry (i,j) the 
+            %   sumLength1M := a matrix containing in the entry (i,j) the
             %       overall length of symbol j in the merged sequences of symbol i-j.
             
             p = inputParser;
@@ -899,7 +885,7 @@ classdef SymbRepObject
                 genWeightedMatrixChangedLength(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
             % combinations with weighted change of length. This minimizes
-            % the problem, that large portion of the symbolic time series 
+            % the problem, that large portion of the symbolic time series
             % get changed. This function can also be used in the method.
             % genHierarchicalCompounding2.
             %
@@ -1027,12 +1013,12 @@ classdef SymbRepObject
         end
         
         function [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding(SymbObj, varargin)
-            % Purpose :  It performs hierarchical compounding on the given 
+            % Purpose :  It performs hierarchical compounding on the given
             %   SymbObj. Therefore, word pairs, which occur often are
             %   compounded to a new word. This is done iteratively.
             %
             % Syntax :
-            %   [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = 
+            %   [allSymbRepObjects, imageMatrix, compressionData, evalRecord] =
             %       genHierarchicalCompounding(SymbObj, varargin)
             %
             % Input Parameters :
@@ -1048,7 +1034,7 @@ classdef SymbRepObject
             %   compressionData : A struct with information for each level,
             %       eg. number of Symbols, number of categories, number of
             %       merged Symbols and symbol reduction rate.
-            %   evalRecord : A table which contains all steps performed 
+            %   evalRecord : A table which contains all steps performed
             %       during the hierarchical compounding
             p = inputParser;
             p.addRequired('SymbObj', @(x) isa(x, 'SymbRepObject'));
@@ -1146,12 +1132,12 @@ classdef SymbRepObject
         
         function [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding2(SymbObj,SymbObjFunStrg, varargin)
             % Purpose :  Similary to genHierarchicalCompounding with additional input.
-            %   It performs hierarchical compounding on the given 
+            %   It performs hierarchical compounding on the given
             %   SymbObj. Therefore, word pairs, which occur often are
             %   compounded to a new word. This is done iteratively.
             %
             % Syntax :
-            %   [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = 
+            %   [allSymbRepObjects, imageMatrix, compressionData, evalRecord] =
             %       genHierarchicalCompounding2(SymbObj,SymbObjFunStrg, varargin)
             %
             % Input Parameters :
@@ -1172,7 +1158,7 @@ classdef SymbRepObject
             %   compressionData : A struct with information for each level,
             %       eg. number of Symbols, number of categories, number of
             %       merged Symbols and symbol reduction rate.
-            %   evalRecord : A table which contains all steps performed 
+            %   evalRecord : A table which contains all steps performed
             %       during the hierarchical compounding
             p = inputParser;
             p.addRequired('SymbObj', @(x) isa(x, 'SymbRepObject'));
@@ -1322,6 +1308,24 @@ classdef SymbRepObject
         end
         
         function markovMcleared = clearMarkovM(markovM, occurenceM)
+            % Purpose :  replaces all entries in the markovM where
+            % sum(occurenceM,1) ==1 with a probability of 0. Otherwise, a single
+            % occurence would have probability of 100% which causes
+            % problems when merging symbols
+            %
+            % Syntax :
+            %   markovM = SymbRepObject.occurenceM2markovM(occurenceM)
+            %
+            % Input Parameters :
+            %   occurenceM : a occurance matrix returned from the functions
+            %       genLengthWeightedMatrix, genSymbMarkov,
+            %       genWeightedMatrixChangedLength
+            %
+            % Return Parameters :
+            %   markovM : a matrix which is normalized by each column. (sum
+            %       of each column = 1). Therefor, this matrix can be used to
+            %       calculate the probability of the next symbol, eg.
+            %       newSymbolPropability = markovM*currentSymbolProbabilityVec
             sumOccurances = sum(occurenceM, 1);
             markovMcleared = markovM;
             %                 sumOccurances(sumOccurances==1) = Inf;
