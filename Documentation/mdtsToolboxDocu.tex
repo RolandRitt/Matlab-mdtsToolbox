@@ -852,7 +852,10 @@ returned are:
 			
 			\textbf{Note:} If a sequence does not exceed the limits in \textit{maxNumberShortSymbols} or \textit{maxShortSymbolSequenceLength} but contains an unlabelled symbol ('$<$undefined$>$' in Matlab), this symbol will be treated as normal symbol and the complete sequence will be distributed to the enclosing symbols.
 	
-	\item \textbf{obj = renameSymbol(oldSymbol, newSymbol)}\\
+	\item \textbf{SymbObj = SymbObj.renameSymbol(oldSymbol, newSymbol)}\\
+		Renames all \textit{oldSymbol} symbols to \textit{newSymbol}.
+		
+	\item \textbf{SymbObj = SymbObj.setName(oldSymbol, newSymbol)}\\
 		Renames all \textit{oldSymbol} symbols to \textit{newSymbol}.
 	
 	
