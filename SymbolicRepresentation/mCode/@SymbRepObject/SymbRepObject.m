@@ -133,6 +133,60 @@ classdef SymbRepObject
         
         
         
+        
+        
+        function [startInds, durations, repetitions] = findSymbol(obj, symbol)
+            % Purpose : find indices of symbol
+            %
+            % Syntax : [startInd durations] = SymbRepObject.findSymbol(symbol)
+            %
+            % Input Parameters :
+            %   symbol : the symbol to be found within the instance (char)
+            %
+            % Return Parameters :
+            %   startInd : the start indices of occurrances of the symbol
+            %   with respect to the uncompressed representation
+            %   durations : all durations of occurrances of the symbol
+            %   repetitions : repetions of the requested symbol
+            if ~ischar(symbol)
+                
+                errID = 'findSymbol:InputNoString';
+                errMsg = 'The input symbol must be given as character array!';
+                error(errID, errMsg);
+                
+            end
+            
+            bFind = obj.symbols == symbol;
+            startInds = obj.startInds(bFind);
+            durations = obj.durations(bFind);
+            repetitions = obj.repetitions(bFind);
+        end
+        function symbInd = findSymbolVec(obj, symbol)
+            % Purpose : find the boolean indices of the symbols in the
+            % uncompressed symbol-sequence (relevant for indexing
+            % datapoints)
+            %
+            % Syntax : symbInd = SymbRepObject.findSymbolVec(symbol)
+            %
+            % Input Parameters :
+            %   symbol : required symbol as character array
+            %
+            % Return Parameters :
+            %   symbInd : boolean vector which indicates all occurrances
+            %   of the symbol specified in the input with respect to the
+            %   indices of the uncompressed sequence
+            
+            if ~ischar(symbol)
+                
+                errID = 'findSymbolVec:InputNoString';
+                errMsg = 'The input symbol must be given as character array!';
+                error(errID, errMsg);
+                
+            end
+            symbInd = obj.symbRepVec == symbol;
+            
+        end
+        
         function symbRepVec = symbRepVec(obj)
             % Purpose : return complete symbol vector. NOTE: If symbRepVec
             % is implemented as dependent variable, it will be recalculated
@@ -155,61 +209,6 @@ classdef SymbRepObject
             end
             
         end
-        
-        function [startInds, durations] = findSymbol(obj, symbol)
-            % Purpose : find indices of symbol
-            %
-            % Syntax : [startInd durations] = SymbRepObject.findSymbol(symbol)
-            %
-            % Input Parameters :
-            %   symbol : the symbol to be found within the instance (char)
-            %
-            % Return Parameters :
-            %   startInd : the start indices of occurrances of the symbol
-            %   durations : all durations of occurrances of the symbol
-            
-            if ~ischar(symbol)
-                
-                errID = 'findSymbol:InputNoString';
-                errMsg = 'The input symbol must be given as character array!';
-                error(errID, errMsg);
-                
-            end
-            
-            symbInd = findSymbolVec(obj, symbol);
-            
-            symbolChange = [symbInd(1); diff(symbInd) == 1];
-            startInds = find(symbolChange);
-            
-            newSymbols = categorical(obj.symbols, 'Protected', false, 'Ordinal', false);
-            requiredSymbolInd = find(newSymbols == symbol);
-            durations = obj.durations(requiredSymbolInd);
-            
-        end
-        function symbInd = findSymbolVec(obj, symbol)
-            % Purpose : find indices of symbol
-            %
-            % Syntax : symbInd = SymbRepObject.findSymbolVec(symbol)
-            %
-            % Input Parameters :
-            %   symbol : required symbol as character array
-            %
-            % Return Parameters :
-            %   symbInd : boolean vector which indicates all occurrances
-            %   of the symbol specified in the input
-            
-            if ~ischar(symbol)
-                
-                errID = 'findSymbolVec:InputNoString';
-                errMsg = 'The input symbol must be given as character array!';
-                error(errID, errMsg);
-                
-            end
-            
-            newSymbols = categorical(obj.symbRepVec, 'Protected', false, 'Ordinal', false);
-            symbInd = newSymbols == symbol;
-            
-        end
         function startIndUncompressed = getStartInd(obj, indSymbCompressed)
             % Purpose : given the index of a symbol from the compressed
             % return the start index of the uncompressed
@@ -225,9 +224,6 @@ classdef SymbRepObject
             % Return Parameters :
             %   startIndUncompressed : the start index of the uncompressed
             %   series
-            %             maxInd = max(indSymbCompressed);
-            %             cuSum = cumsum(obj.durations(1:maxInd));
-            %             startIndUncompressed = cuSum(indSymbCompressed) - obj.durations(indSymbCompressed) + 1;
             startIndUncompressed = obj.compressedInds2UncompressedInds(indSymbCompressed);
             
         end
@@ -971,16 +967,17 @@ classdef SymbRepObject
             %   true);
             %
             % Input Parameters :
-            %   'Absolute' : Set to true if result shall represent the
-            %   absolute number of transitions from one state to another,
-            %   set to false (default) if matrix shall represent transition
-            %   probabilities
+            %   'Absolute' : (optonal key-value pair) Set to true if result
+            %       shall represent the  absolute number of transitions from
+            %       one state to another, set to false (default) if matrix
+            %       shall represent transition  probabilities
             %
             % Return Parameters :
             %   occurenceM : matrix, which counts the occurences of symbol i
-            %   is followed by symbol j in the entry occurenceM(j,i)
-            %   markovM:= matrix cotaining a value for the occurence of two
-            %   symbols in a row
+            %       is followed by symbol j in the entry occurenceM(j,i).
+            %   markovM:= matrix containing a value for the probability of
+            %       symbol $i$ is followed by symbol $j$. It is the (column)
+            %       normalized version of occurenceM.
             
             p = inputParser;
             
@@ -1028,7 +1025,7 @@ classdef SymbRepObject
             
         end
         
-        function symbMarkov3D = genTrigramMatrix(obj)
+        function symbCounts3D = genTrigramMatrix(obj)
             % Purpose : Generate a 3d markov matrix for all permutations of
             % 3 symbols
             %
@@ -1038,7 +1035,7 @@ classdef SymbRepObject
             % Input Parameters :
             %
             % Return Parameters :
-            %   symbMarkov3D : 3d markov transition matrix
+            %   symbCounts3D : 3d counting transition matrix
             
             symbolsString = cellstr(obj.symbols);
             nSymbols = numel(symbolsString);
@@ -1046,7 +1043,7 @@ classdef SymbRepObject
             allCat = categories(obj.symbols);
             nCat = numel(allCat);
             
-            symbMarkov3D = zeros(nCat, nCat, nCat);
+            symbCounts3D = zeros(nCat, nCat, nCat);
             
             for i = 1 : nSymbols - 2
                 
@@ -1054,15 +1051,16 @@ classdef SymbRepObject
                 ind2 = find(strcmp(allCat, symbolsString{i + 1}));
                 ind3 = find(strcmp(allCat, symbolsString{i + 2}));
                 
-                symbMarkov3D(ind1, ind2, ind3) = symbMarkov3D(ind1, ind2, ind3) + 1;
+                symbCounts3D(ind1, ind2, ind3) = symbCounts3D(ind1, ind2, ind3) + 1;
                 
             end
             
         end
         
-        function [occurenceM, markovM, SumLength1M, sumLength2M] = genLengthWeightedMatrix(obj, varargin)
+        function [occurenceM, markovM, sumLength1M, sumLength2M] = genLengthWeightedMatrix(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
-            % combinations with weighted length difference
+            % combinations with weighted length difference. This function
+            %   can also be used in the method \textit{genHierarchicalCompounding2}.
             %
             % Syntax :
             %   SymbRepObject = SymbRepObject.genLengthWeightedMatrix
@@ -1077,7 +1075,13 @@ classdef SymbRepObject
             %
             % Return Parameters :
             %   occurenceM := matrix, which counts the occurences of symbol i
-            %   is followed by symbol j in the entry occurenceM(j,i);
+            %       is followed by symbol j in the entry occurenceM(j,i);
+            %   markovM:= matrix cotaining a value for the occurence of two
+            %       symbols in a row
+            %   sumLength1M := a matrix containing in the entry (i,j) the 
+            %       overall length of symbol i in the merged sequences of symbol i-j.
+            %   sumLength1M := a matrix containing in the entry (i,j) the 
+            %       overall length of symbol j in the merged sequences of symbol i-j.
             
             p = inputParser;
             
@@ -1097,7 +1101,7 @@ classdef SymbRepObject
             
             
             occurenceM = zeros(nCat, nCat);
-            SumLength1M = zeros(nCat, nCat);
+            sumLength1M = zeros(nCat, nCat);
             sumLength2M = zeros(nCat, nCat);
             
             
@@ -1108,13 +1112,13 @@ classdef SymbRepObject
                 toInd = find(strcmp(allCat, symbolsString{i + 1}));
                 
                 occurenceM(fromInd, toInd) = occurenceM(fromInd, toInd) + 1;
-                SumLength1M(fromInd, toInd) = SumLength1M(fromInd, toInd) + obj.durations(i);
+                sumLength1M(fromInd, toInd) = sumLength1M(fromInd, toInd) + obj.durations(i);
                 sumLength2M(fromInd, toInd) = sumLength2M(fromInd, toInd) + obj.durations(i+1);
             end
             
             
             occurenceM = occurenceM';
-            SumLength1M = SumLength1M';
+            sumLength1M = sumLength1M';
             sumLength2M = sumLength2M';
             % Transpose result, such that x1 = P * x0 instead of x1^T =
             % x0^T * P
@@ -1130,20 +1134,24 @@ classdef SymbRepObject
             
             %
             %              diffMat = abs( SumLength1M - sumLength2M)./(SumLength1M + sumLength2M -2);
-            diffMat = 1 - abs( SumLength1M - sumLength2M)./(SumLength1M + sumLength2M);
+            diffMat = 1 - abs( sumLength1M - sumLength2M)./(sumLength1M + sumLength2M);
             markovM = markovM.* diffMat;
             
         end
         
         
         
-        function [occurenceM, markovM, sumLength1M, sumLength2M,lengthSyms] = genWeightedMatrixChangedLength(obj, varargin)
+        function [occurenceM, markovM, sumLength1M, sumLength2M,lengthSyms] = ...
+                genWeightedMatrixChangedLength(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
-            % combinations with weighted change of length
+            % combinations with weighted change of length. This minimizes
+            % the problem, that large portion of the symbolic time series 
+            % get changed. This function can also be used in the method.
+            % genHierarchicalCompounding2.
             %
             % Syntax :
-            %   SymbRepObject = SymbRepObject.genSymbMarkov
-            %   SymbRepObject = SymbRepObject.genSymbMarkov('Absolute',
+            %   SymbRepObject = SymbRepObject.genWeightedMatrixChangedLength
+            %   SymbRepObject = SymbRepObject.genWeightedMatrixChangedLength('Absolute',
             %   true);
             %
             % Input Parameters :
@@ -1216,7 +1224,21 @@ classdef SymbRepObject
             
         end
         
-        function newObj = getTimeInterval(obj, intervalIndices)
+        function newSymbObj = getTimeInterval(obj, intervalIndices)
+            % Purpose : This returns a snipped of the time series object,
+            % given numerical indices of the uncompressed series.
+            %
+            % Syntax :
+            %   newSymbObj = SymbObj.getTimeInterval( intervalIndices)
+            %
+            % Input Parameters :
+            %   intervalIndices : an array containing the start and end
+            %      index of the snipped to be extracted. The indices are with
+            %      respect to the uncompressed series.
+            %
+            % Return Parameters :
+            %   newSymbObj : instance of SymbRepObj which contains only the
+            %       interval to be requested.
             
             endInds = obj.stopInds;
             startInds = obj.startInds;
@@ -1246,12 +1268,34 @@ classdef SymbRepObject
                 
             end
             
-            newObj = SymbRepObject(newDurations, newSymbols);
+            newSymbObj = SymbRepObject(newDurations, newSymbols);
             
         end
         
         function [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding(SymbObj, varargin)
-            
+            % Purpose :  It performs hierarchical compounding on the given 
+            %   SymbObj. Therefore, word pairs, which occur often are
+            %   compounded to a new word. This is done iteratively.
+            %
+            % Syntax :
+            %   [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = 
+            %       genHierarchicalCompounding(SymbObj, varargin)
+            %
+            % Input Parameters :
+            %   maxLevel : (optional key-value) integer defining the maximum
+            %       number of levels to be calculated.
+            %
+            % Return Parameters :
+            %   allSymbRepObjects : Array of SymbRepObjects. Array(i) is the
+            %       i-th level of hierarchicalCompounding
+            %   imageMatrix : Matrix which contains in each row the categorie
+            %       of each datapoint (symbol) for one level. This can be used
+            %       to plot the hierarchical development.
+            %   compressionData : A struct with information for each level,
+            %       eg. number of Symbols, number of categories, number of
+            %       merged Symbols and symbol reduction rate.
+            %   evalRecord : A table which contains all steps performed 
+            %       during the hierarchical compounding
             p = inputParser;
             p.addRequired('SymbObj', @(x) isa(x, 'SymbRepObject'));
             p.addOptional('maxLevel', 0, @(x) isnumeric(x)&& isequal(size(x), [1,1]));
@@ -1347,7 +1391,35 @@ classdef SymbRepObject
         
         
         function [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding2(SymbObj,SymbObjFunStrg, varargin)
-            
+            % Purpose :  Similary to genHierarchicalCompounding with additional input.
+            %   It performs hierarchical compounding on the given 
+            %   SymbObj. Therefore, word pairs, which occur often are
+            %   compounded to a new word. This is done iteratively.
+            %
+            % Syntax :
+            %   [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = 
+            %       genHierarchicalCompounding2(SymbObj,SymbObjFunStrg, varargin)
+            %
+            % Input Parameters :
+            %   SymbObjFunStrg : name (string) of a function of the
+            %       SymbRepObject to be used to calculate the symbols to be
+            %       merged. Currently the following functions are possible:
+            %       genLengthWeightedMatrix, genSymbMarkov,
+            %       genWeightedMatrixChangedLength
+            %   maxLevel : (optional key-value) integer defining the maximum
+            %       number of levels to be calculated.
+            %
+            % Return Parameters :
+            %   allSymbRepObjects : Array of SymbRepObjects. Array(i) is the
+            %       i-th level of hierarchicalCompounding
+            %   imageMatrix : Matrix which contains in each row the categorie
+            %       of each datapoint (symbol) for one level. This can be used
+            %       to plot the hierarchical development.
+            %   compressionData : A struct with information for each level,
+            %       eg. number of Symbols, number of categories, number of
+            %       merged Symbols and symbol reduction rate.
+            %   evalRecord : A table which contains all steps performed 
+            %       during the hierarchical compounding
             p = inputParser;
             p.addRequired('SymbObj', @(x) isa(x, 'SymbRepObject'));
             p.addRequired('SymbObjFunStrg', @(x) ischar(x));
@@ -1457,6 +1529,8 @@ classdef SymbRepObject
             compressionData.symbolReductionRate = symbolReductionRate;
             
         end
+        
+        
         function startInds = get.startInds(obj)
             startInds = obj.stopInds - obj.durations + 1;
         end
