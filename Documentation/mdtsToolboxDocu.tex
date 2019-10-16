@@ -695,7 +695,7 @@ returned are:
 			\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
 		\end{enumerate}
 	
-	\item \textbf{markovM =  SymbObj.genLengthWeightedMatrix(varargin)}\\
+	\item \textbf{[occurenceM, markovM, sumLength1M, sumLength2M] = \\ SymbObj.genLengthWeightedMatrix(varargin)}\\
 		\textit{Only for development purposes!} Generate a markov type  matrix for all symbolic combinations with weighted length difference (if the length of symbols to be merged are similar, they are weighted more, this minimizes the problem that a small symbol effects large parts of the symbolic time series). This function can also be used in the method \textit{genHierarchicalCompounding2}.
 		The input arguments are:
 		\begin{enumerate}
@@ -710,7 +710,7 @@ returned are:
 		\end{enumerate}
 	
 	
-	\item \textbf{symbMarkov = SymbObj.genSymbMarkov(varargin)}\\
+	\item \textbf{[occurenceM, markovM] = SymbObj.genSymbMarkov(varargin)}\\
 		\textit{Only for development purposes!} Generates a markov matrix for the transition from any symbol to any other symbol.
 		The following input arguments are available:
 		\begin{enumerate}
@@ -731,13 +731,13 @@ returned are:
 		\end{enumerate}
 
 
-	\item \textbf{markovM = SymbObj.genWeightedMatrixChangedLength(varargin)}\\
+	\item \textbf{[occurenceM, markovM, sumLength1M, sumLength2M, lengthSyms] =\\ SymbObj.genWeightedMatrixChangedLength(varargin)}\\
 		\textit{Only for development purposes!} Generate a markov matrix for all symbolic
 		 combinations with weighted change of length. This minimizes the problem, that large portion of the symbolic time series get changed.
 		 This function can also be used in the method \textit{genHierarchicalCompounding2}.
 		 The input arguments are:
 		 \begin{enumerate}
-		 	\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
+		 	\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities.
 		 \end{enumerate}
 		 returned are:
 		 \begin{enumerate}
@@ -745,6 +745,7 @@ returned are:
 		 	\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$
 		 	\item \textbf{sumLength1M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $i$ in the merged sequences of symbol $i-j$.
 		 	\item \textbf{sumLength2M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $j$ in the merged sequences of symbol $i-j$.
+		 	\item \textbf{lengthSyms}: a v containing  the overall length of each symbol. This is the same as SymbObj.symbolDurations.
 		 \end{enumerate}
 
 	\item \textbf{symbRepVec = symbRepVec}\\
