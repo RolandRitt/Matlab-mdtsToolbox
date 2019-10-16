@@ -930,8 +930,17 @@ returned are:
 \subsubsection{Methods (Static)}
 
 \begin{enumerate}
-	\item test
-	%TODO add static function
+	\item \textbf{markovM = SymbRepObject.occurenceM2markovM(occurenceM)}\\
+		Takes a occurenceM and returns a markov type matrix by normalizing each column.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{occurenceM}: a occurance matrix returned from the functions genLengthWeightedMatrix, genSymbMarkov, genWeightedMatrixChangedLength.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{markovM}:  a matrix which is normalized by each column. (sum of each column = 1). Therefor, this matrix can be used to  calculate the probability of the next symbol, eg.  newSymbolPropability = markovM*currentSymbolProbabilityVec
+		\end{enumerate}
+	
 \end{enumerate}
 
 \subsection{symbRepChannel}
