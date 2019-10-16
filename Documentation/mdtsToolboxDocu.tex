@@ -711,16 +711,16 @@ returned are:
 	
 	
 	\item \textbf{symbMarkov = SymbObj.genSymbMarkov(varargin)}\\
-	\textit{Only for development purposes!} Generates a markov matrix for the transition from any symbol to any other symbol.
-	The following input arguments are available:
-	\begin{enumerate}
-		\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
-	\end{enumerate}
-		returned are:
-	\begin{enumerate}
-		\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
-		\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$. It is the (column) normalized version of occurenceM.
-	\end{enumerate}
+		\textit{Only for development purposes!} Generates a markov matrix for the transition from any symbol to any other symbol.
+		The following input arguments are available:
+		\begin{enumerate}
+			\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
+		\end{enumerate}
+			returned are:
+		\begin{enumerate}
+			\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
+			\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$. It is the (column) normalized version of occurenceM.
+		\end{enumerate}
 
 
 	\item \textbf{symbCounts3D =  SymbObj.genTrigramMatrix}\\
@@ -729,6 +729,23 @@ returned are:
 		\begin{enumerate}
 			\item \textbf{symbCounts3D}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ and $k$ in the entry \textit{occurenceM(i,j,k)}
 		\end{enumerate}
+
+
+	\item \textbf{markovM = SymbObj.genWeightedMatrixChangedLength(varargin)}\\
+		\textit{Only for development purposes!} Generate a markov matrix for all symbolic
+		 combinations with weighted change of length. This minimizes the problem, that large portion of the symbolic time series get changed.
+		 This function can also be used in the method \textit{genHierarchicalCompounding2}.
+		 The input arguments are:
+		 \begin{enumerate}
+		 	\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
+		 \end{enumerate}
+		 returned are:
+		 \begin{enumerate}
+		 	\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
+		 	\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$
+		 	\item \textbf{sumLength1M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $i$ in the merged sequences of symbol $i-j$.
+		 	\item \textbf{sumLength2M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $j$ in the merged sequences of symbol $i-j$.
+		 \end{enumerate}
 
 	\item \textbf{symbRepVec = symbRepVec}\\
 		Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
@@ -869,11 +886,8 @@ returned are:
 	
 
 	
-	\item \textbf{markovM = genWeightedMatrixChangedLength(varargin)}\\
-	\textit{Only for development purposes!}
+
 	
-	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding(SymbObj, varargin)}\\
-	\textit{Only for development purposes!}
 	
 \end{enumerate}
 
