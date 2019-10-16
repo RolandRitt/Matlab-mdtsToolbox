@@ -257,23 +257,25 @@ classdef SymbRepObject
             
         end
         
-        function obj = mergeSymbols(obj, oldSymbols, newSymbol, varargin)
+        function obj = mergeSymbols(obj, symbolsToMerge, newSymbol, varargin)
             % Purpose : Merge given symbols in the symbolic representation
             %
             % Syntax :
             %   SymbRepObject = SymbRepObject.mergeSymbols(oldSymbols, newSymbol)
             %
             % Input Parameters :
-            %   oldSymbols : Symbols existent in the symbolic representation,
-            %   which have to be merged. Input given as cell array of strings.
+            %   symbolsToMerge : Symbols existent in the symbolic representation,
+            %       which have to be merged. Input given as cell array of strings.
             %
             %   newSymbol : New symbol name for the old symbols, given as
-            %   string
+            %       string
+            %
+            %   varargin : other key-value pairs are passed forward to SymbRepObject.mergeSequence.
             %
             % Return Parameters :
-            %   SymbRepObject : Original object with merged symbols
+            %   obj : Original object (SymbRepObject) with merged symbols
             
-            if ~(isa(oldSymbols, 'cell') && ischar(newSymbol))
+            if ~(isa(symbolsToMerge, 'cell') && ischar(newSymbol))
                 
                 errID = 'mergeSymbols:InvalidInputs';
                 errMsg = 'Input oldSymbols must be given as cell array of strings and newSymbol must be given as string!';
@@ -281,11 +283,7 @@ classdef SymbRepObject
                 
             else
                 
-                obj = obj.mergeSequence(oldSymbols, 'newSymbol', newSymbol, varargin{:});
-                
-                %                 obj.symbols = mergecats(obj.symbols, oldSymbols, newSymbol);
-                %
-                %                 obj = obj.compressSymbols(newSymbol);
+                obj = obj.mergeSequence(symbolsToMerge, 'newSymbol', newSymbol, varargin{:});
             end
             
         end
@@ -1447,6 +1445,22 @@ classdef SymbRepObject
     
     methods (Static)
         function markovM = occurenceM2markovM(occurenceM)
+            % Purpose :  takes a occurenceM and returns a markov type
+            % matrix by normalizing each column.
+            %
+            % Syntax :
+            %   markovM = SymbRepObject.occurenceM2markovM(occurenceM)
+            %
+            % Input Parameters :
+            %   occurenceM : a occurance matrix returned from the functions
+            %       genLengthWeightedMatrix, genSymbMarkov,
+            %       genWeightedMatrixChangedLength
+            %
+            % Return Parameters :
+            %   markovM : a matrix which is normalized by each column. (sum
+            %       of each column = 1). Therefor, this matrix can be used to
+            %       calculate the probability of the next symbol, eg.
+            %       newSymbolPropability = markovM*currentSymbolProbabilityVec
             markovM = occurenceM ./ sum(occurenceM, 1);
         end
         
