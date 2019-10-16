@@ -703,8 +703,8 @@ returned are:
 		\end{enumerate}
 		returned are:
 		\begin{enumerate}
-			\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
-			\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$
+			\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}  with the weighting included.
+			\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$ with the weighting included.
 			\item \textbf{sumLength1M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $i$ in the merged sequences of symbol $i-j$.
 			\item \textbf{sumLength2M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $j$ in the merged sequences of symbol $i-j$.
 		\end{enumerate}
@@ -741,7 +741,7 @@ returned are:
 		 \end{enumerate}
 		 returned are:
 		 \begin{enumerate}
-		 	\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
+		 	\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}  with the weighting included.
 		 	\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$ weighted by length to be changed.
 		 	\item \textbf{sumLength1M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $i$ in the merged sequences of symbol $i-j$.
 		 	\item \textbf{sumLength2M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $j$ in the merged sequences of symbol $i-j$.
