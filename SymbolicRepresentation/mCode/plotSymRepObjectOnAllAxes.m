@@ -5,12 +5,13 @@ function gObjArr = plotSymRepObjectOnAllAxes(axes_in, SymbRepObj, xTime, varargi
 % Purpose :
 %
 % Syntax :
-%   gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, varargin)
+%   gObjArr = plotSymRepObjectOnAllAxes(axes_in, SymbRepObj, xTime, varargin)
 %
 % Input Parameters :
 %   axes_in:= the axes, on which the symbolic representation should be
-%               plotted (they have to be in the same order as the SymbRepObj);
-%   axes_in:= a SymbRepObject;
+%               plotted;
+%   SymbRepObj:= a single instance of a SymbRepObject, which should be 
+%       visualized on all given axes (axes_in);
 %   xTime:= the original time axes where the SymbRepObject refers to;
 %   plotSymbolName:= (optional key-value)a boolean indicating if the Symbol name should be
 %                   shown in the plot;
