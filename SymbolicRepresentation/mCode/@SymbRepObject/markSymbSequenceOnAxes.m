@@ -1,17 +1,30 @@
 function [pa, tHandleAll] = markSymbSequenceOnAxes(obj,xVals, axes_in, SymbSequence, colorSpec, varargin)
 % <keywords>
 %
-% Purpose : 
+% Purpose : The function marks a Symbol sequence as semi-transparent patch on a given axes.
 %
 % Syntax :
+%   [pa, tHandleAll] = obj.markSymbSequenceOnAxes(xVals, axes_in, SymbSequence, colorSpec, varargin)
 %
 % Input Parameters :
+%   xVals := The abscissae values used for plotting. These values and the
+%       start and stop indices of the symbolic sequence are used to define
+%       the start end end of the patch.
+%   axes_in:= The axes on which the symbolic sequence should be plotted.
+%       Currently it can not handle cell-arrays of axes.
+%   SymbSequence := The sequence of symbols (given as cellarray of strings
+%       or chars) which should be marked.
+%   colorSpec :=  A color specification for the patch (either a valid color
+%       name or abbreviation, or a rgb color vector).
+%   bShowText := (optional key-value pair) A boolean flag indicating if the
+%       symbol should be plotted as text within the patch. Default value: true.
 %
 % Return Parameters :
-%
+%   pa :=  A list of patches handles.
+%   tHandleAll := A list of text handles.
 % Description :
 %
-% Author : 
+% Author :
 %    Roland Ritt
 %
 % History :
@@ -33,7 +46,6 @@ addRequired(p, 'axes_in', @(x)isa(x, 'matlab.graphics.axis.Axes')|| all(ishghand
 addRequired(p, 'SymbSequence', @(x)ischar(x)||iscellstr(x)); %check if input is numeric
 addRequired(p, 'colorSpec'); %check if input is numeric
 addParameter(p, 'bShowText', true, @islogical);
-addParameter(p, 'bShowCompressed', false, @islogical);
 % addParameter(p, 'plotSegName', plotSegNameDef, @islogical);
 % addParameter(p, 'plotSegDuration', plotSegDurationDef, @islogical);
 % addParameter(p, 'plotSegNameMinLength', plotSegNameMinLength, @(x)isreal(x)&& isequal(size(x),[1,1]));
@@ -41,18 +53,12 @@ parse(p, obj, xVals, axes_in, SymbSequence,colorSpec,varargin{:});
 tmp = [fieldnames(p.Unmatched),struct2cell(p.Unmatched)];
 UnmatchedArgs = reshape(tmp',[],1)';
 
+[~, ~, compressedStartInds, compressedStopInds] = obj.findSequence(SymbSequence);
 
-if p.Results.bShowCompressed
-    
-   
-else
-    
-    [~, ~, compressedStartInds, compressedStopInds] = obj.findSequence(SymbSequence);
-    
-    startInds = obj.startInds(compressedStartInds);
-    stopInds = obj.stopInds(compressedStopInds);
-    textToShow = cell(size(startInds));
-    textToShow(1:numel(startInds)) = join(SymbSequence, '');
-    
-    mdtsObject.markRangeOnAxes_givenIndexStatic(xVals, axes_in, startInds, stopInds,p.Results.colorSpec, 'textToShow',textToShow );
-end
+startInds = obj.startInds(compressedStartInds);
+stopInds = obj.stopInds(compressedStopInds);
+textToShow = cell(size(startInds));
+textToShow(1:numel(startInds)) = join(SymbSequence, '');
+
+[pa, tHandleAll] = mdtsObject.markRangeOnAxes_givenIndexStatic(xVals, axes_in, startInds, stopInds,p.Results.colorSpec, 'textToShow',textToShow );
+
