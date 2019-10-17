@@ -3,7 +3,7 @@ function [Ax, fM, figH] = visuHierachicalSymRep(mdtsObj, HierarchicalSymRep, var
 % <keywords>
 %
 % Purpose : function to plot hierarchical symbolic Representation for a given
-% mdts object,
+% mdts object.
 %
 % Syntax :
 %
@@ -30,7 +30,7 @@ function [Ax, fM, figH] = visuHierachicalSymRep(mdtsObj, HierarchicalSymRep, var
 
 p = inputParser();
 p.KeepUnmatched=true;
-addRequired(p, 'TSobj', @(x) isa(x, 'mdtsObject')); %check if input is TS
+addRequired(p, 'mdtsObj', @(x) isa(x, 'mdtsObject')); %check if input is TS
 addRequired(p, 'HierarchicalSymRep', @(x) isHierarchicalSymRep(x)); %check if input is TS
 addParameter(p, 'Size', [18,27], @(x)isnumeric(x)&&isvector(x)); %higth and width
 addParameter(p, 'FontSize', 10, @isnumeric);
