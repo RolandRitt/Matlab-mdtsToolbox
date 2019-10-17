@@ -855,6 +855,24 @@ returned are:
 			\item \textbf{SymbObj}:  Original object (SymbRepObject) with merged symbols.
 		\end{enumerate}
 	
+	
+	\item \textbf{ [paAll, tHandleAll] = SymbObj.plotOnAxes(axes\_in,  varargin)}\\
+		Plots an instance of a SymbRepObject on given axes.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{axes\_in}: the axes, on which the symbolic representation should be  plotted;
+			\item \textbf{xTime}:  (optional key-value pair, if not given, take the x values of the first line in the axes) the original time axes where the SymbRepObject refers to;
+			\item \textbf{plotSymbolName}: (optional key-value, default: false)a boolean indicating if the Symbol name should be shown in the plot;
+			\item \textbf{plotSymbolDuration}: optional key-value, default: false )a boolean indicating if the Symbol duration should be shown in the plot;
+			\item \textbf{plotSymbolNameMinLength}: (optional key-value, default: 0) an integer, symbols with a length less than  this value are not annotated with symbol name and/or duration;
+			\item \textbf{colorDismiss}: (optional key-value, default: no color) a color string or color triplet which should not be in the colors used for shading the plots.
+			\item \textbf{additional inputs}: additional key-value pairs are forwarded to the matlab fill function.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{SymbObj}:  Original object (SymbRepObject) with merged symbols.
+		\end{enumerate}
+	
 	\item \textbf{SymbObj = SymbObj.removeShortSymbols(varargin)}\\
 		Removes short symbols (symbols with a small duration). The duration of the short symbol is distributed to the enclosing symbols. Multiple successive short symbols will be treated as one short symbol and the sum of the durations will be distributed to the enclosing symbols. The following arguments are available:
 		\begin{enumerate}
