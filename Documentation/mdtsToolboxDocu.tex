@@ -810,6 +810,20 @@ returned are:
 			\item \textbf{newSymbObj}:  instance of SymbRepObj which contains only the interval to be requested.
 		\end{enumerate}
 	
+	\item \textbf{[pa, tHandleAll] = SymbObj.markSymbSequenceOnAxes(xVals, axes\_in, SymbSequence, colorSpec, varargin)}\\
+		Merges all \textit{symbolsToMerge} symbols (given as cell array of strings) to one new \textit{newSymbol}.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{symbolsToMerge}: Symbols existent in the symbolic representation,  which have to be merged. Input given as cell array of strings.
+			\item \textbf{newSymbol}:  New symbol name for the merged symbol sequence, given as  string
+			\item \textbf{varargin}: other key-value pairs are passed forward to SymbRepObject.mergeSequence.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{SymbObj}:  Original object (SymbRepObject) with merged symbols.
+		\end{enumerate}
+	
+	
 	\item \textbf{SymbObj = SymbObj.mergeSymbols(symbolsToMerge, newSymbol, varargin)}\\
 		Merges all \textit{symbolsToMerge} symbols (given as cell array of strings) to one new \textit{newSymbol}.
 		The input arguments are:
@@ -823,54 +837,54 @@ returned are:
 			\item \textbf{SymbObj}:  Original object (SymbRepObject) with merged symbols.
 		\end{enumerate}
 	
-		\item \textbf{SymbObj = SymbObj.removeShortSymbols(varargin)}\\
-			Removes short symbols (symbols with a small duration). The duration of the short symbol is distributed to the enclosing symbols. Multiple successive short symbols will be treated as one short symbol and the sum of the durations will be distributed to the enclosing symbols. The following arguments are available:
+	\item \textbf{SymbObj = SymbObj.removeShortSymbols(varargin)}\\
+		Removes short symbols (symbols with a small duration). The duration of the short symbol is distributed to the enclosing symbols. Multiple successive short symbols will be treated as one short symbol and the sum of the durations will be distributed to the enclosing symbols. The following arguments are available:
+		\begin{enumerate}
+			\item \textbf{shortSymbolLength: } Definition of a short symbol. All symbols with a length smaller or equal to \textit{shortSymbolLength} will be removed or splitted, respecitvely. Default is 1.
+			\item \textbf{maxNumberShortSymbols: } If the number of a sequence of multiple successive short symbols exceeds \textit{maxNumberShortSymbols}, the sequence of these symbols will not be split, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 5.
+			\item \textbf{maxShortSymbolSequenceLength: } If the sum of all durations of multiple successive short symbols exceeds \textit{maxShortSymbolSequenceLength}, the sequence of these symbols will not be splitted, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 10.
+			\item \textbf{SplittingMode: } Name-Value-Pair. Defines how the duration of short symbols is distributed. Available options: 
 			\begin{enumerate}
-				\item \textbf{shortSymbolLength: } Definition of a short symbol. All symbols with a length smaller or equal to \textit{shortSymbolLength} will be removed or splitted, respecitvely. Default is 1.
-				\item \textbf{maxNumberShortSymbols: } If the number of a sequence of multiple successive short symbols exceeds \textit{maxNumberShortSymbols}, the sequence of these symbols will not be split, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 5.
-				\item \textbf{maxShortSymbolSequenceLength: } If the sum of all durations of multiple successive short symbols exceeds \textit{maxShortSymbolSequenceLength}, the sequence of these symbols will not be splitted, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 10.
-				\item \textbf{SplittingMode: } Name-Value-Pair. Defines how the duration of short symbols is distributed. Available options: 
-				\begin{enumerate}
-					\item \textbf{'equal':} durations will be distributed 1 : 1 to the enclosing symbols
-					\item \textbf{'weighted':} durations will be distributed due to the length of the two enclosing symbols
-				\end{enumerate}
-				Default is 'equal'.	
+				\item \textbf{'equal':} durations will be distributed 1 : 1 to the enclosing symbols
+				\item \textbf{'weighted':} durations will be distributed due to the length of the two enclosing symbols
 			\end{enumerate}
-			
-			\textbf{Note:} If a sequence does not exceed the limits in \textit{maxNumberShortSymbols} or \textit{maxShortSymbolSequenceLength} but contains an unlabelled symbol ('$<$undefined$>$' in Matlab), this symbol will be treated as normal symbol and the complete sequence will be distributed to the enclosing symbols.
-			
-			Example:
-			
-			\begin{verbatim}
-			>> symbols = categorical({'a'; 'b'; 'c'; 'd'; 'e';...
-			>> 'f'; 'g'; 'h'; 'i'; 'j'});
-			>> durations = [4; 3; 4; 2; 2; 12; 2; 1; 2; 6];
-			>> symbolicObject = SymbRepObject(durations, symbols);
-			>> symbolicObject = symbolicObject.removeShortSymbols('shortSymbolLength',...
-			>> 3, 'maxNumberShortSymbols', 4, 'maxShortSymbolSequenceLength', 4,...
-			>> 'SplittingMode', 'weighted');
-			>> symbolicObject.symbols
-			
-			ans = 
-			
-			5x1 categorical array
-			
-			a 
-			c 
-			f 
-			<undefined> 
-			j 
-			
-			>> symbolicObject.durations
-			
-			ans =
-			
-			6
-			6
-			15
-			5
-			6
-			\end{verbatim}
+			Default is 'equal'.	
+		\end{enumerate}
+		
+		\textbf{Note:} If a sequence does not exceed the limits in \textit{maxNumberShortSymbols} or \textit{maxShortSymbolSequenceLength} but contains an unlabelled symbol ('$<$undefined$>$' in Matlab), this symbol will be treated as normal symbol and the complete sequence will be distributed to the enclosing symbols.
+		
+		Example:
+		
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'c'; 'd'; 'e';...
+		>> 'f'; 'g'; 'h'; 'i'; 'j'});
+		>> durations = [4; 3; 4; 2; 2; 12; 2; 1; 2; 6];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> symbolicObject = symbolicObject.removeShortSymbols('shortSymbolLength',...
+		>> 3, 'maxNumberShortSymbols', 4, 'maxShortSymbolSequenceLength', 4,...
+		>> 'SplittingMode', 'weighted');
+		>> symbolicObject.symbols
+		
+		ans = 
+		
+		5x1 categorical array
+		
+		a 
+		c 
+		f 
+		<undefined> 
+		j 
+		
+		>> symbolicObject.durations
+		
+		ans =
+		
+		6
+		6
+		15
+		5
+		6
+		\end{verbatim}
 			
 			
 	\item \textbf{SymbObj = SymbObj.removeSymbolsGivenCompressedIndes(indsRemove, varargin)}\\
