@@ -1235,9 +1235,8 @@ returned are:
 			\hline
 			\textbf{Parameter} & \textbf{Description} \\ \hline
 			\endhead
-			input & Input for the computation as struct which holds the handle to the mdtsObject as input.object and the required tag as input.tag \\ \hline
-			edges & Array of length(alphabet) + 1, which contains the edges for the quantization \\ \hline
-			alphabet & Array containing the symbols to assign to the values \\ \hline
+			mdtsObj & an mdtsObject which is used to generate the plot and is the base for the hierarchical symbolic time series \\ \hline
+			HierarchicalSymRep & A cell which contains an instance of a SymbRepObject for each level and is used to visualize\\ \hline
 		\end{longtabu}
 	
 	\subsubsection{Return Parameters:}
@@ -1246,7 +1245,9 @@ returned are:
 			\hline
 			\textbf{Parameter} & \textbf{Description} \\ \hline
 			\endhead
-			returnObject  &  symbRepObject with the symbolized channel \\ \hline
+			Ax  &  The handles to the axes\\ \hline
+			fM  &  The handle to the used FigureManager instance\\ \hline
+			figH  &  The handle to generated figure\\ \hline
 		\end{longtabu}
 	
 	\subsubsection{Description}
