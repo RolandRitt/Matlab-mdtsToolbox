@@ -1217,7 +1217,7 @@ returned are:
 
 \subsection{visuHierachicalSymRep}
 \label{ssec:visuHierarchicalSymRep}
-	function to plot hierarchical symbolic Representation for a given mdts-object. \textit{This function is under development}
+	
 	
 	\subsubsection{Function Signature:}
 		
@@ -1227,7 +1227,7 @@ returned are:
 	
 	\subsubsection{Purpose}
 	
-		Generate the symbolic representation (instance of SymbRepObject) of a given channel of an mdtsObject.
+		Function to plot hierarchical symbolic Representation for a given mdts-object. \textit{This function is under development}
 	
 	\subsubsection{Input Parameters:}
 	
@@ -1249,10 +1249,39 @@ returned are:
 			fM  &  The handle to the used FigureManager instance\\ \hline
 			figH  &  The handle to generated figure\\ \hline
 		\end{longtabu}
+		
+\subsection{visuHierarchicalCompoundingOverview}
+\label{ssec:visuHierarchicalSymRep}
+
+	\subsubsection{Function Signature:}
+
+		\begin{center}
+			figureH = visuHierarchicalCompoundingOverview(compressionData, imageMatrix,varargin)
+		\end{center}
+
+	\subsubsection{Purpose}
 	
-	\subsubsection{Description}
+		Function to plot hierarchical symbolic Representation overview. This function esembles different kpi's such as compression ratio and an image representation of all levels \textit{This function is under development}
 	
-		Function to extract the data from the according channel of the mdtsObject specified in \textit{input}, assign every data point of this channel a symbol given in \textit{alphabet} according to the limits given in \textit{edges}.
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			compressionData & A structure containing the hierarchical KPI's. This is returned by the class function \textit{SymbRepObject.genHierarchicalCompounding} and \textit{SymbRepObject.genHierarchicalCompounding2} \\ \hline
+			imageMatrix & A matrix which represents the hierarchical compoounding.  This is returned by the class function \textit{SymbRepObject.genHierarchicalCompounding} and \textit{SymbRepObject.genHierarchicalCompounding2}\\ \hline
+		\end{longtabu}
+	
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			figureH  &  The handle to generated figure\\ \hline
+		\end{longtabu}
+	
 
 \section{Computations}
 
