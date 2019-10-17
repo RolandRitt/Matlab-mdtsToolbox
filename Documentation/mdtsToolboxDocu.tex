@@ -827,6 +827,22 @@ returned are:
 			\item \textbf{tHandleAll}:  A list of text handles.
 		\end{enumerate}
 	
+	\item \textbf{SymbObj = SymbObj.mergeSequence(symbSequence, varargin)}\\
+		Merges all occurences of a sequence of symbols of a SymbRepObject
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{xVals}: The abscissae values used for plotting. These values and the start and stop indices of the symbolic sequence are used to define the start end end of the patch.
+			\item \textbf{axes\_in}:  The axes on which the symbolic sequence should be plotted. Currently it can not handle cell-arrays of axes.
+			\item \textbf{SymbSequence}: The sequence of symbols (given as cellarray of strings or chars) which should be marked.
+			\item \textbf{colorSpec}: A color specification for the patch (either a valid color name or abbreviation, or a rgb color vector).
+			\item \textbf{bShowText}: (optional key-value pair) A boolean flag indicating if the symbol should be plotted as text within the patch. Default value: true.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{pa}:  A list of patches handles.
+			\item \textbf{tHandleAll}:  A list of text handles.
+		\end{enumerate}
+	
 	
 	\item \textbf{SymbObj = SymbObj.mergeSymbols(symbolsToMerge, newSymbol, varargin)}\\
 		Merges all \textit{symbolsToMerge} symbols (given as cell array of strings) to one new \textit{newSymbol}.
