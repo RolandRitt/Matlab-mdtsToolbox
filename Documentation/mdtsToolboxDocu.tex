@@ -1215,7 +1215,44 @@ returned are:
 	
 		Function to extract the data from the according channel of the mdtsObject specified in \textit{input}, assign every data point of this channel a symbol given in \textit{alphabet} according to the limits given in \textit{edges}.
 
-
+\subsection{[Ax, fM, figH] = visuHierachicalSymRep(mdtsObj, HierarchicalSymRep, varargin)}
+\label{ssec:visuHierarchicalSymRep}
+function to plot hierarchical symbolic Representation for a given
+ mdts object: \textit{}
+	
+	\subsubsection{Function Signature:}
+		
+		\begin{center}
+			[Ax, fM, figH] = visuHierachicalSymRep(mdtsObj, HierarchicalSymRep, varargin)
+		\end{center}
+	
+	\subsubsection{Purpose}
+	
+		Generate the symbolic representation (instance of SymbRepObject) of a given channel of an mdtsObject.
+	
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			input & Input for the computation as struct which holds the handle to the mdtsObject as input.object and the required tag as input.tag \\ \hline
+			edges & Array of length(alphabet) + 1, which contains the edges for the quantization \\ \hline
+			alphabet & Array containing the symbols to assign to the values \\ \hline
+		\end{longtabu}
+	
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			returnObject  &  symbRepObject with the symbolized channel \\ \hline
+		\end{longtabu}
+	
+	\subsubsection{Description}
+	
+		Function to extract the data from the according channel of the mdtsObject specified in \textit{input}, assign every data point of this channel a symbol given in \textit{alphabet} according to the limits given in \textit{edges}.
 
 \section{Computations}
 
