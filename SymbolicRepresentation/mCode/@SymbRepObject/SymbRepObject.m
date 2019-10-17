@@ -1285,118 +1285,158 @@ classdef SymbRepObject
         
         %% only function signatures for functions in a separate file
         
-        function [startInds, stopInds] = compressedInds2UncompressedInds(obj, indsCompressed)
-            % Purpose : converts Compressed Inds to uncompressed startInds, stopInds
-            % and durations. see compessedInds2UncompressedInds.m for
-            % implementation.
-            %
-            % Syntax :
-            %
-            % Input Parameters :
-            %   indsCompressed: a list of indices of the compressed symbolic time
-            %   series
-            %
-            % Return Parameters :
-            %   startInds: start indices of the uncompressed series
-            %   stopInds: stop indices of the uncompressed series
-        end
+        [startInds, stopInds] = compressedInds2UncompressedInds(obj, indsCompressed)
+        % Purpose : converts Compressed Inds to uncompressed startInds and
+        % stopInds.
+        % see compessedInds2UncompressedInds.m for
+        % implementation.
+        %
+        % Syntax :
+        %
+        % Input Parameters :
+        %   indsCompressed: a list of indices of the compressed symbolic time
+        %   series
+        %
+        % Return Parameters :
+        %   startInds: start indices of the uncompressed series
+        %   stopInds: stop indices of the uncompressed series
         
-        function obj = compressSymbols(obj, listOfSymbolsToCheck)
-            % SymbRepObject
-            %
-            % Purpose : This methods of the SymbRepObject finds run-length of the same symbol
-            % and replaced it with a single symbol. Additionally, the
-            % durations and repetitions are updated by summing up.
-            %
-            % Syntax :
-            %   SymbRepObject = SymbRepObject.compressSymbols
-            %   SymbRepObject = SymbRepObject.compressSymbols(listOfSymbolsToCheck);
-            % Input Parameters :
-            %   listOfSymbolsToCheck : A cell array of symbols to be checkt
-            %   and updated. By default all different symbols in the
-            %   symbolic time series are checked.
-            % Return Parameters :
-            %   SymbRepObject : a version of the updated SymbRepObject
-        end
         
-        function [startInds, durations, compressedStartInds, compressedStopInds] = findSequence(obj, symbSequence)
-            % <keywords>
-            %
-            % Purpose : Find start indices of a given
-            %   sequence
-            %
-            % Syntax :
-            %
-            % Input Parameters :
-            %   symbSequence : Sequence which is supposed to be merged to
-            %   one new categorical. Must be given as one dimensional cell
-            %   array of strings with an arbitrary number of elements
-            % Return Parameters :
-            %   startInds : index in the original time series where the sequences
-            %   start;
-            %   durations : the number of samples in the original time series the
-            %   sequence lasts;
-            %   compressedStartInds : the indices where the symbSequence starts in the
-            %   compressed symbolic representation
-            %   compressedEndInds : the indices  where the symbSequence stops in the
-            %   compressed symbolic representation
-        end
+        obj = compressSymbols(obj, listOfSymbolsToCheck)
+        % SymbRepObject
+        %
+        % Purpose : This methods of the SymbRepObject finds run-length of the same symbol
+        % and replaced it with a single symbol. Additionally, the
+        % durations and repetitions are updated by summing up.
+        %
+        % Syntax :
+        %   SymbRepObject = SymbRepObject.compressSymbols
+        %   SymbRepObject = SymbRepObject.compressSymbols(listOfSymbolsToCheck);
+        % Input Parameters :
+        %   listOfSymbolsToCheck : A cell array of symbols to be checkt
+        %   and updated. By default all different symbols in the
+        %   symbolic time series are checked.
+        % Return Parameters :
+        %   SymbRepObject : a version of the updated SymbRepObject
         
-        function [pa, tHandleAll] = markSymbSequenceOnAxes(obj,xVals, axes_in, SymbSequence, colorSpec, varargin)
-            % <keywords>
-            %
-            % Purpose :
-            %
-            % Syntax :
-            %
-            % Input Parameters :
-            %
-            % Return Parameters :
-            
-        end
         
-        function obj = mergeSequence(obj, symbSequence, varargin)
-            % Purpose : Merge symbols of one channel according to a given
-            % sequence
-            %
-            % Syntax :
-            %   SymbRepObject = SymbRepObject.mergeSequence(symbSequence)
-            %
-            % Input Parameters :
-            %   symbSequence : Sequence which is supposed to be merged to
-            %   one new categorical. Must be given as one dimensional cell
-            %   array of strings with an arbitrary number of elements
-            %
-            % Return Parameters :
-            %   SymbRepObject : Original object with merged symbolic
-            %   representation
-        end
+        [startInds, durations, compressedStartInds, compressedStopInds] = findSequence(obj, symbSequence)
+        % <keywords>
+        %
+        % Purpose : Find start indices of a given
+        %   sequence
+        %
+        % Syntax :
+        %
+        % Input Parameters :
+        %   symbSequence : Sequence (cell array) of symbols, which is to be
+        %       found within the compressed symbolic time series. Must be
+        %       given as one dimensional cell an arbitrary number of elements
+        % Return Parameters :
+        %   startInds : index in the original uncompressed time series where the sequences
+        %       start;
+        %   durations : the number of samples in the original uncompressed time series the
+        %       sequence lasts;
+        %   compressedStartInds : the indices where the symbSequence starts in the
+        %       compressed symbolic representation
+        %   compressedEndInds : the indices  where the symbSequence stops in the
+        %       compressed symbolic representation
         
-        function [paAll, tHandleAll] = plotOnAxes(SymbRepObj, axes_in,  varargin)
-            % Purpose :
-            %
-            % Syntax :
-            %   gObjArr = plotOnAxes(SymbRepObj,axes_in, xTime, varargin)
-            %
-            % Input Parameters :
-            %   axes_in:= the axes, on which the symbolic representation should be
-            %               plotted;
-            %   SymbRepObj:= a SymbRepObject;
-            %   xTime:= (optional, if not given, take the x values of the first line in the axes)the original time axes where the SymbRepObject refers to;
-            %   plotSymbolName:= (optional key-value)a boolean indicating if the Symbol name should be
-            %                   shown in the plot;
-            %   plotSymbolDuration:= (optional key-value)a boolean indicating if the Symbol duration should be
-            %                   shown in the plot;
-            %   plotSymbolNameMinLength:= (optional key-value)an integer, symbols with a length less than
-            %   this value are not annotated with symbol name and/or duration;
-            %   colorDismiss:= (optional key-value) a color string or color triplet which should not be in
-            %   the colors used for shading the plots
-            %
-            % Return Parameters :
-            %   gObjArr:= an array containing the hggroups for all axes, containing the
-            %   symbolic representation;
-            %
-        end
+        
+        [pa, tHandleAll] = markSymbSequenceOnAxes(obj, xVals, axes_in, SymbSequence, colorSpec, varargin)
+        % Purpose : The function marks a Symbol sequence as semi-transparent patch on a given axes.
+        %
+        % Syntax :
+        %   [pa, tHandleAll] = obj.markSymbSequenceOnAxes(xVals, axes_in, SymbSequence, colorSpec, varargin)
+        %
+        % Input Parameters :
+        %   xVals := The abscissae values used for plotting. These values and the
+        %       start and stop indices of the symbolic sequence are used to define
+        %       the start end end of the patch.
+        %   axes_in:= The axes on which the symbolic sequence should be plotted.
+        %       Currently it can not handle cell-arrays of axes.
+        %   SymbSequence := The sequence of symbols (given as cellarray of strings
+        %       or chars) which should be marked.
+        %   colorSpec :=  A color specification for the patch (either a valid color
+        %       name or abbreviation, or a rgb color vector).
+        %   bShowText := (optional key-value pair) A boolean flag indicating if the
+        %       symbol should be plotted as text within the patch. Default value: true.
+        %
+        % Return Parameters :
+        %   pa :=  A list of patches handles.
+        %   tHandleAll := A list of text handles.
+        
+        
+        
+        obj = mergeSequence(obj, symbSequence, varargin)
+        % Purpose : Merges all occurences of a given sequence of symbols within the
+        %   SymbRepObject.
+        %
+        % Syntax :
+        %   SymbRepObject = SymbRepObject.mergeSequence(symbSequence, varargin)
+        %
+        % Input Parameters :
+        %   symbSequence : Sequence which is supposed to be merged to
+        %       one new symbol (categorical). Must be given as one dimensional cell
+        %       array of strings with an arbitrary number of elements
+        %
+        %   bAllowOverlapping : (optional key-value pair, default: false) A boolean
+        %       flag indicating if overlapping sequences are seen as one occurence.
+        %       Given a symbolic time series 'ababababa' with durations = [1,1,1,1,1,1,1,1,1]
+        %       and repetitions = [1,1,1,1,1,1,1,1,1] and merge the sequence 
+        %       'aba'--> with the new name 'c': if the flag is set to false, the 
+        %       result would be 'cbcba' with durations = [3,1,3,1,1] and 
+        %       repetitions = [1,1,1,1,1]. If the flag is set to true it would 
+        %       result in the symbolic series 'c' with durations = [9], repetitions = [4].
+        %
+        %   newSymbol : (optional key-value pair, default: 'concatenation of symbSequence')
+        %       A string (char) which should replace the found symbSequence
+        %
+        %   bCompress : (optional key-value pair, default: true) A boolean flag,
+        %       indicating if SymbObj.compressSymbols should be called after merging
+        %       the sequences. Given a symbolic sequence 'ababab' and the sequence
+        %       to be merged 'ab'-->'c': if bCompress=true the resulting symbolic
+        %       sequence would be 'c'. If bCompress=false the resulting symbolic
+        %       sequence would be 'ccc'.
+        % Return Parameters :
+        %   SymbRepObject : Instance of SymbRepObject with merged symbolic
+        %       representation
+        
+        
+        [paAll, tHandleAll] = plotOnAxes(SymbRepObj, axes_in,  varargin)
+        % Purpose :
+        %   plots an instance of a SymbRepObject on given axes.
+        %
+        % Syntax :
+        %   [paAll, tHandleAll] = plotOnAxes(SymbRepObj,axes_in, xTime, varargin)
+        %
+        % Input Parameters :
+        %   axes_in:= the axes, on which the symbolic representation should be
+        %               plotted;
+        %
+        %   xTime:= (optional key-value pair, if not given, take the x values of 
+        %       the first line in the axes)the original time axes where the 
+        %       SymbRepObject refers to;
+        %
+        %   plotSymbolName:= (optional key-value, default: false) a boolean 
+        %       indicating if the Symbol name should be shown in the plot;
+        %
+        %   plotSymbolDuration:= (optional key-value, default: false )a boolean 
+        %       indicating if the Symbol duration should be shown in the plot;
+        %
+        %   plotSymbolNameMinLength:= (optional key-value, default: 0) an integer,
+        %       symbols with a length less than  this value are not annotated with 
+        %       symbol name and/or duration;
+        %
+        %   colorDismiss:= (optional key-value, default: no color) a color string
+        %       or color triplet which should not be in the colors used for shading
+        %       the plots
+        %
+        % Return Parameters :
+        %   paAll:= an array containing the handles to the patches.
+        %
+        %   tHandleAll := array containing the handles to the annotations texts.
+        
         
     end
     
