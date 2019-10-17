@@ -1058,75 +1058,81 @@ returned are:
 		
 	\end{enumerate}
 
-\subsection{symbRepChannel}
 
-\subsubsection{Function Signature:}
 
-\begin{center}
-	returnObject = symbRepChannel(input, edges, alphabet)
-\end{center}
-
-\subsubsection{Purpose}
-
-Generate the symbolic representation of a given channel of an mdtsObject.
-
-\subsubsection{Input Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	input & Input for the computation as struct which holds the handle to the mdtsObject as input.object and the required tag as input.tag \\ \hline
-	edges & Array of length(alphabet) + 1, which contains the edges for the quantization \\ \hline
-	alphabet & Array containing the symbols to assign to the values \\ \hline
-\end{longtabu}
-
-\subsubsection{Return Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	returnObject  &  symbRepObject with the symbolized channel \\ \hline
-\end{longtabu}
-
-\subsubsection{Description}
-
-Function to extract the data from the according channel of the mdtsObject specified in \textit{input}, assign every data point of this channel a symbol given in \textit{alphabet} according to the limits given in \textit{edges}.
 
 \subsection{applyMCLA}
 
-\subsubsection{Function Signature:}
+	\subsubsection{Function Signature:}
+	
+		\begin{center}
+			mclaSymbRepObject = applyMCLA(symbRepObjectsList)
+		\end{center}
 
-\begin{center}
-	mclaSymbRepObject = applyMCLA(symbRepObjectsList)
-\end{center}
+	\subsubsection{Purpose}
+	
+		Merge symbolic representations of different channel to one representation.
 
-\subsubsection{Purpose}
+	\subsubsection{Input Parameters:}
 
-Merge symbolic representations of different channel to one representation.
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			symbRepObjectsList & List of all SymbRepObjects, which are supposed to be merged, as cell array \\ \hline
+		\end{longtabu}
 
-\subsubsection{Input Parameters:}
+	\subsubsection{Return Parameters:}
 
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	symbRepObjectsList & List of all SymbRepObjects, which are supposed to be merged, as cell array \\ \hline
-\end{longtabu}
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			mclaSymbRepObject  &  SymbRepObject with merged symbolic representation \\ \hline
+		\end{longtabu}
 
-\subsubsection{Return Parameters:}
+	\subsubsection{Description}
 
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	mclaSymbRepObject  &  SymbRepObject with merged symbolic representation \\ \hline
-\end{longtabu}
+		Combines the symbols at every time stamp of an arbitrary number of channels to one symbolic representation.
+		
+		
+\subsection{symbRepChannel}
 
-\subsubsection{Description}
+	\subsubsection{Function Signature:}
+	
+		\begin{center}
+			returnObject = symbRepChannel(input, edges, alphabet)
+		\end{center}
+	
+	\subsubsection{Purpose}
+	
+		Generate the symbolic representation of a given channel of an mdtsObject.
+	
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			input & Input for the computation as struct which holds the handle to the mdtsObject as input.object and the required tag as input.tag \\ \hline
+			edges & Array of length(alphabet) + 1, which contains the edges for the quantization \\ \hline
+			alphabet & Array containing the symbols to assign to the values \\ \hline
+		\end{longtabu}
 
-Combines the symbols at every time stamp of an arbitrary number of channels to one symbolic representation.
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			returnObject  &  symbRepObject with the symbolized channel \\ \hline
+		\end{longtabu}
+	
+	\subsubsection{Description}
+	
+		Function to extract the data from the according channel of the mdtsObject specified in \textit{input}, assign every data point of this channel a symbol given in \textit{alphabet} according to the limits given in \textit{edges}.
+
+
 
 \section{Computations}
 
