@@ -1109,7 +1109,45 @@ returned are:
 	\subsubsection{Function Signature:}
 	
 		\begin{center}
-			gObjArr = plotSymRepObjectOnAxes(axes\_in, SymbRepObj, xTime, varargin)
+			gObjArr = plotSymRepObjectOnAllAxes(axes\_in, SymbRepObj, xTime, varargin)
+		\end{center}
+	
+	\subsubsection{Purpose}
+	
+		This function plots an instance of a SymbRepObject onto the given axes (using semi-transparent patches).
+	
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			axes\_in & the axes, on which the symbolic representation should be plotted. \\ \hline
+			SymbRepObj & a single instance of a SymbRepObject, which should be visualized on all given axes (axes\_in); \\ \hline
+			xTime & The abscissae values the symbolic representation refers to. This is used for plotting and has to be consistent with the axes\_in \\ \hline
+			plotSymbolName & (optional key-value, default: false)a boolean indicating if the Symbol name should be shown in the plot;\\ \hline
+			plotSymbolDuration & (optional key-value, default: false )a boolean indicating if the Symbol duration should be shown in the plot;\\ \hline
+			plotSymbolNameMinLength & (optional key-value, default: 0) an integer, symbols with a length less than  this value are not annotated with symbol name and/or duration;\\ \hline
+			colorDismiss & (optional key-value, default: no color) a color string or color triplet which should not be in the colors used for shading the plots.\\ \hline
+			additional inputs &  additional key-value pairs are forwarded to the matlab fill function.\\ \hline
+		\end{longtabu}
+		
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			gObjArr  &  an array containing the hggroups for all axes, containing the symbolic representation; \\ \hline
+		\end{longtabu}
+	
+	
+\subsection{gObjArr = plotSymRepObjectOnAxes(axes\_in, SymbRepObj, xTime, varargin)}
+
+	\subsubsection{Function Signature:}
+	
+		\begin{center}
+			gObjArr = plotSymRepObjectOnAxes(axes\_in, SymbRepObjs, xTime, varargin)
 		\end{center}
 	
 	\subsubsection{Purpose}
@@ -1130,7 +1168,7 @@ returned are:
 			colorDismiss & (optional key-value, default: no color) a color string or color triplet which should not be in the colors used for shading the plots.\\ \hline
 			additional inputs &  additional key-value pairs are forwarded to the matlab fill function.\\ \hline
 		\end{longtabu}
-		
+	
 	\subsubsection{Return Parameters:}
 	
 		\begin{longtabu} to \textwidth {|c|X|}
@@ -1139,7 +1177,7 @@ returned are:
 			\endhead
 			gObjArr  &  an array containing the hggroups for all axes, containing the symbolic representation; \\ \hline
 		\end{longtabu}
-			
+				
 \subsection{symbRepChannel}
 
 	\subsubsection{Function Signature:}
