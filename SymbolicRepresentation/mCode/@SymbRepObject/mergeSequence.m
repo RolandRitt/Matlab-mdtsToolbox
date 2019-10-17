@@ -1,18 +1,36 @@
 function obj = mergeSequence(obj, symbSequence, varargin)
-% Purpose : Merge symbols of one channel according to a given
-% sequence
+% Purpose : Merges all occurences of a given sequence of symbols within the
+%   SymbRepObject.
 %
 % Syntax :
-%   SymbRepObject = SymbRepObject.mergeSequence(symbSequence)
+%   SymbRepObject = SymbRepObject.mergeSequence(symbSequence, varargin)
 %
 % Input Parameters :
 %   symbSequence : Sequence which is supposed to be merged to
-%   one new categorical. Must be given as one dimensional cell
-%   array of strings with an arbitrary number of elements
+%       one new symbol (categorical). Must be given as one dimensional cell
+%       array of strings with an arbitrary number of elements
 %
+%   bAllowOverlapping : (optional key-value pair, default: false) A boolean
+%       flag indicating if overlapping sequences are seen as one occurence.
+%       Given a symbolic time series 'ababababa' with durations = [1,1,1,1,1,1,1,1,1]
+%       and repetitions = [1,1,1,1,1,1,1,1,1] and merge the sequence 
+%       'aba'--> with the new name 'c': if the flag is set to false, the 
+%       result would be 'cbcba' with durations = [3,1,3,1,1] and 
+%       repetitions = [1,1,1,1,1]. If the flag is set to true it would 
+%       result in the symbolic series 'c' with durations = [9], repetitions = [4].
+%
+%   newSymbol : (optional key-value pair, default: 'concatenation of symbSequence')
+%       A string (char) which should replace the found symbSequence
+%
+%   bCompress : (optional key-value pair, default: true) A boolean flag,
+%       indicating if SymbObj.compressSymbols should be called after merging
+%       the sequences. Given a symbolic sequence 'ababab' and the sequence
+%       to be merged 'ab'-->'c': if bCompress=true the resulting symbolic
+%       sequence would be 'c'. If bCompress=false the resulting symbolic
+%       sequence would be 'ccc'.
 % Return Parameters :
-%   SymbRepObject : Original object with merged symbolic
-%   representation
+%   SymbRepObject : Instance of SymbRepObject with merged symbolic
+%       representation
 p = inputParser;
 addParameter(p,'bAllowOverlapping',false,@islogical);
 addParameter(p,'newSymbol',[],@ischar);
