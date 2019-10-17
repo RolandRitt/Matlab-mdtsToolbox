@@ -1142,7 +1142,7 @@ returned are:
 		\end{longtabu}
 	
 	
-\subsection{gObjArr = plotSymRepObjectOnAxes(axes\_in, SymbRepObj, xTime, varargin)}
+\subsection{gObjArr = plotSymRepObjectOnAxes(axes\_in, SymbRepObjs, xTime, varargin)}
 
 	\subsubsection{Function Signature:}
 	
@@ -1152,7 +1152,7 @@ returned are:
 	
 	\subsubsection{Purpose}
 	
-		This function plots an instance of a SymbRepObject onto the given axes (using semi-transparent patches).
+		This function plots multiple instances of SymbRepObjects onto multiple axes. There is a SymbRepObject for each axes.
 	
 	\subsubsection{Input Parameters:}
 	
@@ -1160,7 +1160,8 @@ returned are:
 			\hline
 			\textbf{Parameter} & \textbf{Description} \\ \hline
 			\endhead
-			axes\_in & the axes, on which the symbolic representation should be plotted. \\ \hline
+			axes\_in & the axes, on which the symbolic representations should be plotted. \\ \hline
+			SymbRepObjs & a cellarry which contains multiple instances of a  SymbRepObject. The SymbRepObjs{i} should be visualized in \\ \hline
 			xTime & The abscissae values the symbolic representation refers to. This is used for plotting and has to be consistent with the axes\_in \\ \hline
 			plotSymbolName & (optional key-value, default: false)a boolean indicating if the Symbol name should be shown in the plot;\\ \hline
 			plotSymbolDuration & (optional key-value, default: false )a boolean indicating if the Symbol duration should be shown in the plot;\\ \hline
