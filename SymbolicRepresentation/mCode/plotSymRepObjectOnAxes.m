@@ -1,5 +1,7 @@
-function gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, varargin)
+function gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObjs, xTime, varargin)
 % Purpose :
+%   This function plots multiple instances of SymbRepObjects onto multiple
+%   axes. There is a SymbRepObject for each axes.
 %
 % Syntax :
 %   gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, varargin)
@@ -7,6 +9,9 @@ function gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, varargin)
 % Input Parameters :
 %   axes_in:= the axes, on which the symbolic representation should be
 %               plotted (they have to be in the same order as the SymbRepObj);
+%   SymbRepObjs := a cellarry which contains multiple instances of a 
+%       SymbRepObject. The SymbRepObjs{i} should be visualized in
+%       axes_in{i}.
 %   axes_in:= a SymbRepObject;
 %   xTime:= the original time axes where the SymbRepObject refers to;
 %   plotSymbolName:= (optional key-value)a boolean indicating if the Symbol name should be
@@ -14,9 +19,9 @@ function gObjArr = plotSymRepObjectOnAxes(axes_in, SymbRepObj, xTime, varargin)
 %   plotSymbolDuration:= (optional key-value)a boolean indicating if the Symbol duration should be
 %                   shown in the plot;
 %   plotSymbolNameMinLength:= (optional key-value)an integer, symbols with a length less than
-%   this value are not annotated with symbol name and/or duration;
+%       this value are not annotated with symbol name and/or duration;
 %   colorDismiss:= (optional key-value) a color string or color triplet which should not be in
-%   the colors used for shading the plots
+%       the colors used for shading the plots
 %
 % Return Parameters :
 %   gObjArr:= an array containing the hggroups for all axes, containing the
