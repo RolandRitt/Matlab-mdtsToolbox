@@ -135,6 +135,38 @@ classdef SymbRepObject_plotOnAxes_TestClass < matlab.unittest.TestCase
             symbRepObjectsList2{3}.plotOnAxes(Ax);
         end
         
+        function TestPlot2(testCase)
+            %% define mdtsObject
+            nX = 1000;
+            ts = 1;
+            time0 = datetime(2017, 7, 31, 14, 3, 3)  + (1:nX)' * seconds(ts);
+            data = sin(2 * pi*4.*(1:nX)  ./nX ) * 10';
+               
+            return_mdts = mdtsObject(time0, data', {'Channel 1'});
+            
+            %% generate Symbolic Object
+            inputSymb1.object = return_mdts;
+            inputSymb1.tag = 'Channel 1';
+            alphabet1 = {'a', 'b'};
+            edges1 = [-inf, 0, inf];
+            
+            symbObj1 = symbRepChannel(inputSymb1, edges1, alphabet1);
+
+            %% plot Symbolic Object possibility 1
+            figureGen;
+            pH = plot(time0, data);
+            Ax = ancestor(pH, 'Axes'); 
+            % Ax = mdtsObject.plot
+            
+            symbObj1.plotOnAxes(Ax);
+            %% plot Symbolic Object possibility 2
+            return_mdts.addSymbRepToAllChannels(symbObj1);
+            [Ax] = return_mdts.plot;
+            
+       
+        
+        end
+        
     end
 end
 
