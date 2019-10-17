@@ -1,26 +1,36 @@
 function [paAll, tHandleAll] = plotOnAxes(SymbRepObj, axes_in,  varargin)
 % Purpose :
+%   plots an instance of a SymbRepObject on given axes.
 %
 % Syntax :
-%   gObjArr = plotOnAxes(SymbRepObj,axes_in, xTime, varargin)
+%   [paAll, tHandleAll] = plotOnAxes(SymbRepObj,axes_in, xTime, varargin)
 %
 % Input Parameters :
 %   axes_in:= the axes, on which the symbolic representation should be
 %               plotted;
-%   SymbRepObj:= a SymbRepObject;
-%   xTime:= (optional, if not given, take the x values of the first line in the axes)the original time axes where the SymbRepObject refers to;
-%   plotSymbolName:= (optional key-value)a boolean indicating if the Symbol name should be
-%                   shown in the plot;
-%   plotSymbolDuration:= (optional key-value)a boolean indicating if the Symbol duration should be
-%                   shown in the plot;
-%   plotSymbolNameMinLength:= (optional key-value)an integer, symbols with a length less than
-%   this value are not annotated with symbol name and/or duration;
-%   colorDismiss:= (optional key-value) a color string or color triplet which should not be in
-%   the colors used for shading the plots
+%
+%   xTime:= (optional key-value pair, if not given, take the x values of 
+%       the first line in the axes)the original time axes where the 
+%       SymbRepObject refers to;
+%
+%   plotSymbolName:= (optional key-value, default: false) a boolean 
+%       indicating if the Symbol name should be shown in the plot;
+%
+%   plotSymbolDuration:= (optional key-value, default: false )a boolean 
+%       indicating if the Symbol duration should be shown in the plot;
+%
+%   plotSymbolNameMinLength:= (optional key-value, default: 0) an integer,
+%       symbols with a length less than  this value are not annotated with 
+%       symbol name and/or duration;
+%
+%   colorDismiss:= (optional key-value, default: no color) a color string
+%       or color triplet which should not be in the colors used for shading
+%       the plots
 %
 % Return Parameters :
-%   gObjArr:= an array containing the hggroups for all axes, containing the
-%   symbolic representation;
+%   paAll:= an array containing the handles to the patches.
+%
+%   tHandleAll := array containing the handles to the annotations texts.
 %
 % Description :
 %
@@ -60,22 +70,7 @@ plotSymbolDuration = p.Results.plotSymbolDuration;
 xTime = p.Results.xTime;
 SymbRepObj = p.Results.SymbRepObj;
 axes_in = p.Results.axes_in;
-%%%%%
-% allSymbols = {};
 
-% for i = 1 : numel(SymbRepObj)
-%
-%     if~isempty(SymbRepObj{i})
-%
-%         if ~isa(SymbRepObj{i}, 'SymbRepObject')
-%             error('the second input argument must be a SymbRepObject. See function isHierarchicalSymRep');
-%         end
-%         addSymbols = categories(SymbRepObj{i}.symbols);
-%         allSymbols = [allSymbols; addSymbols];
-%
-%     end
-%
-% end
 
 uniqueSymbols = categories(SymbRepObj.symbols);
 nSymbols = numel(uniqueSymbols);
@@ -191,39 +186,7 @@ for i = 1 : nAxes
                 set(pa, 'Parent', gObjArr(i));
             end
             
-            %             pa = fill([xStart, xEnd, xEnd, xStart], [ymin, ymin, ymax, ymax], symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', gObjArr(i));
-            %             if bishggroup
-            %                 set(pa, 'Parent', gObjArr(i));
-            %             end
-            %             if(plotSymbolName && durations(k) > plotSymbolNameMinLength)
-            %
-            %                 yText = ymin + (ymax - ymin) * 0.25;
-            %                 symbolText = uniqueSymbols{j};
-            %                 symbolText = strrep(symbolText, '{', '\{');
-            %                 symbolText = strrep(symbolText, '}', '\}');
-            %
-            %                 if(~plotSymbolDuration)
-            %
-            %                     symbRepText = symbolText;
-            %
-            %                 else
-            %
-            %                     symbRepText = ['\begin{tabular}{c} ', symbolText, '\\', num2str(durations(k)), ' \end{tabular}'];
-            %
-            %                 end
-            %
-            %                 xSymbol = xTime(startInds(k) + round(durations(k) / 2));
-            %
-            %                 text(axes_in(i), xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
-            %
-            %             end
-            %
-            %
-            %
-            %         end
-            
-            %         uistack(ph(i), 'top');
-            %         set(axes_in(i), 'Layer', 'top')
+          
             paAll = [paAll;pa];
             tHandleAll = [tHandleAll; tHandle];
         end
