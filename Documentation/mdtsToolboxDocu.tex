@@ -1122,24 +1122,24 @@ returned are:
 			\hline
 			\textbf{Parameter} & \textbf{Description} \\ \hline
 			\endhead
-			input & Input for the computation as struct which holds the handle to the mdtsObject as input.object and the required tag as input.tag \\ \hline
-			edges & Array of length(alphabet) + 1, which contains the edges for the quantization \\ \hline
-			alphabet & Array containing the symbols to assign to the values \\ \hline
+			axes\_in & the axes, on which the symbolic representation should be plotted. \\ \hline
+			xTime & The abscissae values the symbolic representation refers to. This is used for plotting and has to be consistent with the axes\_in \\ \hline
+			plotSymbolName & (optional key-value, default: false)a boolean indicating if the Symbol name should be shown in the plot;\\ \hline
+			plotSymbolDuration & (optional key-value, default: false )a boolean indicating if the Symbol duration should be shown in the plot;\\ \hline
+			plotSymbolNameMinLength & (optional key-value, default: 0) an integer, symbols with a length less than  this value are not annotated with symbol name and/or duration;\\ \hline
+			colorDismiss & (optional key-value, default: no color) a color string or color triplet which should not be in the colors used for shading the plots.\\ \hline
+			additional inputs &  additional key-value pairs are forwarded to the matlab fill function.\\ \hline
 		\end{longtabu}
-	
+		
 	\subsubsection{Return Parameters:}
 	
 		\begin{longtabu} to \textwidth {|c|X|}
 			\hline
 			\textbf{Parameter} & \textbf{Description} \\ \hline
 			\endhead
-			returnObject  &  symbRepObject with the symbolized channel \\ \hline
+			gObjArr  &  an array containing the hggroups for all axes, containing the symbolic representation; \\ \hline
 		\end{longtabu}
-	
-	\subsubsection{Description}
-	
-		Function to extract the data from the according channel of the mdtsObject specified in \textit{input}, assign every data point of this channel a symbol given in \textit{alphabet} according to the limits given in \textit{edges}.
-		
+			
 \subsection{symbRepChannel}
 
 	\subsubsection{Function Signature:}
