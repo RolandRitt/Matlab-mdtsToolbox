@@ -1,4 +1,4 @@
-function [out, fM, ph] = plotmdtsObject(inputObject, varargin)
+function [axesOut, fM, ph] = plotmdtsObject(inputObject, varargin)
 % plotc
 %
 % Purpose : plot channels of the given mdtsObject
@@ -32,4 +32,4 @@ function [out, fM, ph] = plotmdtsObject(inputObject, varargin)
 
 msg = 'The method "plotmdtsObject" is deprecated and will be removed in later version. Use instead the method "plot"';
 warning(msg);
-[out, fM, ph] = inputObject.plot(varargin{:});
+[axesOut, fM, ph] = inputObject.plot(varargin{:});

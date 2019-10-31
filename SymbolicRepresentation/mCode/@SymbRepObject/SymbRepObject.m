@@ -1,4 +1,4 @@
-classdef SymbRepObject 
+classdef SymbRepObject
     %
     % Description : Represents one channel of an mdtsObject as symbols
     %
@@ -18,20 +18,54 @@ classdef SymbRepObject
     % --------------------------------------------------
     %
     
-    properties 
+    properties
         durations
         symbols
         name
+        repetitions
+        %       symbols:
+        %           Complete data of the according channel as sequence of
+        %           symbols in a n x 1 categorical array. Repetitive symbols are merged
+        %           to one symbol and the number of repretitions is stored in 'durations'
+        %           (e.g. three repetitions \{'a', 'a', 'a'\} of the symbol 'a' will be
+        %           merged to one symbol 'a' with a duration of spanning all three
+        %           symbols and repetition value is set to 3).
+        % 		durations:
+        %           Number of timestamps (datapoints, span of datapoints) of every
+        %           symbol as n x 1 array. $durations(i)$ represents the number of
+        %           repetitions of the symbol $symbols(i)$. The sum of this array
+        %           correlates with the number of time stamps (datapoints) in the channel data.
+        % 		name:
+        %           A string (char) of the name of the Symbolic Representation.
+        %           Can be set with the function \textit{setName}.
+        % 		repetitions:
+        %           an array, which contains the number of repetitions of the symbol.
+        %           Initially, this is set to duration. After merge, this is updated.
+        
     end
     
     properties(Dependent)
         symbolDurations
         startInds
         stopInds
+        nSyms
+        usedSymbols
+        %       symbolDurations:
+        %           The sum of all durations of the set of unique categories. The
+        %           duration of all (unique) symbols (categories) are summed up.
+        % 		startInds:
+        %           returns a list of the start indices of each symbol (categorie).
+        % 		stoptInds:
+        %           returns a list of the stop indices of each symbol (categorie).
+        % 		nSyms:
+        %           returns the number of elements in the symbols-array.
     end
+    
+    
     methods
         
         function obj = SymbRepObject(durations, symbols)
+            
             
             if~iscategorical(symbols)
                 
@@ -45,7 +79,7 @@ classdef SymbRepObject
                 errMsg = 'The durations as input must be numeric!';
                 error(errID, errMsg);
                 
-            elseif~(numel(symbols) == numel(durations))
+            elseif~isequal(size(symbols) ,size(durations))
                 
                 errID = 'SymbRepObject:InvalidInputLength';
                 errMsg = 'The length of both inputs (symbols and durations) must be of the same length!';
@@ -59,24 +93,38 @@ classdef SymbRepObject
                 
             else
                 
-                obj.symbols = categorical(symbols, 'Protected', true, 'Ordinal', false);
+                obj.symbols = categorical(symbols, 'Protected', false, 'Ordinal', false);
                 
             end
             
             obj.durations = durations;
+            obj.repetitions =durations;
             obj.name = [];
         end
         
         function obj = setName(obj, name)
+            % Purpose : sets a name for the SymbRepObject
+            %
+            % Syntax : SymbRepObject = SymbRepObject.setName(name)
+            %
+            % Input Parameters :
+            %   name : string (char) of the name to be used
+            %
+            % Return Parameters :
+            %   SymbRepObject : the modified SymbRepObject
             if ischar(name)||isstring(name)
                 obj.name = name;
             else
                 error('InputChk:setName:notaString', 'input must be a String');
             end
-
+            
+        end
+        
+        function usedSymbols = get.usedSymbols(obj)
+            usedSymbols = categories(obj.symbols);
         end
         function symbolDurations = get.symbolDurations(obj)
-            allCat = categories(obj.symbols);
+            allCat = obj.usedSymbols;
             symbolDurations = NaN(size(allCat));
             for i=1:length(allCat)
                 symbolDurations(i) = sum(obj.durations(obj.symbols==allCat{i}));
@@ -84,6 +132,60 @@ classdef SymbRepObject
         end
         
         
+        
+        
+        
+        function [startInds, durations, repetitions] = findSymbol(obj, symbol)
+            % Purpose : find indices of symbol
+            %
+            % Syntax : [startInd durations] = SymbRepObject.findSymbol(symbol)
+            %
+            % Input Parameters :
+            %   symbol : the symbol to be found within the instance (char)
+            %
+            % Return Parameters :
+            %   startInd : the start indices of occurrances of the symbol
+            %   with respect to the uncompressed representation
+            %   durations : all durations of occurrances of the symbol
+            %   repetitions : repetions of the requested symbol
+            if ~ischar(symbol)
+                
+                errID = 'findSymbol:InputNoString';
+                errMsg = 'The input symbol must be given as character array!';
+                error(errID, errMsg);
+                
+            end
+            
+            bFind = obj.symbols == symbol;
+            startInds = obj.startInds(bFind);
+            durations = obj.durations(bFind);
+            repetitions = obj.repetitions(bFind);
+        end
+        function symbInd = findSymbolVec(obj, symbol)
+            % Purpose : find the boolean indices of the symbols in the
+            % uncompressed symbol-sequence (relevant for indexing
+            % datapoints)
+            %
+            % Syntax : symbInd = SymbRepObject.findSymbolVec(symbol)
+            %
+            % Input Parameters :
+            %   symbol : required symbol as character array
+            %
+            % Return Parameters :
+            %   symbInd : boolean vector which indicates all occurrances
+            %   of the symbol specified in the input with respect to the
+            %   indices of the uncompressed sequence
+            
+            if ~ischar(symbol)
+                
+                errID = 'findSymbolVec:InputNoString';
+                errMsg = 'The input symbol must be given as character array!';
+                error(errID, errMsg);
+                
+            end
+            symbInd = obj.symbRepVec == symbol;
+            
+        end
         
         function symbRepVec = symbRepVec(obj)
             % Purpose : return complete symbol vector. NOTE: If symbRepVec
@@ -107,61 +209,6 @@ classdef SymbRepObject
             end
             
         end
-        
-        function [startInds, durations] = findSymbol(obj, symbol)
-            % Purpose : find indices of symbol
-            %
-            % Syntax : [startInd durations] = SymbRepObject.findSymbol(symbol)
-            %
-            % Input Parameters :
-            %   symbol : required symbol as character array
-            %
-            % Return Parameters :
-            %   startInd : all start indices of occurrances of the symbol
-            %   durations : all durations of occurrances of the symbol
-            
-            if ~ischar(symbol)
-                
-                errID = 'findSymbol:InputNoString';
-                errMsg = 'The input symbol must be given as character array!';
-                error(errID, errMsg);
-                
-            end
-            
-            symbInd = findSymbolVec(obj, symbol);
-            
-            symbolChange = [symbInd(1); diff(symbInd) == 1];
-            startInds = find(symbolChange);
-            
-            newSymbols = categorical(obj.symbols, 'Protected', false, 'Ordinal', false);
-            requiredSymbolInd = find(newSymbols == symbol);
-            durations = obj.durations(requiredSymbolInd);
-            
-        end
-        function symbInd = findSymbolVec(obj, symbol)
-            % Purpose : find indices of symbol
-            %
-            % Syntax : symbInd = SymbRepObject.findSymbolVec(symbol)
-            %
-            % Input Parameters :
-            %   symbol : required symbol as character array
-            %
-            % Return Parameters :
-            %   symbInd : boolean vector which indicates all occurrances
-            %   of the symbol specified in the input
-            
-            if ~ischar(symbol)
-                
-                errID = 'findSymbolVec:InputNoString';
-                errMsg = 'The input symbol must be given as character array!';
-                error(errID, errMsg);
-                
-            end
-            
-            newSymbols = categorical(obj.symbRepVec, 'Protected', false, 'Ordinal', false);
-            symbInd = newSymbols == symbol;
-            
-        end
         function startIndUncompressed = getStartInd(obj, indSymbCompressed)
             % Purpose : given the index of a symbol from the compressed
             % return the start index of the uncompressed
@@ -177,181 +224,11 @@ classdef SymbRepObject
             % Return Parameters :
             %   startIndUncompressed : the start index of the uncompressed
             %   series
-            maxInd = max(indSymbCompressed);
-            cuSum = cumsum(obj.durations(1:maxInd));
-            startIndUncompressed = cuSum(indSymbCompressed) - obj.durations(indSymbCompressed) + 1;
-            
+            startIndUncompressed = obj.compressedInds2UncompressedInds(indSymbCompressed);
             
         end
         
-        function [startInds, durations] = findSequence(obj, symbSequence)
-            % Purpose : Find indices of a given
-            % sequence
-            %
-            % Syntax :
-            %   SymbRepObject = SymbRepObject.mergeSequence(symbSequence)
-            %
-            % Input Parameters :
-            %   symbSequence : Sequence which is supposed to be merged to
-            %   one new categorical. Must be given as one dimensional cell
-            %   array of strings with an arbitrary number of elements
-            %
-            % Return Parameters :
-            %   SymbRepObject : Original object with merged symbolic
-            %   representation
-            warning('only a propetary function, maybe completle removed later');
-            if(isa(symbSequence, 'cell') && size(symbSequence, 2) == 1)
-                
-                symbSequence = symbSequence';
-                
-            elseif~(isa(symbSequence, 'cell') && size(symbSequence, 1) == 1)
-                
-                errID = 'mergeSequence:InvalidInput';
-                errMsg = 'The input symbSeqence must be a 1 x n cell array of strings, contining the symbols which are to be merged in a sequence!';
-                error(errID, errMsg);
-                
-            end
-            startInds = [];
-            durations = [];
-                
-            nSymbSequence = numel(symbSequence);
-            
-            addedBrackets = cellfun(@(x) ['{', x, '}'], symbSequence, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, '{[', '['), addedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, '{(', '('), removedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, ']}', ']'), removedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, ')}', ')'), removedBrackets, 'UniformOutput', false);
-            modifiedSequence = removedBrackets;
-            
-            joinedSequence = join(modifiedSequence, '');
-            newSequence = {['[', joinedSequence{1}, ']']};
-            tempRemoving = {'TempRemoving'};
-            tempRemovingCat = categorical(tempRemoving);
-            symbols = addcats(obj.symbols, [newSequence, tempRemoving]);
-            indArray = ones(numel(obj.symbols) + nSymbSequence - 1, 1);
-            
-            try
-                for i = 1 : nSymbSequence
-                    
-                    indArray = indArray .* [false(nSymbSequence - i, 1); symbols == symbSequence{i}; false(i - 1, 1)];
-                    
-                end
-            catch
-                
-                return
-            end
-            symbInd = find(indArray(nSymbSequence:end));
-            startInds = obj.getStartInd(symbInd);
-            durations = nan(length(symbInd),1);
-            for i=1:length(symbInd)
-                durations(i) = sum(obj.durations(symbInd(i):(symbInd(i) +nSymbSequence-1)));
-            end
-            
- 
-        end
         
-        function obj = mergeSequence(obj, symbSequence)
-            % Purpose : Merge symbols of one channel according to a given
-            % sequence
-            %
-            % Syntax :
-            %   SymbRepObject = SymbRepObject.mergeSequence(symbSequence)
-            %
-            % Input Parameters :
-            %   symbSequence : Sequence which is supposed to be merged to
-            %   one new categorical. Must be given as one dimensional cell
-            %   array of strings with an arbitrary number of elements
-            %
-            % Return Parameters :
-            %   SymbRepObject : Original object with merged symbolic
-            %   representation
-            
-            if(isa(symbSequence, 'cell') && size(symbSequence, 2) == 1)
-                
-                symbSequence = symbSequence';
-                
-            elseif~(isa(symbSequence, 'cell') && size(symbSequence, 1) == 1)
-                
-                errID = 'mergeSequence:InvalidInput';
-                errMsg = 'The input symbSeqence must be a 1 x n cell array of strings, contining the symbols which are to be merged in a sequence!';
-                error(errID, errMsg);
-                
-            end
-            
-            nSymbSequence = numel(symbSequence);
-            
-            addedBrackets = cellfun(@(x) ['{', x, '}'], symbSequence, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, '{[', '['), addedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, '{(', '('), removedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, ']}', ']'), removedBrackets, 'UniformOutput', false);
-            removedBrackets = cellfun(@(x) strrep(x, ')}', ')'), removedBrackets, 'UniformOutput', false);
-            modifiedSequence = removedBrackets;
-            
-            joinedSequence = join(modifiedSequence, '');
-            newSequence = {['[', joinedSequence{1}, ']']};
-            tempRemoving = {'TempRemoving'};
-            tempRemovingCat = categorical(tempRemoving);
-            obj.symbols = addcats(obj.symbols, [newSequence, tempRemoving]);
-            indArray = ones(numel(obj.symbols) + nSymbSequence - 1, 1);
-            
-            for i = 1 : nSymbSequence
-                
-                indArray = indArray .* [false(nSymbSequence - i, 1); obj.symbols == symbSequence{i}; false(i - 1, 1)];
-                
-            end
-            
-            allSequenceStarts = find(indArray) - nSymbSequence + 1;
-            %             symbolLengthClearance = ones(numel(obj.symbols), 1);
-            %             for i = 1 : nSymbSequence - 1
-            %
-            %                 symbolLengthClearance(allSequenceStarts + i) = false;
-            %
-            %             end
-            %             symbolLengthClearance(allSequenceStarts + 1 : allSequenceStarts + nSymbSequence - 1) = false;
-            %             clearedIndArray = zeros(numel(obj.symbols), 1);
-            %             clearedIndArray(allSequenceStarts) = true;
-            %             clearedIndArray = clearedIndArray .* symbolLengthClearance;
-            %             sequenceInd = find(clearedIndArray);
-            newSequenceCat = categorical(newSequence);
-            
-            %             for i = 1 : numel(sequenceInd)
-            %
-            %                 obj.symbols(sequenceInd(i)) = newSequenceCat;
-            %                 obj.symbols(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = tempRemovingCat;
-            %
-            %                 obj.durations(sequenceInd(i)) = sum(obj.durations(sequenceInd(i) : sequenceInd(i) + nSymbSequence - 1));
-            %                 obj.durations(sequenceInd(i) + 1 : sequenceInd(i) + nSymbSequence - 1) = -1;
-            %
-            %             end
-            
-            modSequenceStarts = [allSequenceStarts; inf];
-            
-            for i = 1 : numel(allSequenceStarts)
-                
-                symbRange = min(nSymbSequence - 1, modSequenceStarts(i + 1) - modSequenceStarts(i) - 1);
-                
-                obj.symbols(allSequenceStarts(i)) = newSequenceCat;
-                obj.symbols(allSequenceStarts(i) + 1 : allSequenceStarts(i) + symbRange) = tempRemovingCat;
-                
-                obj.durations(allSequenceStarts(i)) = sum(obj.durations(allSequenceStarts(i) : allSequenceStarts(i) + symbRange));
-                obj.durations(allSequenceStarts(i) + 1 : allSequenceStarts(i) + symbRange) = -1;
-                
-            end
-            
-            obj.symbols = obj.symbols(~(obj.symbols == tempRemoving));
-            obj.symbols = removecats(obj.symbols, tempRemoving);
-            obj.durations = obj.durations(~(obj.durations == -1));
-            
-            cats2remove = ~ismember(symbSequence, obj.symbols);
-            obj.symbols = removecats(obj.symbols, symbSequence(cats2remove));
-            
-            completeSymbVec = obj.symbRepVec;
-            numRepr = int32(completeSymbVec);
-            symbolChange = [true; diff(numRepr) ~= 0];
-            obj.symbols = completeSymbVec(symbolChange);
-            obj.durations = diff(find([symbolChange; 1]));
-            
-        end
         
         function obj = renameSymbol(obj, oldSymbol, newSymbol)
             % Purpose : Rename a symbol in the symbolic representation
@@ -361,9 +238,9 @@ classdef SymbRepObject
             %
             % Input Parameters :
             %   oldSymbol : Symbol existent in the symbolic representation,
-            %   which has to be renamed. Input given as string.
+            %       which has to be renamed. Input given as string.
             %   newSymbol : New symbol name for the old symbol, given as
-            %   string
+            %       string
             %
             % Return Parameters :
             %   SymbRepObject : Original object with renamed symbol
@@ -380,23 +257,25 @@ classdef SymbRepObject
             
         end
         
-        function obj = mergeSymbols(obj, oldSymbols, newSymbol)
+        function obj = mergeSymbols(obj, symbolsToMerge, newSymbol, varargin)
             % Purpose : Merge given symbols in the symbolic representation
             %
             % Syntax :
             %   SymbRepObject = SymbRepObject.mergeSymbols(oldSymbols, newSymbol)
             %
             % Input Parameters :
-            %   oldSymbols : Symbols existent in the symbolic representation,
-            %   which have to be merged. Input given as cell array of strings.
+            %   symbolsToMerge : Symbols existent in the symbolic representation,
+            %       which have to be merged. Input given as cell array of strings.
             %
             %   newSymbol : New symbol name for the old symbols, given as
-            %   string
+            %       string
+            %
+            %   varargin : other key-value pairs are passed forward to SymbRepObject.mergeSequence.
             %
             % Return Parameters :
-            %   SymbRepObject : Original object with merged symbols
+            %   obj : Original object (SymbRepObject) with merged symbols
             
-            if ~(isa(oldSymbols, 'cell') && ischar(newSymbol))
+            if ~(isa(symbolsToMerge, 'cell') && ischar(newSymbol))
                 
                 errID = 'mergeSymbols:InvalidInputs';
                 errMsg = 'Input oldSymbols must be given as cell array of strings and newSymbol must be given as string!';
@@ -404,21 +283,7 @@ classdef SymbRepObject
                 
             else
                 
-                obj.symbols = mergecats(obj.symbols, oldSymbols, newSymbol);
-                
-                for i = numel(obj.symbols) : -1 : 2
-                    
-                    if(isequal(obj.symbols(i), obj.symbols(i - 1)))
-                        
-                        obj.durations(i - 1) = obj.durations(i) + obj.durations(i - 1);
-                        
-                        obj.durations(i) = [];
-                        obj.symbols(i) = [];
-                        
-                    end
-                    
-                end
-                
+                obj = obj.mergeSequence(symbolsToMerge, 'newSymbol', newSymbol, varargin{:});
             end
             
         end
@@ -452,19 +317,6 @@ classdef SymbRepObject
                 error(errID, errMsg);
                 
             else
-                
-                %                 newSymbRepVec = cellstr(obj.symbRepVec);
-                %                 newSymbRepVec(range(1) : range(2)) = {newSymbol};
-                %
-                %                 numRepr = grp2idx(newSymbRepVec);
-                %                 symbolChange = [true; diff(numRepr) ~= 0];
-                %                 compressedSymbols = newSymbRepVec(symbolChange);
-                %                 symbolLength = diff(find([symbolChange; 1]));
-                %
-                %                 allCats = unique(compressedSymbols);
-                %                 allCats(strcmp(allCats, '<undefined>')) = [];
-                %                 obj.symbols = categorical(compressedSymbols, allCats, 'Protected', true);
-                %                 obj.durations = symbolLength;
                 
                 cumDurations = cumsum(obj.durations);
                 
@@ -582,30 +434,28 @@ classdef SymbRepObject
             
         end
         
-        function obj = removeShortSymbols(obj, varargin)
-            % Purpose : Remove short symbols within the symbolic
-            % representation
+        function obj = removeSymbolsGivenCompressedIndes(obj,indsRemove, varargin)
+            % Purpose : Remove symbols within the symbolic
+            % representation given the compressedIndices
             %
             % Syntax :
-            %   SymbRepObject = SymbRepObject.removeShortSymbols()
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(shortSymbolLength)
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxNumberShortSymbols)
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxShortSymbolSequenceLength)
-            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, 'splittingMode', splittingMode)
+            %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(indsRemove)
+            %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'maxNumberShortSymbols', maxNumberShortSymbols)
+            %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'maxShortSymbolSequenceLength', maxShortSymbolSequenceLength)
+            %   SymbRepObject = SymbRepObject.removeSymbolsGivenCompressedIndes(___, 'splittingMode', splittingMode)
             %
             % Input Parameters :
-            %   shortSymbolLength : Length up to which a symbol sequence is
-            %   considered 'short', default is 1
+            %   indsRemove : Indices of the symbols to be removed
             %
             %   maxNumberShortSymbols : Maximum number of consecutive short
             %   symbols. If this length is exceeded by a
             %   sequence of short symbols, this sequence is denominated
-            %   unknown. Default is 5.
+            %   unknown. Default is inf.
             %
             %   maxShortSymbolSequenceLength : Maximum length of
             %   consecutive short symbols. If this length is exceeded by a
             %   sequence of short symbols, this sequence is denominated
-            %   unknown. Default is 10.
+            %   unknown. Default is inf.
             %
             %   splittingMode : Decision wether the range of a short symbol
             %   is splitted to the enclosing symbols equally or weighted
@@ -615,26 +465,34 @@ classdef SymbRepObject
             
             p = inputParser;
             
-            defaultshortSymbolLength = 1;
-            defaultMaxNumberShortSymbols = 5;
-            defaultMaxShortSymbolSequenceLength = 10;
+            
+            defaultMaxNumberShortSymbols = inf;
+            defaultMaxShortSymbolSequenceLength = inf;
             defaultSplittingMode = 'equal';
             
-            addParameter(p, 'shortSymbolLength', defaultshortSymbolLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addRequired(p, 'indsRemove');
             addParameter(p, 'maxNumberShortSymbols', defaultMaxNumberShortSymbols, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'maxShortSymbolSequenceLength', defaultMaxShortSymbolSequenceLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
             addParameter(p, 'splittingMode', defaultSplittingMode, @(x)validateattributes(x, {'char'}, {'nonempty'}));
             
-            parse(p, varargin{:});
+            parse(p,indsRemove, varargin{:});
             
-            shortSymbolLength = p.Results.shortSymbolLength;
+            
             maxNumberShortSymbols = p.Results.maxNumberShortSymbols;
             splittingMode = p.Results.splittingMode;
             maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
             
+            if ~islogical(indsRemove)
+                indsRemoveNew = false(size(obj.durations));
+                indsRemoveNew(indsRemove) = true;
+                indsRemove = indsRemoveNew;
+            end
+            allShortSymbolsInd = indsRemove;
+            allShortSymbolsInd = allShortSymbolsInd(:);
             allSymbols = cellstr(obj.symbols);
             allDurations = obj.durations;
-            allShortSymbolsInd = allDurations <= shortSymbolLength;
+            
+            
             allNonShortSymbolsInd = (allShortSymbolsInd -1) * -1;
             cumStartInd = cumsum([1; allDurations(1 : end - 1)]);
             
@@ -777,6 +635,65 @@ classdef SymbRepObject
             end
             
             obj.symbols = removecats(obj.symbols, tempWildcard);
+        end
+        
+        function obj = removeShortSymbols(obj, varargin)
+            % Purpose : Remove short symbols within the symbolic
+            % representation
+            %
+            % Syntax :
+            %   SymbRepObject = SymbRepObject.removeShortSymbols()
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(shortSymbolLength)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxNumberShortSymbols)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, maxShortSymbolSequenceLength)
+            %   SymbRepObject = SymbRepObject.removeShortSymbols(___, 'splittingMode', splittingMode)
+            %
+            % Input Parameters :
+            %   shortSymbolLength : Length up to which a symbol sequence is
+            %   considered 'short', default is 1
+            %
+            %   maxNumberShortSymbols : Maximum number of consecutive short
+            %   symbols. If this length is exceeded by a
+            %   sequence of short symbols, this sequence is denominated
+            %   unknown. Default is 5.
+            %
+            %   maxShortSymbolSequenceLength : Maximum length of
+            %   consecutive short symbols. If this length is exceeded by a
+            %   sequence of short symbols, this sequence is denominated
+            %   unknown. Default is 10.
+            %
+            %   splittingMode : Decision wether the range of a short symbol
+            %   is splitted to the enclosing symbols equally or weighted
+            %
+            % Return Parameters :
+            %   SymbRepObject : Original object with removed short symbols
+            
+            p = inputParser;
+            
+            defaultshortSymbolLength = 1;
+            defaultMaxNumberShortSymbols = 5;
+            defaultMaxShortSymbolSequenceLength = 10;
+            defaultSplittingMode = 'equal';
+            
+            addParameter(p, 'shortSymbolLength', defaultshortSymbolLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'maxNumberShortSymbols', defaultMaxNumberShortSymbols, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'maxShortSymbolSequenceLength', defaultMaxShortSymbolSequenceLength, @(x)validateattributes(x, {'numeric', 'nonempty'}, {'size', [1, 1]}));
+            addParameter(p, 'splittingMode', defaultSplittingMode, @(x)validateattributes(x, {'char'}, {'nonempty'}));
+            
+            parse(p, varargin{:});
+            
+            shortSymbolLength = p.Results.shortSymbolLength;
+            maxNumberShortSymbols = p.Results.maxNumberShortSymbols;
+            splittingMode = p.Results.splittingMode;
+            maxShortSymbolSequenceLength = p.Results.maxShortSymbolSequenceLength;
+            
+            allDurations = obj.durations;
+            allShortSymbolsInd = allDurations <= shortSymbolLength;
+            
+            
+            obj = removeSymbolsGivenCompressedIndes(obj,allShortSymbolsInd, 'maxNumberShortSymbols',maxNumberShortSymbols,...
+                'maxShortSymbolSequenceLength',  maxShortSymbolSequenceLength, 'splittingMode', splittingMode);
+            
             
         end
         
@@ -790,16 +707,17 @@ classdef SymbRepObject
             %   true);
             %
             % Input Parameters :
-            %   'Absolute' : Set to true if result shall represent the
-            %   absolute number of transitions from one state to another,
-            %   set to false (default) if matrix shall represent transition
-            %   probabilities
+            %   'Absolute' : (optonal key-value pair) Set to true if result
+            %       shall represent the  absolute number of transitions from
+            %       one state to another, set to false (default) if matrix
+            %       shall represent transition  probabilities
             %
             % Return Parameters :
             %   occurenceM : matrix, which counts the occurences of symbol i
-            %   is followed by symbol j in the entry occurenceM(j,i)
-            %   markovM:= matrix cotaining a value for the occurence of two
-            %   symbols in a row
+            %       is followed by symbol j in the entry occurenceM(j,i).
+            %   markovM:= matrix containing a value for the probability of
+            %       symbol $i$ is followed by symbol $j$. It is the (column)
+            %       normalized version of occurenceM.
             
             p = inputParser;
             
@@ -847,7 +765,7 @@ classdef SymbRepObject
             
         end
         
-        function symbMarkov3D = genTrigramMatrix(obj)
+        function symbCounts3D = genTrigramMatrix(obj)
             % Purpose : Generate a 3d markov matrix for all permutations of
             % 3 symbols
             %
@@ -857,7 +775,7 @@ classdef SymbRepObject
             % Input Parameters :
             %
             % Return Parameters :
-            %   symbMarkov3D : 3d markov transition matrix
+            %   symbCounts3D : 3d counting transition matrix
             
             symbolsString = cellstr(obj.symbols);
             nSymbols = numel(symbolsString);
@@ -865,7 +783,7 @@ classdef SymbRepObject
             allCat = categories(obj.symbols);
             nCat = numel(allCat);
             
-            symbMarkov3D = zeros(nCat, nCat, nCat);
+            symbCounts3D = zeros(nCat, nCat, nCat);
             
             for i = 1 : nSymbols - 2
                 
@@ -873,15 +791,16 @@ classdef SymbRepObject
                 ind2 = find(strcmp(allCat, symbolsString{i + 1}));
                 ind3 = find(strcmp(allCat, symbolsString{i + 2}));
                 
-                symbMarkov3D(ind1, ind2, ind3) = symbMarkov3D(ind1, ind2, ind3) + 1;
+                symbCounts3D(ind1, ind2, ind3) = symbCounts3D(ind1, ind2, ind3) + 1;
                 
             end
             
         end
         
-        function [occurenceM, markovM, SumLength1M, sumLength2M] = genLengthWeightedMatrix(obj, varargin)
+        function [occurenceM, markovM, sumLength1M, sumLength2M] = genLengthWeightedMatrix(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
-            % combinations with weighted length difference
+            % combinations with weighted length difference. This function
+            %   can also be used in the method \textit{genHierarchicalCompounding2}.
             %
             % Syntax :
             %   SymbRepObject = SymbRepObject.genLengthWeightedMatrix
@@ -896,7 +815,13 @@ classdef SymbRepObject
             %
             % Return Parameters :
             %   occurenceM := matrix, which counts the occurences of symbol i
-            %   is followed by symbol j in the entry occurenceM(j,i);
+            %       is followed by symbol j in the entry occurenceM(j,i);
+            %   markovM:= matrix cotaining a value for the occurence of two
+            %       symbols in a row
+            %   sumLength1M := a matrix containing in the entry (i,j) the
+            %       overall length of symbol i in the merged sequences of symbol i-j.
+            %   sumLength1M := a matrix containing in the entry (i,j) the
+            %       overall length of symbol j in the merged sequences of symbol i-j.
             
             p = inputParser;
             
@@ -916,7 +841,7 @@ classdef SymbRepObject
             
             
             occurenceM = zeros(nCat, nCat);
-            SumLength1M = zeros(nCat, nCat);
+            sumLength1M = zeros(nCat, nCat);
             sumLength2M = zeros(nCat, nCat);
             
             
@@ -927,13 +852,13 @@ classdef SymbRepObject
                 toInd = find(strcmp(allCat, symbolsString{i + 1}));
                 
                 occurenceM(fromInd, toInd) = occurenceM(fromInd, toInd) + 1;
-                SumLength1M(fromInd, toInd) = SumLength1M(fromInd, toInd) + obj.durations(i);
+                sumLength1M(fromInd, toInd) = sumLength1M(fromInd, toInd) + obj.durations(i);
                 sumLength2M(fromInd, toInd) = sumLength2M(fromInd, toInd) + obj.durations(i+1);
             end
             
             
             occurenceM = occurenceM';
-            SumLength1M = SumLength1M';
+            sumLength1M = sumLength1M';
             sumLength2M = sumLength2M';
             % Transpose result, such that x1 = P * x0 instead of x1^T =
             % x0^T * P
@@ -949,20 +874,24 @@ classdef SymbRepObject
             
             %
             %              diffMat = abs( SumLength1M - sumLength2M)./(SumLength1M + sumLength2M -2);
-            diffMat = 1 - abs( SumLength1M - sumLength2M)./(SumLength1M + sumLength2M);
+            diffMat = 1 - abs( sumLength1M - sumLength2M)./(sumLength1M + sumLength2M);
             markovM = markovM.* diffMat;
             
         end
         
         
         
-        function [occurenceM, markovM, sumLength1M, sumLength2M,lengthSyms] = genWeightedMatrixChangedLength(obj, varargin)
+        function [occurenceM, markovM, sumLength1M, sumLength2M,lengthSyms] = ...
+                genWeightedMatrixChangedLength(obj, varargin)
             % Purpose : Generate a markov matrix for all symbolic
-            % combinations with weighted change of length
+            % combinations with weighted change of length. This minimizes
+            % the problem, that large portion of the symbolic time series
+            % get changed. This function can also be used in the method.
+            % genHierarchicalCompounding2.
             %
             % Syntax :
-            %   SymbRepObject = SymbRepObject.genSymbMarkov
-            %   SymbRepObject = SymbRepObject.genSymbMarkov('Absolute',
+            %   SymbRepObject = SymbRepObject.genWeightedMatrixChangedLength
+            %   SymbRepObject = SymbRepObject.genWeightedMatrixChangedLength('Absolute',
             %   true);
             %
             % Input Parameters :
@@ -1035,7 +964,21 @@ classdef SymbRepObject
             
         end
         
-        function newObj = getTimeInterval(obj, intervalIndices)
+        function newSymbObj = getTimeInterval(obj, intervalIndices)
+            % Purpose : This returns a snipped of the time series object,
+            % given numerical indices of the uncompressed series.
+            %
+            % Syntax :
+            %   newSymbObj = SymbObj.getTimeInterval( intervalIndices)
+            %
+            % Input Parameters :
+            %   intervalIndices : an array containing the start and end
+            %      index of the snipped to be extracted. The indices are with
+            %      respect to the uncompressed series.
+            %
+            % Return Parameters :
+            %   newSymbObj : instance of SymbRepObj which contains only the
+            %       interval to be requested.
             
             endInds = obj.stopInds;
             startInds = obj.startInds;
@@ -1065,12 +1008,34 @@ classdef SymbRepObject
                 
             end
             
-            newObj = SymbRepObject(newDurations, newSymbols);
+            newSymbObj = SymbRepObject(newDurations, newSymbols);
             
         end
         
         function [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding(SymbObj, varargin)
-            
+            % Purpose :  It performs hierarchical compounding on the given
+            %   SymbObj. Therefore, word pairs, which occur often are
+            %   compounded to a new word. This is done iteratively.
+            %
+            % Syntax :
+            %   [allSymbRepObjects, imageMatrix, compressionData, evalRecord] =
+            %       genHierarchicalCompounding(SymbObj, varargin)
+            %
+            % Input Parameters :
+            %   maxLevel : (optional key-value) integer defining the maximum
+            %       number of levels to be calculated.
+            %
+            % Return Parameters :
+            %   allSymbRepObjects : Array of SymbRepObjects. Array(i) is the
+            %       i-th level of hierarchicalCompounding
+            %   imageMatrix : Matrix which contains in each row the categorie
+            %       of each datapoint (symbol) for one level. This can be used
+            %       to plot the hierarchical development.
+            %   compressionData : A struct with information for each level,
+            %       eg. number of Symbols, number of categories, number of
+            %       merged Symbols and symbol reduction rate.
+            %   evalRecord : A table which contains all steps performed
+            %       during the hierarchical compounding
             p = inputParser;
             p.addRequired('SymbObj', @(x) isa(x, 'SymbRepObject'));
             p.addOptional('maxLevel', 0, @(x) isnumeric(x)&& isequal(size(x), [1,1]));
@@ -1166,7 +1131,35 @@ classdef SymbRepObject
         
         
         function [allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding2(SymbObj,SymbObjFunStrg, varargin)
-            
+            % Purpose :  Similary to genHierarchicalCompounding with additional input.
+            %   It performs hierarchical compounding on the given
+            %   SymbObj. Therefore, word pairs, which occur often are
+            %   compounded to a new word. This is done iteratively.
+            %
+            % Syntax :
+            %   [allSymbRepObjects, imageMatrix, compressionData, evalRecord] =
+            %       genHierarchicalCompounding2(SymbObj,SymbObjFunStrg, varargin)
+            %
+            % Input Parameters :
+            %   SymbObjFunStrg : name (string) of a function of the
+            %       SymbRepObject to be used to calculate the symbols to be
+            %       merged. Currently the following functions are possible:
+            %       genLengthWeightedMatrix, genSymbMarkov,
+            %       genWeightedMatrixChangedLength
+            %   maxLevel : (optional key-value) integer defining the maximum
+            %       number of levels to be calculated.
+            %
+            % Return Parameters :
+            %   allSymbRepObjects : Array of SymbRepObjects. Array(i) is the
+            %       i-th level of hierarchicalCompounding
+            %   imageMatrix : Matrix which contains in each row the categorie
+            %       of each datapoint (symbol) for one level. This can be used
+            %       to plot the hierarchical development.
+            %   compressionData : A struct with information for each level,
+            %       eg. number of Symbols, number of categories, number of
+            %       merged Symbols and symbol reduction rate.
+            %   evalRecord : A table which contains all steps performed
+            %       during the hierarchical compounding
             p = inputParser;
             p.addRequired('SymbObj', @(x) isa(x, 'SymbRepObject'));
             p.addRequired('SymbObjFunStrg', @(x) ischar(x));
@@ -1223,7 +1216,7 @@ classdef SymbRepObject
                 
                 %%%
                 maxM = occurenceM(Ind);
-
+                
                 [I, J] = ind2sub(size(markovM), Ind);
                 
                 allCats = categories(SymbObj.symbols);
@@ -1276,22 +1269,217 @@ classdef SymbRepObject
             compressionData.symbolReductionRate = symbolReductionRate;
             
         end
+        
+        
         function startInds = get.startInds(obj)
-            startInds = obj.stopInds - obj.durations + 1; 
+            startInds = obj.stopInds - obj.durations + 1;
         end
         
         function stopInds = get.stopInds(obj)
             stopInds =cumsum(obj.durations);
         end
-            
+        
+        function stopInds = get.nSyms(obj)
+            stopInds =numel(obj.durations);
+        end
+        
+        %% only function signatures for functions in a separate file
+        
+        [startInds, stopInds] = compressedInds2UncompressedInds(obj, indsCompressed)
+        % Purpose : converts Compressed Inds to uncompressed startInds and
+        % stopInds.
+        % see compessedInds2UncompressedInds.m for
+        % implementation.
+        %
+        % Syntax :
+        %
+        % Input Parameters :
+        %   indsCompressed: a list of indices of the compressed symbolic time
+        %   series
+        %
+        % Return Parameters :
+        %   startInds: start indices of the uncompressed series
+        %   stopInds: stop indices of the uncompressed series
+        
+        
+        obj = compressSymbols(obj, listOfSymbolsToCheck)
+        % SymbRepObject
+        %
+        % Purpose : This methods of the SymbRepObject finds run-length of the same symbol
+        % and replaced it with a single symbol. Additionally, the
+        % durations and repetitions are updated by summing up.
+        %
+        % Syntax :
+        %   SymbRepObject = SymbRepObject.compressSymbols
+        %   SymbRepObject = SymbRepObject.compressSymbols(listOfSymbolsToCheck);
+        % Input Parameters :
+        %   listOfSymbolsToCheck : A cell array of symbols to be checkt
+        %   and updated. By default all different symbols in the
+        %   symbolic time series are checked.
+        % Return Parameters :
+        %   SymbRepObject : a version of the updated SymbRepObject
+        
+        
+        [startInds, durations, compressedStartInds, compressedStopInds] = findSequence(obj, symbSequence)
+        % <keywords>
+        %
+        % Purpose : Find start indices of a given
+        %   sequence
+        %
+        % Syntax :
+        %
+        % Input Parameters :
+        %   symbSequence : Sequence (cell array) of symbols, which is to be
+        %       found within the compressed symbolic time series. Must be
+        %       given as one dimensional cell an arbitrary number of elements
+        % Return Parameters :
+        %   startInds : index in the original uncompressed time series where the sequences
+        %       start;
+        %   durations : the number of samples in the original uncompressed time series the
+        %       sequence lasts;
+        %   compressedStartInds : the indices where the symbSequence starts in the
+        %       compressed symbolic representation
+        %   compressedEndInds : the indices  where the symbSequence stops in the
+        %       compressed symbolic representation
+        
+        
+        [pa, tHandleAll] = markSymbSequenceOnAxes(obj, xVals, axes_in, SymbSequence, colorSpec, varargin)
+        % Purpose : The function marks a Symbol sequence as semi-transparent patch on a given axes.
+        %
+        % Syntax :
+        %   [pa, tHandleAll] = obj.markSymbSequenceOnAxes(xVals, axes_in, SymbSequence, colorSpec, varargin)
+        %
+        % Input Parameters :
+        %   xVals := The abscissae values used for plotting. These values and the
+        %       start and stop indices of the symbolic sequence are used to define
+        %       the start end end of the patch.
+        %   axes_in:= The axes on which the symbolic sequence should be plotted.
+        %       Currently it can not handle cell-arrays of axes.
+        %   SymbSequence := The sequence of symbols (given as cellarray of strings
+        %       or chars) which should be marked.
+        %   colorSpec :=  A color specification for the patch (either a valid color
+        %       name or abbreviation, or a rgb color vector).
+        %   bShowText := (optional key-value pair) A boolean flag indicating if the
+        %       symbol should be plotted as text within the patch. Default value: true.
+        %
+        % Return Parameters :
+        %   pa :=  A list of patches handles.
+        %   tHandleAll := A list of text handles.
+        
+        
+        
+        obj = mergeSequence(obj, symbSequence, varargin)
+        % Purpose : Merges all occurences of a given sequence of symbols within the
+        %   SymbRepObject.
+        %
+        % Syntax :
+        %   SymbRepObject = SymbRepObject.mergeSequence(symbSequence, varargin)
+        %
+        % Input Parameters :
+        %   symbSequence : Sequence which is supposed to be merged to
+        %       one new symbol (categorical). Must be given as one dimensional cell
+        %       array of strings with an arbitrary number of elements
+        %
+        %   bAllowOverlapping : (optional key-value pair, default: false) A boolean
+        %       flag indicating if overlapping sequences are seen as one occurence.
+        %       Given a symbolic time series 'ababababa' with durations = [1,1,1,1,1,1,1,1,1]
+        %       and repetitions = [1,1,1,1,1,1,1,1,1] and merge the sequence 
+        %       'aba'--> with the new name 'c': if the flag is set to false, the 
+        %       result would be 'cbcba' with durations = [3,1,3,1,1] and 
+        %       repetitions = [1,1,1,1,1]. If the flag is set to true it would 
+        %       result in the symbolic series 'c' with durations = [9], repetitions = [4].
+        %
+        %   newSymbol : (optional key-value pair, default: 'concatenation of symbSequence')
+        %       A string (char) which should replace the found symbSequence
+        %
+        %   bCompress : (optional key-value pair, default: true) A boolean flag,
+        %       indicating if SymbObj.compressSymbols should be called after merging
+        %       the sequences. Given a symbolic sequence 'ababab' and the sequence
+        %       to be merged 'ab'-->'c': if bCompress=true the resulting symbolic
+        %       sequence would be 'c'. If bCompress=false the resulting symbolic
+        %       sequence would be 'ccc'.
+        % Return Parameters :
+        %   SymbRepObject : Instance of SymbRepObject with merged symbolic
+        %       representation
+        
+        
+        [paAll, tHandleAll] = plotOnAxes(SymbRepObj, axes_in,  varargin)
+        % Purpose :
+        %   plots an instance of a SymbRepObject on given axes.
+        %
+        % Syntax :
+        %   [paAll, tHandleAll] = plotOnAxes(SymbRepObj,axes_in, xTime, varargin)
+        %
+        % Input Parameters :
+        %   axes_in:= the axes, on which the symbolic representation should be
+        %               plotted;
+        %
+        %   xTime:= (optional key-value pair, if not given, take the x values of 
+        %       the first line in the axes)the original time axes where the 
+        %       SymbRepObject refers to;
+        %
+        %   plotSymbolName:= (optional key-value, default: false) a boolean 
+        %       indicating if the Symbol name should be shown in the plot;
+        %
+        %   plotSymbolDuration:= (optional key-value, default: false )a boolean 
+        %       indicating if the Symbol duration should be shown in the plot;
+        %
+        %   plotSymbolNameMinLength:= (optional key-value, default: 0) an integer,
+        %       symbols with a length less than  this value are not annotated with 
+        %       symbol name and/or duration;
+        %
+        %   colorDismiss:= (optional key-value, default: no color) a color string
+        %       or color triplet which should not be in the colors used for shading
+        %       the plots
+        %
+        % Return Parameters :
+        %   paAll:= an array containing the handles to the patches.
+        %
+        %   tHandleAll := array containing the handles to the annotations texts.
+        
+        
     end
     
     methods (Static)
         function markovM = occurenceM2markovM(occurenceM)
+            % Purpose :  takes a occurenceM and returns a markov type
+            % matrix by normalizing each column.
+            %
+            % Syntax :
+            %   markovM = SymbRepObject.occurenceM2markovM(occurenceM)
+            %
+            % Input Parameters :
+            %   occurenceM : a occurance matrix returned from the functions
+            %       genLengthWeightedMatrix, genSymbMarkov,
+            %       genWeightedMatrixChangedLength
+            %
+            % Return Parameters :
+            %   markovM : a matrix which is normalized by each column. (sum
+            %       of each column = 1). Therefor, this matrix can be used to
+            %       calculate the probability of the next symbol, eg.
+            %       newSymbolPropability = markovM*currentSymbolProbabilityVec
             markovM = occurenceM ./ sum(occurenceM, 1);
         end
         
         function markovMcleared = clearMarkovM(markovM, occurenceM)
+            % Purpose :  replaces all entries in the markovM where
+            % sum(occurenceM,1) ==1 with a probability of 0. Otherwise, a single
+            % occurence would have probability of 100% which causes
+            % problems when merging symbols
+            %
+            % Syntax :
+            %   markovM = SymbRepObject.occurenceM2markovM(occurenceM)
+            %
+            % Input Parameters :
+            %   occurenceM : a occurance matrix returned from the functions
+            %       genLengthWeightedMatrix, genSymbMarkov,
+            %       genWeightedMatrixChangedLength
+            %
+            % Return Parameters :
+            %   markovM : a matrix which is normalized by each column. (sum
+            %       of each column = 1). Therefor, this matrix can be used to
+            %       calculate the probability of the next symbol, eg.
+            %       newSymbolPropability = markovM*currentSymbolProbabilityVec
             sumOccurances = sum(occurenceM, 1);
             markovMcleared = markovM;
             %                 sumOccurances(sumOccurances==1) = Inf;

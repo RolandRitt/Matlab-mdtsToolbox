@@ -98,7 +98,9 @@ classdef segmentsObject
             %
             % Input Parameters :
             %   tagName : Name of the channel to be added
-            %   bVec : logical vector representing the segments
+            %   startInds : index vector with the start indices of the
+            %       segments to be added
+            %   durations : vector holding the durations of the segments
             %
             % Return Parameters :
             %

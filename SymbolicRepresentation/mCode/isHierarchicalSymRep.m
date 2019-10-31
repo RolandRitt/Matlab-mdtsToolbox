@@ -2,7 +2,7 @@ function bTrue = isHierarchicalSymRep(hierarchicalSymbolicData)
 % <keywords>
 %
 % Purpose : verify if given input is a hierarchicalSymbolicData used in
-% TS_SAX_Multi, TS_SAX
+% genHierarchicalCompounding
 %
 % Syntax :
 %

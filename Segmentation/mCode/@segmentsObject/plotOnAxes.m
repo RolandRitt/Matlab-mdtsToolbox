@@ -1,16 +1,29 @@
-function [pa, tHandleAll] = plotOnAxes(obj, axes_in, xTime, varargin)
+function [paAll, tHandleAll] = plotOnAxes(obj, axes_in, xTime, varargin)
 % plot
 %
-% Purpose : plot segments of the given mdtsObject
+% Purpose : plot segments on given axes
 %
-% Syntax : plotSegments(inputObject, varargin)
+% Syntax : plotOnAxes(axes_in, xTime, varargin)
 %
 % Input Parameters :
-%   inputObject : mdtsObject (with multiple channels) to be plotted
-%
-%   segmentTag : tag of the required segment as string (character array)
+%   axes_in : the axes on which the segments should be plotted
+%   xTime : the abscissae values used for plotting the patches and the 
+%       indexes are referring to
+%   segmentTags : optional key-value pair;  the names (nameIDs) of the 
+%       segments to be plotted on all of the axes
+%   colorDismiss : optional key-value pair;  color to be not used as patch color
+%   plotSegName : optional key-value pair;  boolean flag indicating if the 
+%       segment name (segTag) should be annotated as text within the patch
+%   plotSegDuration : optional key-value pair;  boolean flag indicating if 
+%       the segment duration should be annotated as text within the patch
+%   plotSegNameMinLength : optional key-value pair;  minimum number of 
+%       datapoints (duration) within a segment to annotate the segment name
+%       and/or duration
+%   additional key-value pairs : these are forwarded to the Matlab fill command.
 %
 % Return Parameters :
+%   paAll := the handles to the plotted segments (handles to the patches objects objects).
+%   tHandleAll := handle to the plotted text annotations
 %
 % Description :
 %   Use the plotMulti function to plot the segments of the given object
@@ -40,8 +53,6 @@ p.KeepUnmatched=true;
 addRequired(p, 'obj', @(x) isa(x, 'segmentsObject')); %check if input is mdtsObject
 addRequired(p, 'axes_in', @(x)isa(x, 'matlab.graphics.axis.Axes')|| all(ishghandle(x))); %check if input is axes or handle object
 addRequired(p, 'xTime', @(x) isdatetime(x)|| isreal(x)); %check if input is SymbRepObject
-addParameter(p, 'Size', [8.8,11.7], @(x)isnumeric(x)&&isvector(x)); %higth and width
-addParameter(p, 'FontSize', 10, @isnumeric);
 addParameter(p, 'segmentTags', [],@(x) isa(x, 'char')|| iscell(x)); %check if tag is a char array
 addParameter(p, 'colorDismiss', [], @(x)(isreal(x)&& isequal(size(x),[1,3]))|| ischar(x));
 addParameter(p, 'plotSegName', plotSegNameDef, @islogical);
@@ -108,10 +119,6 @@ for i = 1 : nAxes
 end
 
 
-
-%         tagNo = find(ismember(segmentsObj.tags, segmentTag));
-
-
 for j = 1 : nSymbols
     segmentTag = segmentTags{j};
     
@@ -159,15 +166,7 @@ for j = 1 : nSymbols
         pa=[];
         pa = fill(XStart, [ymin(i), ymin(i), ymax(i), ymax(i)]',...
             symbolColors(j, :), 'FaceAlpha', alphCol, 'EdgeColor', symbolColors(j, :), 'Parent', gObjArr(i), UnmatchedArgs{:});
-        %
-        %         if plotSymbolName||plotSymbolDuration
-        %             yText = (ymin(i) + (ymax(i) - ymin(i)) * 0.25) * ones(size(xSymbol));
-        %
-        %             tHandle = text(tempAx{i}, xSymbol, yText, symbRepText, 'Color', 'k', 'HorizontalAlignment', 'center', 'clipping', 'on', 'Interpreter', 'latex');
-        %             if bishggroup
-        %                 set(tHandle, 'Parent', gObjArr(i));
-        %             end
-        %         end
+
         if plotSegName||plotSegDuration
             yText = (ymin(i) + (ymax(i) - ymin(i)) * 0.25) * ones(size(xText));
             

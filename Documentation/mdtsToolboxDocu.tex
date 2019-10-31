@@ -5,7 +5,7 @@
 \usepackage{amsmath}
 \usepackage{listings}
 \usepackage{color}
-\usepackage[draft]{todonotes} % draft/disable
+\usepackage[disable]{todonotes} % draft/disable
 \usepackage{longtable, tabu}
 \usepackage{needspace}
 \usepackage{hyperref}
@@ -32,6 +32,7 @@
 	%emph=[2]{word1,word2}, emphstyle=[2]{style},    
 }
 
+\setcounter{tocdepth}{4}
 \begin{document}
 	
 \begin{titlepage}
@@ -56,7 +57,7 @@
 
 	\Large Thomas Grandl,\\Roland Ritt\\[2cm]		
 	
-	\large Version: 0.10 (Beta)\\
+	\large Version: 1.2\\
 	\large \today
 	
 	\vfill
@@ -74,8 +75,8 @@
 \section{Download}
 This toolbox can be downloaded from the IA-GitLab Server.
 \begin{itemize}
-	\item Web-Url: \url{https://gitlab.ia.unileoben.ac.at/tsdev/mdtstoolbox}
-	\item Git-Link: \url{git@gitlab.ia.unileoben.ac.at:tsdev/mdtstoolbox.git}
+	\item Web-Url: \url{https://git.unileoben.ac.at/Chair-Of-Automation/IA-toolboxes/mdtsToolbox}
+	\item Git-Link: \url{git@git.unileoben.ac.at:Chair-Of-Automation/IA-toolboxes/mdtsToolbox.git}
 \end{itemize}
 
 \section{Purpose of this Toolbox}
@@ -129,10 +130,11 @@ Further functions are available to initialize and inspect (plot) the data.
 The mdtsToolbox requires the following IA-toolboxes in the MALTAB-path:
 
 \begin{enumerate}
-	\item IAToolboxes/DOPbox: Git-Link \url{git@gitlab.ia.unileoben.ac.at:toolboxes/DOPbox.git}
-	\item IAToolboxes/graphics: Git-Link \url{git@gitlab.ia.unileoben.ac.at:toolboxes/graphics.git}
-	\item IAToolboxes/general: Git-Link \url{git@gitlab.ia.unileoben.ac.at:toolboxes/general.git}
-	\item IAToolboxes/figureManager: Git-Link \url{git@gitlab.ia.unileoben.ac.at:toolboxes/figureManager.git}
+	\item IAToolboxes/DOPbox: Git-Link \url{git@git.unileoben.ac.at:Chair-Of-Automation/IA-toolboxes/DopBox.git}
+	\item IAToolboxes/graphics: Git-Link \url{git@git.unileoben.ac.at:Chair-Of-Automation/IA-toolboxes/graphics.git}
+	\item IAToolboxes/general: Git-Link \url{git@git.unileoben.ac.at:Chair-Of-Automation/IA-toolboxes/general.git}
+	\item IAToolboxes/figureManager: Git-Link \url{git@git.unileoben.ac.at:Chair-Of-Automation/IA-toolboxes/figureManager.git}
+	\item IAToolboxes/summaryTable: Git-Link \url{git@git.unileoben.ac.at:Chair-Of-Automation/IA-toolboxes/summarytable.git}
 \end{enumerate}
 
 \chapter{Class and Function Description}
@@ -166,6 +168,7 @@ The mdtsToolbox requires the following IA-toolboxes in the MALTAB-path:
 		\item \textbf{uniform:} ture if the time steps are spaced uniformly
 		\item \textbf{ts:} sampling time
 		\item \textbf{isSubset:} true if the object was derived by extraction from another mdtsObject
+		
 	\end{enumerate}
 	\item Dependent data:
 	\begin{enumerate}	
@@ -173,6 +176,8 @@ The mdtsToolbox requires the following IA-toolboxes in the MALTAB-path:
 		\item \textbf{timeRelative:} relative time stamps in which the first stamp starts at zero
 		\item \textbf{timeDateTime:} time stamps in datetime format
 		\item \textbf{timeDateTimeRelative:} relative time stamps in which the first stamp starts at zero in datetime format
+		\item \textbf{nChannels:} number of Channels in the mdts-Object (number of Columns)
+		\item \textbf{nDataPoints:} number of DataPoints (time-stamps); this is the number of rows
 	\end{enumerate}
 \end{enumerate}
 
@@ -188,7 +193,7 @@ The structure of these properties within the mdtsCoreObject is illustrated in fi
 \subsubsection{Constructor}
 
 \begin{align*}
-\text{obj} = \text{mdtsCoreObject}(&\text{time, }\text{data,  }\text{tags, }\text{units, }\text{ts, }\text{name, }\\&\text{who, }\text{when, }\text{description, }\text{comment, }\text{tsEvents, }\text{symbReps, }\text{segments})
+\text{obj} = \text{mdtsCoreObject}(&\text{time, }\text{data,  }\text{tags, }\text{units, }\text{ts, }\text{name, }\\&\text{who, }\text{when, }\text{description, }\text{comment, }\text{tsEvents, }\text{symbReps, }\text{segments, }\text{aliasTable})
 \end{align*}
 
 Inputs must be given according to the properties of the object.
@@ -302,7 +307,37 @@ Adds the symbRepObject \textit{symbObj} to all elements of \textit{symbReps}. If
 
 \item \textbf{obj = addSegments(segmentsObj)}\\
 Stores the segmentsObject \textit{segmentsObj} in the \textit{segments} property of the mdtsObject.
+
+\item \textbf{obj = addSegmentsToAllChannels(segmentsObj, keepExistentSegReps)}\\
+Assigns the segmentsObject \textit{segmentsObj} to all channels in the \textit{segments} property of the mdtsObject. If \textit{keepExistentSegReps} is true, already existent segmentsObjs within \textit{segments} will be preserved, if set to false, all elements in \textit{segments} will be overwritten.
+
+\item \textbf{obj = addSegmentsToChannels(segmentsObj, channelNumber)}\\
+Assigns the segmentsObject \textit{segmentsObj} to  \textit{segments} the property of the mdtsObject for only the given channelNumber(s).
+
+\end{enumerate}
+
+\subsubsection{Methods (Protected)}
+These functions can only be called within the class or a subclass.
+
+\begin{enumerate}
 	
+	\item \textbf{obj = keepRowsOfData(intervalIndices)}\\
+	Delete all data (rows) of time stamps which are not given in \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept.
+	
+	\item \textbf{obj = keepTagsOfData(tagsIndices)}\\
+	Delete all data (columns) oftags which are not given in \textit{tagsIndices}. \textit{tagsIndices} are the numeric indices of the columns to be kept.
+	
+	\item \textbf{extractRowsOfSymbReps(intervalIndices)}\\
+	Extract all symbols and druations from the symbRepObjects of all channels, according to the input \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept. The symbReps are overwritten with the trimmed version.
+	
+	\item \textbf{extractRowsOfSegsReps(intervalIndices)}\\
+	Extract all segments and druations from the segmentsObject of all channels, according to the input \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept. The segments are overwritten with the trimmed version.
+	
+	\item \textbf{extractIntervalOfEvents(intervalIndices)}\\
+	Extract all events from the eventsStruct of all channels, according to the input \textit{intervalIndices}. \textit{intervalIndices} are the numeric indices of the rows to be kept. The events are overwritten with the trimmed version. ATTENTION: This method is not yet implemented.
+	
+	\item \textbf{tags = alias2tag(tags)}\\
+	returns the tag names which is assigned to the \textit{aliases}. \textit{tags} are the original tag names which are assigned to the aliases.
 \end{enumerate}
 
 \subsection{mdtsObject}
@@ -313,21 +348,22 @@ As mentioned in section \ref{ChpIDDataStorage}, the mdtsObject inherits from the
 
 \begin{enumerate}
 	
-	\item Internal data:
+	\item Internal data:\\
 	Note: Internal data is only for the usage in one object and for the communication between different objects. These are no properties the user should deal with!
 	
 		\begin{enumerate}
 			
 			\item \textbf{timeType:} Scalar which holds the information about the original time format which was used to initialize the object. Possible variants are datetime, duration, datenum or other numerical representations. This property will be set by the constructor of the mdtsObject automatically, according to the type of the given time vector.
-			
+			\begin{enumerate}
+				\item \textbf{timeType == 0, timeType == 1}: the time was given as numeric values; and are treated like this $\rightarrow$ no datetime representation is used for plotting etc.
+				\item \textbf{timeType == 2}: the time was given as datetime values; and are treated like this in plotting
+				\item \textbf{timeType == 3}: the time was given as duration values; and are treated like this in plotting
+			\end{enumerate}		
 		\end{enumerate}
 	
-	\item Dependent data:
-	
-		\begin{enumerate}
-			
+	\item Dependent data:	
+		\begin{enumerate}	
 			\item \textbf{timeInFormat:} Time stamps of the object in the format according to the original format which was used to initialize the object. 
-			
 		\end{enumerate}
 	
 \end{enumerate}
@@ -338,7 +374,7 @@ As mentioned in section \ref{ChpIDDataStorage}, the mdtsObject inherits from the
 \text{obj} = \text{mdtsObject}(\text{time, }\text{data,  }\text{tags, }\text{varargin})
 \end{align*}
 
-where \textit{time}, \textit{data} and \textit{tags} are required inputs and \textit{varargin} represents all optional inputs. Required inputs must be given according to the porperties of the mdtsCoreObject. Optional inputs can be given as tuples. The available optional inputs are summarized in table \ref{TblMdtsConstructorInputs}.
+where \textit{time}, \textit{data} and \textit{tags} are required inputs and \textit{varargin} represents all optional inputs. Required inputs must be given according to the porperties of the mdtsCoreObject (compare section \ref{ChpDescriptionMdtsCoreObject}). Optional inputs can be given as tuples. The available optional inputs are summarized in table \ref{TblMdtsConstructorInputs}.
 
 \begin{table}[htbp]
 	\centering
@@ -366,10 +402,10 @@ where \textit{time}, \textit{data} and \textit{tags} are required inputs and \te
 \begin{enumerate}
 	
 \item \textbf{returnObject = getData}\\
-	Validates the number of inputs and passes these inputs to the \textit{getData} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
+	Validates the inputs and passes these inputs to the \textit{getData} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
 	
 \item \textbf{dataMat = getRawData}\\
-Validates the number of inputs and passes these inputs to the \textit{getRawData} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
+Validates the inputs and passes these inputs to the \textit{getRawData} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
 	
 \item \textbf{tagIndices = getTagIndices(tagList)}\\
 	Validates the inputs in \textit{tagList} and passes them to the \textit{getTagIndices} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
@@ -385,6 +421,26 @@ Furthermore its possible to extract data from the mdtsObject as
 \begin{align*}
 \text{newObject} = \text{ originalObject}(i : j, k : l)
 \end{align*}
+where $i, j$ are the time indices and $k, l$ are the tag indices, e.g.
+\begin{lstlisting}[frame=single]
+newObject = originalObject(2 : 4, 1 : 3); % time stamps 2 - 4, tags 1 - 3
+newObject = originalObject(1 : 4, 2 : 3); % time stamps 1 - 4, tags 2 - 3
+newObject = originalObject(4, 1 : 3); % time stamp 4, tags 1 - 3
+newObject = originalObject(2 : 5, 2); % time stamps 2 - 5, tag 2
+newObject = originalObject(:, 2); % all time stamps , tag 2
+newObject = originalObject(2 : 5, :); % time stamps 2-5 , all tags
+\end{lstlisting}
+additional tags/alias names can be used for indexing
+\begin{lstlisting}[frame=single]
+newObject = originalObject(:,{'tag1', 'tag3'}); % all data extracted for channels named with 'tag1' and 'tag3'
+newObject = originalObject(:,{'tag1', 'alias3'}); % all data extracted for channels named with 'tag1' and the alias 'alias3'
+\end{lstlisting}
+
+In case a datetime vector was used for generating the mdtsObject, datetimes  can be used for row-indexing
+
+\begin{lstlisting}[frame=single]
+newObject = originalObject({datetime(2019,8,12), datetime(2019,9,12) },:); % all data extracted between 2019-08-12 and 2019-09-12 (including start and end date),
+\end{lstlisting}
 
 \item \textbf{obj = addEvent(eventID, eventTime, eventDuration)}\\
 Validates if \textit{eventID} is a character vector (string), \textit{eventTime} is an array of time stamps available in \textit{time} and \textit{eventDuration} is an array of integers or durations and of the same size as \textit{eventTime}. Valid values will be passed to the \textit{addEvent} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
@@ -395,39 +451,147 @@ Validates if \textit{symbObj} is a symbRepObject and \textit{channelNumber} is n
 \item \textbf{obj = addSymbRepToAllChannels(symbObj, varargin)}\\
 Validates if \textit{symbObj} is a symbRepObject and passes valid parameters to the \textit{addSymbRepToAllChannels} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}. Optional parameter \textit{keepExistentSymbReps} can be passed as logical scalar through a name-value-pair.
 
+\item \textbf{obj = addSegmentsToAllChannels(segmentsObj, varargin)}\\
+Validates if \textit{segmentsObj} is a segmentsObj and \textit{nTimestamps} in \textit{segmentsObj} is the same as the number of elements in \textit{time} of the mdtsObject and passes valid parameters to the \textit{addSegmentsToAllChannels} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
+
 \item \textbf{obj = addSegments(segmentsObj)}\\
 Validates if \textit{segmentsObj} is a segmentsObj and \textit{nTimestamps} in \textit{segmentsObj} is the same as the number of elements in \textit{time} of the mdtsObject and passes valid parameters to the \textit{addSegments} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}.
+
+\item \textbf{obj = addSegmentsToChannels(segmentsObj, channelNames)}\\
+Validates if \textit{segmentsObj} is a segmentsObj and \textit{nTimestamps} in \textit{segmentsObj} is the same as the number of elements in \textit{time} of the mdtsObject and passes valid parameters to the \textit{addSegmentsToChannels} function of the mdtsCoreObject, compare section \ref{ChpDescriptionMdtsCoreObject}. \textit{channelNames} is a cell array of tags or aliases to which the segments should be assigned.
 
 \item \textbf{timeDateNum = convert2Datenum(timeInput)}\\
 Converts a time in \textit{timeInput} from datetime or duration to datenum (if \textit{timeInput} is given as datenum, then \textit{timeDateNum = timeInput}).
 
-\item \textbf{bValid = isValidAliasTable(obj, tIn)}\\
+\item \textbf{bValid = isValidAliasTable(tIn)}\\
 This function checks, if a table \textit{tIn} is a valid aliasTable with respect to the tags of the mdtsObject \textit{obj.tags}. It checks if the table has exactly one column \textit{OrigTag} and if the entries in this column can be found in \textit{obj.tags}.
 
-\item \textbf{bValid = isValidAliasTable(obj, tIn)}\\
-This function checks, if a table \textit{tIn} is a valid aliasTable with respect to the tags of the mdtsObject \textit{obj.tags}. It checks if the table has exactly one column \textit{OrigTag} and if the entries in this column can be found in \textit{obj.tags}.
+\item \textbf{isTagList = isTag(tags)}\\
+This function checks, if the given \textit{tags} can be found within the taglist of the object or within the aliasTable. It returns a logical array of the same size as \textit{isTagList} indicating if a tag is can be found and used for indexing.
+
+\item \textbf{obj =  setAliasTable(tIn)}\\
+This function assignes a new aliasTable \textit{tIn} to the mdtsObject. All aliases defined before are deleted in this manner.
+
+\item \textbf{isInList = isAlias( tags)}\\
+This function checks if the given \textit{tags} are aliases defined in the aliasTable of the instance. A logical array \textit{isInList} of the same size as \textit{tags} is returned, indicating which tags are aliases.
+
+\item \textbf{obj = addAliases(aliases, tags)}\\
+This function adds new aliases to the aliasTable. aliases is a list of new names which can be used to index the mdtsObject. Tags is the original tag name which is used to index the mdtsObject.
+
+\item \textbf{obj = markRangeOnAxes\_givenIndex(axes\_in, startInds, stopInds, colorSpec, varargin)}\\
+This function marks a given range as a semitransparent patch. It forwards the input parameters to the Static-Method \textit{markRangeOnAxes\_givenIndexStatic} and takes the time values from the mdtsObject.
+(see \textit{mdtsOjbect} \ref{sssec:mdtsObj:MethodsStatic} \nameref{sssec:mdtsObj:MethodsStatic})
+
+\item \textbf{arrayOfmdtsObjects = extractSegments(segmentTag, tagName, varargin)}\\
+This functions extracts segments from the segments  structure and returns them as mdtsObjects (cell array of mdtsObjects \textit{arrayOfmdtsObjects}). \textit{segmentTag} is the name of the Segment which should be extracted. \textit{tagName} is the name of the channel to which the \textit{segmentTag} is assigned. \textit{frameLength} (optional key-value pair; default value = 0) defining how much data points should be additionally returned to the beginning and at the end of each segment.
+
+
+
+
+\item \textbf{summaryTable = getSummaryTable}\\
+This functions returns a \textit{summaryTable} for the given mdtsObject. Therefore, the according toolbox (\textit{summaryTable}) need to be on the matlab path.
+
+\item \textbf{[axesH, fM, ph] = plot(varargin)}\\
+This functions plots the mdtsObject (stacked plot with Events and Symbolic Time Series represented as Semi-Transparent patches). The optional input arguments (key-value pairs) are:
+	\begin{enumerate}
+		\item \textbf{Size}: the size (height, width) of the plot im centimeters. Default Value: [8.8cm, 11.7cm] 
+		\item \textbf{FontSize}: the font Size in pt used for figure. Default value: 10pt
+		\item \textbf{plotSymbolName}: boolean flag indicating if the symbol should be plotted on the semi transparent patches (if a SymbolicRepresentation is defined). Default: false
+		\item \textbf{plotSymbolDuration}: boolean flag indicating if the symbol duration should be plotted on the semi transparent patches (if a SymbolicRepresentation is defined). Default: false
+		\item \textbf{plotSymbolNameMinLengthRelative}: the minimum length of a symbolic representation to show the symbol name and duration defined as a relative value of the entire length of the time series. Default: 0.05; this can be used to avoid clattering of the plot in case of short symbols.
+		\item \textbf{figureH}: a handle to a figure which should be used for plotting. Default: a new figure is created with \textit{figureGen} of the graphics-toolbox.
+		\item \textbf{additional key-value pairs}: are forwarded to the plotMulti function of the graphics-toolbox.
+	\end{enumerate}
+returned are:
+	\begin{enumerate}
+		\item \textbf{axesH}: the handles to the axes
+		\item \textbf{fM}: the figureManager used on the figure to handle large data sets (figureManager-toolbox)
+		\item \textbf{ph}: the handles to the plotted timeseries (handles to the line objects).
+	\end{enumerate}
+
+\item \textbf{ph = plotEventsOnAxes(axesIn)}\\
+This function plots the event assigned to the mdtsObject on given axes  (\textit{axesIn} as a dashed line at the point of occurence. \textit{axesIn} are the axes on which the Events should be plotted. \textit{ph} are the handles to the event-lines (line-objects).
+	
+\item \textbf{[axesOut, fM, ph] = plotmdtsObject(inputObject, varargin)}\\
+is a deprecated method which currently forwards \textit{varargin} to the \textit{plot} function of \textit{mdtsObject}.
+
+\item \textbf{[axesOut, fM, ph] = plotSegments(segmentTag, varargin)}\\
+Will be deprecated in future. This function generates a new plot of the multidimensional time series where the assigned segments are marked as semi-transparent patches.
+The input arguments are:
+	\begin{enumerate}
+		\item \textbf{segmentTag}: the name of the segment which should be plotted
+		\item \textbf{Size}: optional; the size (height, width) of the plot im centimeters. Default Value: [8.8cm, 11.7cm] 
+		\item \textbf{FontSize}: optional; the font Size in pt used for figure. Default value: 10pt
+		\item \textbf{other key-value pairs}: are forwarded to the plotMulti function of the graphics-toolbox.
+	\end{enumerate}
+returned are:
+	\begin{enumerate}
+		\item \textbf{axesH}: the handles to the axes
+		\item \textbf{fM}: the figureManager used on the figure to handle large data sets (figureManager-toolbox)
+		\item \textbf{ph}: the handles to the plotted segments (handles to the patches objects objects).
+	\end{enumerate}
+
+\item \textbf{ph = plotSegmentsOnAxes(axesIn, segmentTag, varargin)}\\
+Will be deprecated in future. This function plots the assigned segments on the given \textit{axesIn} as semi-transparent patches.
+The input arguments are:
+	\begin{enumerate}
+		\item \textbf{axesIn}: the axes on which the segments should be plotted
+		\item \textbf{segmentTag}: the name of the segment which should be plotted
+		\item \textbf{other key-value pairs}: are forwarded to segmentsObject.plotOnAxes.
+	\end{enumerate}
+returned are:
+	\begin{enumerate}
+		\item \textbf{ph}: the handles to the plotted segments (handles to the patches objects objects).
+	\end{enumerate}
+
 \end{enumerate}
-\todo{add all functions for aliasTables to the documentation}
 
 \subsubsection{Methods (Static)}
+\label{sssec:mdtsObj:MethodsStatic}
 \begin{enumerate}
 	
 	\item \textbf{bValid = isValidAliasTableTags(tIn, tags)}\\
 	This function checks, if a table \textit{tIn} is a valid aliasTable with respect to the given \textit{tags}. It checks if the table has exactly one column \textit{OrigTag} and if the entries in this column can be found in \textit{tags}.
+	
+	\item \textbf{isInList = isTagWithinTagList(tags, taglist)}\\
+	This function checks, if the \textit{tags} (cell array) are within the cell-array  \textit{taglist}. It returns a boolean list \textit{isInList} with the same size as \textit{tags} where the value 1 indicates if the tags are available in the given \textit{taglist}.
+	
+	\item \textbf{bValid = isTagWithinAliasTable(tags, aliasTab)}\\
+	This function checks, if the \textit{tags} (cell array) are within the alias table  \textit{aliasTab}. It returns a boolean list with the same size as \textit{tags} where the value 1 indicates if the tags are available in the given \textit{aliasTab}.
+	
+	\item \textbf{[pa, tHandleAll] = markRangeOnAxes\_givenIndexStatic(xVals, axes\_in, startInds, stopInds, colorSpec, varargin)}\\
+	This function marks a given range as a semitransparent patch. \textit{xVals} is a vector of the xValues used to plot the patches. \text{axes\_in} are the axes, on which the patches should be places. \textit{startInds} and \textit{stopInds} are arrays of the same size containing the indexes to \textit{xVals} where the patches should start and end. \textit{colorSpec} are the color specification for the patch. Optional the key-value pair \textit{textToShow} and a string or cell array of strings of the text which should be shown within the patches. Additional all other key-value pairs are passed on to the \text{fill} command of Matlab. Returned are the handles to the patches and the handles to the text objects.
+	
+	
 \end{enumerate}
 
-\section{Symbolic Representation}
+\section{Symbolic Representation -Classes and Methods}
 \label{ChpSymbolicRepresentation}
 
-\subsection{SymbRepObject}
+\subsection{SymbRepObject (Class Defintion)}
 \label{ChpDescriptionSymbRepObject}
 
 \subsubsection{Properties}
-
 \begin{enumerate}
-	\item \textbf{symbols:} Complete data of the according channel as sequence of symbols in a n x 1 categorical array. Repetitive symbols are merged to one symbol and the number of repretitions is stored in 'durations' (e.g. three repetitions \{'a', 'a', 'a'\} of the symbol 'a' will be merged to one symbol 'a' with a duration of three).
-	\item \textbf{durations:} Number of repetitions of every symbol as n x 1 array. $durations(i)$ represents the number of repetitions of the symbol $symbols(i)$. The sum of this array correlates with the number of time stamps in the channel data.
+	\item Core Properties:
+		\begin{enumerate}
+			\item \textbf{symbols:} Complete data of the according channel as sequence of symbols in a n x 1 categorical array. Repetitive symbols are merged to one symbol and the number of repretitions is stored in 'durations' (e.g. three repetitions \{'a', 'a', 'a'\} of the symbol 'a' will be merged to one symbol 'a' with a duration of spanning all three symbols and repetition value is set to 3).
+			\item \textbf{durations:} Number of timestamps (datapoints, span of datapoints) of every symbol as n x 1 array. $durations(i)$ represents the number of repetitions of the symbol $symbols(i)$. The sum of this array correlates with the number of time stamps (datapoints) in the channel data.
+			\item \textbf{name:} A string (char) of the name of the Symbolic Representation. Can be set with the function \textit{setName}.
+			\item \textbf{repetitions:} an array, which contains the number of repetitions of the symbol. Initially, this is set to duration. After merge, this is updated.
+		\end{enumerate}
+	\item Dependent Properties:
+		\begin{enumerate}
+			\item \textbf{symbolDurations:} The sum of all durations of the set of unique categories. The duration of all (unique) symbols (categories) are summed up.
+			\item \textbf{startInds:} returns a list of the start indices of each symbol (categorie).
+			\item \textbf{stoptInds:} returns a list of the stop indices of each symbol (categorie).
+			\item \textbf{nSyms:} returns the number of elements in the symbols-array.
+		\end{enumerate}
+	
+	
 \end{enumerate}
+
+
 
 \subsubsection{Constructor}
 
@@ -440,272 +604,684 @@ This function checks, if a table \textit{tIn} is a valid aliasTable with respect
 \subsubsection{Methods}
 
 \begin{enumerate}
-	
-	\item \textbf{symbRepVec = symbRepVec}\\
-	Returns the symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'c'});
-	>> durations = [2; 4; 3];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> fullVector = symbolicObject.symbRepVec
-	fullVector = 
-	
-	  9x1 categorical array
-	
-	     a 
-	     a 
-	     b 
-	     b 
-	     b 
-	     b 
-	     c 
-	     c 
-	     c 
-	\end{verbatim}
-	
-	\item \textbf{[startInds, durations] = findSymbol(symbol)}\\
-	Returns all indices of the first element of repetitive \textit{symbol} in \textit{symbRepVec} together with the according durations, e.g.
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'a'; 'b'; 'a'});
-	>> durations = [2; 4; 3; 5; 2];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> [startInds, durations] = symbolicObject.findSymbol('a')
-	
-	startInds =
-	
-	   1
-	   7
-	   15	
-	
-	durations =
-	
-	   2
-	   3
-	   2
-	\end{verbatim}
-	
-	\item \textbf{symbInd = findSymbolVec(symbol)}\\
-	Returns a boolean array of the size of \textit{symbRepVec} with ``true'' elements on all positions of \textit{symbol}, e.g.
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'c'});
-	>> durations = [2; 3; 1];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> symbInd = symbolicObject.findSymbolVec('a')
-	
-	symbInd =
-	
-	  6x1 logical array
-	
-	   1
-	   1
-	   0
-	   0
-	   0
-	   0
-	\end{verbatim}
-	
-	\item \textbf{obj = mergeSequence(symbSequence)}\\
-	Searches for all incidences of \textit{symbSequence} sequences of symbols in \textit{symbols}. Replaces the symbols of such a sequence by one new symbol, which name is assembled of the symbols of this sequence. Original symbols in such a sequence are identified by enclosing '\{\}', new symbols which represent a merged sequence are identified by enclosing '[]'. Merged symbols can be merged again, thus the function is ready for nested use. \textit{symbSequence} must be given as $1 \times 2$ cell array of strings, representing one symbol of the sequence in every element of the cell array. The durations of the replaced symbols are summed over the complete sequence and set as duration of the new symbol.
-	Example:
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'c'; 'a'; 'b'; 'a'; 'b'});
-	>> durations = [2; 3; 1; 2; 1; 3; 2];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> symbolicObject = symbolicObject.mergeSequence({'a'; 'b'});
-	>> symbolicObject.symbols
-	
-	ans = 
-	
-	  3x1 categorical array
-	
-	     [{a}{b}] 
-	     c 
-	     [{a}{b}] 
-	
-	>> symbolicObject.durations
-	
-	ans =
-	
-	     5
-	     1
-	     8	
-	\end{verbatim}
-	
-	\item \textbf{obj = renameSymbol(oldSymbol, newSymbol)}\\
-	Renames all \textit{oldSymbol} symbols to \textit{newSymbol}.
-	
-	\item \textbf{obj = mergeSymbols(oldSymbols, newSymbol)}\\
-	Merges all \textit{oldSymbols} symbols (given as cell array of strings) to one new \textit{newSymbol}.
-	
-	\item \textbf{obj = setSymbolsInRange(newSymbol, range)}\\
-	Sets all symbols in \textit{symbRepVec} in the range \textit{range} to \textit{newSymbol}, which is given as character array. Range must be given as array of the form [startIndex, endIndex], where \textit{startIndex} represent the index of the first element of the range and \textit{endIndex} represents the last element of the range, e.g.
-	\begin{verbatim}
-	>> symbols = categorical({'a'; 'b'; 'c'});
-	>> durations = [1; 3; 4];
-	>> symbolicObject = SymbRepObject(durations, symbols);
-	>> symbolicObject = symbolicObject.setSymbolsInRange('x', [4, 6]);
-	>> symbolicObject.symbols
-	
-	ans = 
-	
-	  4x1 categorical array
-	
-	     a 
-	     b 
-	     x 
-	     c 
-	
-	>> symbolicObject.durations
-	
-	ans =
-	
-	     1
-	     2
-	     3
-	     2	
-	\end{verbatim}
-	
-	\item \textbf{obj = removeShortSymbols(varargin)}\\
-	Removes short symbols (symbols with a small duration). The duration of the short symbol is distributed to the enclosing symbols. Multiple successive short symbols will be treated as one short symbol and the sum of the durations will be distributed to the enclosing symbols. The following arguments are available:
-	\begin{enumerate}
-		\item \textbf{shortSymbolLength: } Definition of a short symbol. All symbols with a length smaller or equal to \textit{shortSymbolLength} will be removed or splitted, respecitvely. Default is 1.
-		\item \textbf{maxNumberShortSymbols: } If the number of a sequence of multiple successive short symbols exceeds \textit{maxNumberShortSymbols}, the sequence of these symbols will not be split, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 5.
-		\item \textbf{maxShortSymbolSequenceLength: } If the sum of all durations of multiple successive short symbols exceeds \textit{maxShortSymbolSequenceLength}, the sequence of these symbols will not be splitted, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 10.
-		\item \textbf{SplittingMode: } Name-Value-Pair. Defines how the duration of short symbols is distributed. Available options: 
+	\item \textbf{[startInds, stopInds] = SymbObj.compressedInds2UncompressedInds(indsCompressed)}\\
+		Converts given Compressed Indices to uncompressed startIndices and stopIndices. 
+		The input arguments are:
 		\begin{enumerate}
-			\item \textbf{'equal':} durations will be distributed 1 : 1 to the enclosing symbols
-			\item \textbf{'weighted':} durations will be distributed due to the length of the two enclosing symbols
+			\item \textbf{indsCompressed}: a list of indices of the compressed symbolic time series.
 		\end{enumerate}
-		Default is 'equal'.	
-	\end{enumerate}
-
-	\textbf{Note:} If a sequence does not exceed the limits in \textit{maxNumberShortSymbols} or \textit{maxShortSymbolSequenceLength} but contains an unlabelled symbol ('$<$undefined$>$' in Matlab), this symbol will be treated as normal symbol and the complete sequence will be distributed to the enclosing symbols.
-
-    Example:
-    
-    \begin{verbatim}
-    >> symbols = categorical({'a'; 'b'; 'c'; 'd'; 'e';...
-    >> 'f'; 'g'; 'h'; 'i'; 'j'});
-    >> durations = [4; 3; 4; 2; 2; 12; 2; 1; 2; 6];
-    >> symbolicObject = SymbRepObject(durations, symbols);
-    >> symbolicObject = symbolicObject.removeShortSymbols('shortSymbolLength',...
-    >> 3, 'maxNumberShortSymbols', 4, 'maxShortSymbolSequenceLength', 4,...
-    >> 'SplittingMode', 'weighted');
-    >> symbolicObject.symbols
-    
-    ans = 
-    
-      5x1 categorical array
-    
-         a 
-         c 
-         f 
-         <undefined> 
-         j 
-    
-    >> symbolicObject.durations
-    
-    ans =
-    
-         6
-         6
-         15
-         5
-         6
-    \end{verbatim}
-    
-    \item \textbf{symbMarkov = genSymbMarkov(varargin)}\\
-    Generates a markov matrix for the transition from any symbol to any other symbol. The following arguments are available:
-    \begin{enumerate}
-    	\item \textbf{Absolute: } If set to true, the number of transitions will not be normalized to a transition probability. Instead, the total number of transitions will be returned. Default is false.
-    \end{enumerate}
-
-    \item \textbf{newObj = getTimeInterval(intervalIndices)}\\
-	Extracts \textit{durations} and \textit{symbols} within the time interval given in \textit{intervalIndices} as indices and returns the extracted data in a new symbRepObject \textit{newObj}.
-
-	\item \textbf{symbMarkov3D = genTrigramMatrix}\\
-	\textit{Only for development purposes!}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{startInds}: start indices of the requested indices with respect to the  uncompressed series
+			\item \textbf{stopInds}: stop indices of the requested indices with respect to the uncompressed series.
+		\end{enumerate}
 	
-	\item \textbf{markovM = genLengthWeightedMatrix(varargin)}\\
-	\textit{Only for development purposes!}
+	\item \textbf{SymbObj = SymbObj.compressSymbols(listOfSymbolsToCheck)}\\
+		This methods of the SymbRepObject finds run-length of the same symbol and replaced it with a single symbol. Additionally, the durations and repetitions are updated by summing up.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{listOfSymbolsToCheck}: A cell array of symbols to be checked and updated. By default all different symbols in the symbolic time series are checked.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{SymbObj}: a version of the updated SymbRepObject
+		\end{enumerate}
 	
-	\item \textbf{markovM = genWeightedMatrixChangedLength(varargin)}\\
-	\textit{Only for development purposes!}
+	\item \textbf{[startInds, durations, compressedStartInds, compressedStopInds] = SymbObj.findSequence(symbSequence)}\\
+		Find the start indices, durations, compressed start indices and compressed stop indices of a symbolic sequence.
+		%   sequence
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{symbSequence}: Sequence (cell array) of symbols, which is to be found within the compressed symbolic time series. Must be given as one dimensional cell an arbitrary number of elements.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{startInds}: index in the original uncompressed time series where the sequences  start.
+			\item \textbf{durations}: the number of samples in the original uncompressed time series the  sequence lasts.
+			\item \textbf{compressedStartInds}: the indices where the symbSequence starts in the  compressed symbolic representation
+			\item \textbf{compressedEndInds}: the indices  where the symbSequence stops in the  compressed symbolic representation
+		\end{enumerate}
 	
-	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = genHierarchicalCompounding(SymbObj, varargin)}\\
-	\textit{Only for development purposes!}
+	
+	\item \textbf{[startInds, durations, repetitions] = SymbObj.findSymbol(symbol)}\\
+		Returns all indices of the first element of repetitive \textit{symbol} in \textit{symbRepVec} together with the according durations and repetitions, e.g.
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'a'; 'b'; 'a'});
+		>> durations = [2; 4; 3; 5; 2];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> [startInds, durations] = symbolicObject.findSymbol('a')
+		
+		startInds =
+		
+		1
+		7
+		15	
+		
+		durations =
+		
+		2
+		3
+		2
+		\end{verbatim}
+		
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{symbol}: the symbol to be found within the instance (char)
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{startInds}: the start indices of the occurrances of the symbol within the symbolic representation. The indices are with respect to the datapoints and not to the compressed symbolic structure.
+			\item \textbf{durations}: the durations of the occurrances of the symbol within the symbolic representation.
+			\item \textbf{repetitions}: the repetitions of the occurrances of the symbol within the symbolic representation.
+		\end{enumerate}
+	
+	\item \textbf{symbInd = SymbObj.findSymbolVec(symbol)}\\
+		Returns a boolean array of the size of \textit{symbRepVec} with ``true'' elements on all positions of \textit{symbol}. The result is with respect to the uncompressed symbolic sequence, e.g.
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'c'});
+		>> durations = [2; 3; 1];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> symbInd = symbolicObject.findSymbolVec('a')
+		
+		symbInd =
+		
+		6x1 logical array
+		
+		1
+		1
+		0
+		0
+		0
+		0
+		\end{verbatim}
+		
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{symbol}: the symbol to be found within the instance (char)
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{symbInd}:Boolean array indicating on which positions the symbol is contained in the uncompressed symbolic representation. The index can be used for indexing the underlaying time series
+		\end{enumerate}
+	
+	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = \\SymbObj.genHierarchicalCompounding(varargin)}\\
+		This function is under development. It performs hierarchical compounding on the given SymbObj. Therefore, word pairs, which occur often are compounded to a new word. This is done iteratively.
+	
+				The input arguments are:
+		\begin{enumerate}
+			\item \textbf{maxLevel}: (optional key-value) integer defining the maximum number of levels to be calculated.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{allSymbRepObjects}: Array of SymbRepObjects. Array(i) is the i-th level of hierarchicalCompounding
+			\item \textbf{imageMatrix}: Matrix which contains in each row the categorie of each datapoint (symbol) for one level. This can be used to plot the hierarchical development.
+			\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
+			\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
+		\end{enumerate}
+
+	\item \textbf{[allSymbRepObjects, imageMatrix, compressionData, evalRecord] = \\SymbObj.genHierarchicalCompounding2(SymbObjFunStrg, varargin)}\\
+		This function is under development. It is an updated version of \textit{genHierarchicalCompounding}. It performs hierarchical compounding on the given SymbObj. Therefore, word pairs, which occur often are compounded to a new word. This is done iteratively.
+	
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{SymbObjFunStrg}: name (string) of a function of the SymbRepObject to be used to calculate the symbols to be merged. Currently the following functions are possible:  genLengthWeightedMatrix, genSymbMarkov, genWeightedMatrixChangedLength
+			\item \textbf{maxLevel}: (optional key-value) integer defining the maximum number of levels to be calculated.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{allSymbRepObjects}: Array of SymbRepObjects. Array(i) is the i-th level of hierarchicalCompounding
+			\item \textbf{imageMatrix}: Matrix which contains in each row the category of each datapoint (symbol) for one level. This can be used to plot the hierarchical development.
+			\item \textbf{compressionData}: A struct with information for each level, eg. number of Symbols, number of categories, number of merged Symbols and symbol reduction rate.
+			\item \textbf{evalRecord}: A table which contains all steps performed during the hierarchical compounding
+		\end{enumerate}
+	
+	\item \textbf{[occurenceM, markovM, sumLength1M, sumLength2M] = \\ SymbObj.genLengthWeightedMatrix(varargin)}\\
+		\textit{Only for development purposes!} Generate a markov type  matrix for all symbolic combinations with weighted length difference (if the length of symbols to be merged are similar, they are weighted more, this minimizes the problem that a small symbol effects large parts of the symbolic time series). This function can also be used in the method \textit{genHierarchicalCompounding2}.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}  with the weighting included.
+			\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$ with the weighting included.
+			\item \textbf{sumLength1M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $i$ in the merged sequences of symbol $i-j$.
+			\item \textbf{sumLength2M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $j$ in the merged sequences of symbol $i-j$.
+		\end{enumerate}
+	
+	
+	\item \textbf{[occurenceM, markovM] = SymbObj.genSymbMarkov(varargin)}\\
+		\textit{Only for development purposes!} Generates a markov matrix for the transition from any symbol to any other symbol.
+		The following input arguments are available:
+		\begin{enumerate}
+			\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities
+		\end{enumerate}
+			returned are:
+		\begin{enumerate}
+			\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}
+			\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$. It is the (column) normalized version of occurenceM.
+		\end{enumerate}
+
+
+	\item \textbf{symbCounts3D =  SymbObj.genTrigramMatrix}\\
+		\textit{Only for development purposes!} Generate a 3d counting matrix for all sequences of 3 symbols in a row.
+		Returned are:
+		\begin{enumerate}
+			\item \textbf{symbCounts3D}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ and $k$ in the entry \textit{occurenceM(i,j,k)}
+		\end{enumerate}
+
+
+	\item \textbf{[occurenceM, markovM, sumLength1M, sumLength2M, lengthSyms] =\\ SymbObj.genWeightedMatrixChangedLength(varargin)}\\
+		\textit{Only for development purposes!} Generate a markov matrix for all symbolic
+		 combinations with weighted change of length. This minimizes the problem, that large portion of the symbolic time series get changed.
+		 This function can also be used in the method \textit{genHierarchicalCompounding2}.
+		 The input arguments are:
+		 \begin{enumerate}
+		 	\item \textbf{Absolute}: (optonal key-value pair) Set to true if result shall represent the  absolute number of transitions from one state to another, set to false (default) if matrix shall represent transition  probabilities.
+		 \end{enumerate}
+		 returned are:
+		 \begin{enumerate}
+		 	\item \textbf{occurenceM}: matrix, which counts the occurrences of symbol $i$ is followed by symbol $j$ in the entry \textit{occurenceM(j,i)}  with the weighting included.
+		 	\item \textbf{markovM}:  matrix containing a value for the probability of symbol $i$ is followed by symbol $j$ weighted by length to be changed.
+		 	\item \textbf{sumLength1M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $i$ in the merged sequences of symbol $i-j$.
+		 	\item \textbf{sumLength2M}: a matrix containing in the entry $(i,j)$ the overall length of symbol $j$ in the merged sequences of symbol $i-j$.
+		 	\item \textbf{lengthSyms}: a v containing  the overall length of each symbol. This is the same as SymbObj.symbolDurations.
+		 \end{enumerate}
+	 
+	\item \textbf{startIndUncompressed = SymbObj.getStartInd(obj, indSymbCompressed)}\\
+		given the index of a symbol from the compressed return the start index of the uncompressed sequence.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{indSymbCompressed}: the index of the symbol(s) of the  compressed symbol series.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{startIndUncompressed}:  the start index (indices) of the uncompressed series.	
+		\end{enumerate}
+	
+	\item \textbf{newSymbObj = SymbObj.getTimeInterval(obj, intervalIndices)}\\
+		This returns a snipped of the time series object, given numerical indices of the uncompressed series.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{intervalIndices}: an array containing the start and end index of the snipped to be extracted. The indices are with  respect to the uncompressed series.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{newSymbObj}:  instance of SymbRepObj which contains only the interval to be requested.
+		\end{enumerate}
+	
+	\item \textbf{[pa, tHandleAll] = SymbObj.markSymbSequenceOnAxes(xVals, axes\_in, SymbSequence, colorSpec, varargin)}\\
+		\textit{This function is under development. It works together with the stand-alone function markRangeOnAxes\_givenIndexStatic of the mdtsObject class.}
+		The function marks a Symbol sequence as semi-transparent patch on a given axes.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{xVals}: The abscissae values used for plotting. These values and the start and stop indices of the symbolic sequence are used to define the start end end of the patch.
+			\item \textbf{axes\_in}:  The axes on which the symbolic sequence should be plotted. Currently it can not handle cell-arrays of axes.
+			\item \textbf{SymbSequence}: The sequence of symbols (given as cellarray of strings or chars) which should be marked.
+			\item \textbf{colorSpec}: A color specification for the patch (either a valid color name or abbreviation, or a rgb color vector).
+			\item \textbf{bShowText}: (optional key-value pair) A boolean flag indicating if the symbol should be plotted as text within the patch. Default value: true.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{pa}:  A list of patches handles.
+			\item \textbf{tHandleAll}:  A list of text handles.
+		\end{enumerate}
+	
+	\item \textbf{SymbObj = SymbObj.mergeSequence(symbSequence, varargin)}\\
+		Merges all occurences of a given sequence of symbols within the SymbRepObject.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{symbSequence}: Sequence which is supposed to be merged to one new symbol (categorical). Must be given as one dimensional cell array of strings with an arbitrary number of 	elements.
+				\item \textbf{bAllowOverlapping}:  (optional key-value pair, default: false) A boolean flag indicating if overlapping sequences are seen as one occurence. Given a symbolic time series 'ababababa' with durations = [1,1,1,1,1,1,1,1,1] and repetitions = [1,1,1,1,1,1,1,1,1] and merge the sequence 'aba'$\rightarrow$ with the new name 'c': if the flag is set to false, the result would be 'cbcba' with durations = [3,1,3,1,1] and repetitions = [1,1,1,1,1]. If the flag is set to true it would result in the symbolic series 'c' with durations = [9], repetitions = [4].
+			\item \textbf{newSymbol}: (optional key-value pair, default: 'concatenation of symbSequence')  A string (char) which should replace the found symbSequence.
+			\item \textbf{bCompress}: (optional key-value pair, default: true) A boolean flag,  indicating if SymbObj.compressSymbols should be called after merging the sequences. Given a symbolic sequence 'ababab' and the sequence  to be merged 'ab'$\rightarrow$'c': if bCompress=true the resulting symbolic  sequence would be 'c'. If bCompress=false the resulting symbolic  sequence would be 'ccc'.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{SymbRepObject}:  Instance of SymbRepObject with merged symbolic  representation.
+		\end{enumerate}
+	
+	
+	\item \textbf{SymbObj = SymbObj.mergeSymbols(symbolsToMerge, newSymbol, varargin)}\\
+		Merges all \textit{symbolsToMerge} symbols (given as cell array of strings) to one new \textit{newSymbol}.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{symbolsToMerge}: Symbols existent in the symbolic representation,  which have to be merged. Input given as cell array of strings.
+			\item \textbf{newSymbol}:  New symbol name for the merged symbol sequence, given as  string
+			\item \textbf{varargin}: other key-value pairs are passed forward to SymbRepObject.mergeSequence.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{SymbObj}:  Original object (SymbRepObject) with merged symbols.
+		\end{enumerate}
+	
+	
+	\item \textbf{ [paAll, tHandleAll] = SymbObj.plotOnAxes(axes\_in,  varargin)}\\
+		Plots an instance of a SymbRepObject on given axes.
+		The input arguments are:
+		\begin{enumerate}
+			\item \textbf{axes\_in}: the axes, on which the symbolic representation should be  plotted;
+			\item \textbf{xTime}:  (optional key-value pair, if not given, take the x values of the first line in the axes) the original time axes where the SymbRepObject refers to;
+			\item \textbf{plotSymbolName}: (optional key-value, default: false)a boolean indicating if the Symbol name should be shown in the plot;
+			\item \textbf{plotSymbolDuration}: optional key-value, default: false )a boolean indicating if the Symbol duration should be shown in the plot;
+			\item \textbf{plotSymbolNameMinLength}: (optional key-value, default: 0) an integer, symbols with a length less than  this value are not annotated with symbol name and/or duration;
+			\item \textbf{colorDismiss}: (optional key-value, default: no color) a color string or color triplet which should not be in the colors used for shading the plots.
+			\item \textbf{additional inputs}: additional key-value pairs are forwarded to the matlab fill function.
+		\end{enumerate}
+		returned are:
+		\begin{enumerate}
+			\item \textbf{paAll}:  an array containing the handles to the patches.
+			\item \textbf{tHandleAll}:  array containing the handles to the annotations texts.
+		\end{enumerate}
+	
+	\item \textbf{SymbObj = SymbObj.removeShortSymbols(varargin)}\\
+		Removes short symbols (symbols with a small duration). The duration of the short symbol is distributed to the enclosing symbols. Multiple successive short symbols will be treated as one short symbol and the sum of the durations will be distributed to the enclosing symbols. The following arguments are available:
+		\begin{enumerate}
+			\item \textbf{shortSymbolLength: } Definition of a short symbol. All symbols with a length smaller or equal to \textit{shortSymbolLength} will be removed or splitted, respecitvely. Default is 1.
+			\item \textbf{maxNumberShortSymbols: } If the number of a sequence of multiple successive short symbols exceeds \textit{maxNumberShortSymbols}, the sequence of these symbols will not be split, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 5.
+			\item \textbf{maxShortSymbolSequenceLength: } If the sum of all durations of multiple successive short symbols exceeds \textit{maxShortSymbolSequenceLength}, the sequence of these symbols will not be splitted, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 10.
+			\item \textbf{SplittingMode: } Name-Value-Pair. Defines how the duration of short symbols is distributed. Available options: 
+			\begin{enumerate}
+				\item \textbf{'equal':} durations will be distributed 1 : 1 to the enclosing symbols
+				\item \textbf{'weighted':} durations will be distributed due to the length of the two enclosing symbols
+			\end{enumerate}
+			Default is 'equal'.	
+		\end{enumerate}
+		
+		\textbf{Note:} If a sequence does not exceed the limits in \textit{maxNumberShortSymbols} or \textit{maxShortSymbolSequenceLength} but contains an unlabelled symbol ('$<$undefined$>$' in Matlab), this symbol will be treated as normal symbol and the complete sequence will be distributed to the enclosing symbols.
+		
+		Example:
+		
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'c'; 'd'; 'e';...
+		>> 'f'; 'g'; 'h'; 'i'; 'j'});
+		>> durations = [4; 3; 4; 2; 2; 12; 2; 1; 2; 6];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> symbolicObject = symbolicObject.removeShortSymbols('shortSymbolLength',...
+		>> 3, 'maxNumberShortSymbols', 4, 'maxShortSymbolSequenceLength', 4,...
+		>> 'SplittingMode', 'weighted');
+		>> symbolicObject.symbols
+		
+		ans = 
+		
+		5x1 categorical array
+		
+		a 
+		c 
+		f 
+		<undefined> 
+		j 
+		
+		>> symbolicObject.durations
+		
+		ans =
+		
+		6
+		6
+		15
+		5
+		6
+		\end{verbatim}
+			
+			
+	\item \textbf{SymbObj = SymbObj.removeSymbolsGivenCompressedIndes(indsRemove, varargin)}\\
+			Removes symbols defined in indsRemove. The duration of the deleted symbol is distributed to the enclosing symbols. Multiple successive deleted symbols will be treated as one symbol and the sum of the durations will be distributed to the enclosing symbols.
+			The following input arguments are available:
+			\begin{enumerate}
+				\item \textbf{indsRemove: } Indices of the symbols to be removed
+				\item \textbf{shortSymbolLength: } Definition of a short symbol. All symbols with a length smaller or equal to \textit{shortSymbolLength} will be removed or splitted, respecitvely. Default is 1.
+				\item \textbf{maxNumberShortSymbols: } If the number of a sequence of multiple successive short symbols exceeds \textit{maxNumberShortSymbols}, the sequence of these symbols will not be split, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 5.
+				\item \textbf{maxShortSymbolSequenceLength: } If the sum of all durations of multiple successive short symbols exceeds \textit{maxShortSymbolSequenceLength}, the sequence of these symbols will not be splitted, but merged to one larger symbol without any label ('$<$undefined$>$' in Matlab). Default is 10.
+				\item \textbf{SplittingMode: } Name-Value-Pair. Defines how the duration of short symbols is distributed. Available options: 
+				\begin{enumerate}
+					\item \textbf{'equal':} durations will be distributed 1 : 1 to the enclosing symbols
+					\item \textbf{'weighted':} durations will be distributed due to the length of the two enclosing symbols
+				\end{enumerate}
+				Default is 'equal'.	
+			\end{enumerate}
+			
+			\textbf{Note:} If a sequence does not exceed the limits in \textit{maxNumberShortSymbols} or \textit{maxShortSymbolSequenceLength} but contains an unlabelled symbol ('$<$undefined$>$' in Matlab), this symbol will be treated as normal symbol and the complete sequence will be distributed to the enclosing symbols.
+	
+	\item \textbf{SymbObj = SymbObj.renameSymbol(oldSymbol, newSymbol)}\\
+		Renames all \textit{oldSymbol} symbols to \textit{newSymbol}.
+		
+	\item \textbf{SymbObj = SymbObj.setName(name)}\\
+		sets a \textit{name} for the SymbRepObject. This corresponds to the property \textit{SymbObj.name}.
+	
+	\item \textbf{SymbObj = SymbObj.setSymbolsInRange(newSymbol, range)}\\
+		Sets all symbols in \textit{symbRepVec} in the range \textit{range} to \textit{newSymbol}, which is given as character array. Range must be given as array of the form [startIndex, endIndex], where \textit{startIndex} represent the index of the first element of the range and \textit{endIndex} represents the last element of the range in the uncompressed symbolic series, e.g.
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'c'});
+		>> durations = [1; 3; 4];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> symbolicObject = symbolicObject.setSymbolsInRange('x', [4, 6]);
+		>> symbolicObject.symbols
+		
+		ans = 
+		
+		4x1 categorical array
+		
+		a 
+		b 
+		x 
+		c 
+		
+		>> symbolicObject.durations
+		
+		ans =
+		
+		1
+		2
+		3
+		2	
+		\end{verbatim}
+		
+	\item \textbf{symbRepVec = SymbObj.symbRepVec}\\
+		Returns the uncompressed symbolic representation as vector of the same size as the time stamps. All repetitive symbols are included in this vector, e.g.	
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'c'});
+		>> durations = [2; 4; 3];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> fullVector = symbolicObject.symbRepVec
+		fullVector = 
+		
+		  9x1 categorical array
+		
+		     a 
+		     a 
+		     b 
+		     b 
+		     b 
+		     b 
+		     c 
+		     c 
+		     c 
+		\end{verbatim}
+		
+		
+	\item \textbf{obj = mergeSequence(symbSequence)}\\
+		Searches for all incidences of \textit{symbSequence} sequences of symbols in \textit{symbols}. Replaces the symbols of such a sequence by one new symbol, which name is assembled of the symbols of this sequence. Original symbols in such a sequence are identified by enclosing '\{\}', new symbols which represent a merged sequence are identified by enclosing '[]'. Merged symbols can be merged again, thus the function is ready for nested use. \textit{symbSequence} must be given as $1 \times 2$ cell array of strings, representing one symbol of the sequence in every element of the cell array. The durations of the replaced symbols are summed over the complete sequence and set as duration of the new symbol.
+		Example:
+		\begin{verbatim}
+		>> symbols = categorical({'a'; 'b'; 'c'; 'a'; 'b'; 'a'; 'b'});
+		>> durations = [2; 3; 1; 2; 1; 3; 2];
+		>> symbolicObject = SymbRepObject(durations, symbols);
+		>> symbolicObject = symbolicObject.mergeSequence({'a'; 'b'});
+		>> symbolicObject.symbols
+		
+		ans = 
+		
+		  3x1 categorical array
+		
+		     [{a}{b}] 
+		     c 
+		     [{a}{b}] 
+		
+		>> symbolicObject.durations
+		
+		ans =
+		
+		     5
+		     1
+		     8	
+		\end{verbatim}
+	
+	
 	
 \end{enumerate}
 
-\subsection{symbRepChannel}
+\subsubsection{Methods (Static)}
 
-\subsubsection{Function Signature:}
+	\begin{enumerate}
+		\item \textbf{markovM = SymbRepObject.occurenceM2markovM(occurenceM)}\\
+			Takes a occurenceM and returns a markov type matrix by normalizing each column.
+			The input arguments are:
+			\begin{enumerate}
+				\item \textbf{occurenceM}: a occurance matrix returned from the functions genLengthWeightedMatrix, genSymbMarkov, genWeightedMatrixChangedLength.
+			\end{enumerate}
+			returned are:
+			\begin{enumerate}
+				\item \textbf{markovM}:  a matrix which is normalized by each column. (sum of each column = 1). Therefor, this matrix can be used to  calculate the probability of the next symbol, eg.  newSymbolPropability = markovM*currentSymbolProbabilityVec
+			\end{enumerate}
+		
+		\item \textbf{markovMcleared = clearMarkovM(markovM, occurenceM)}\\
+			Replaces all entries in the markovM where sum(occurenceM,1) ==1 with a probability of 0 (this would correspond that a symbol occurse only once in a symbolic time series). Otherwise, a single occurrence would have probability of 100  which causes problems when merging symbols.
+			The input arguments are:
+			\begin{enumerate}
+				\item \textbf{markovM}: a markov type matrix, which contains the probability that the symbol i is followed by symbol j in the entry markovM(j,i).
+				\item \textbf{occurenceM}: The number of occurances of the word pair symbol i followed by symbol j can be found in entry occurenceM(j,i).
+			\end{enumerate}
+			returned are:
+			\begin{enumerate}
+				\item \textbf{markovMcleared}: The 'cleared' markovMatrix. This removes 100\% probabilities from the markov Matrix. Since a single occurrence of one symbol i causes a probability of 	100\% of the sequence symbol (i) + symbol (i+1).  
+			\end{enumerate}
+		
+	\end{enumerate}
 
-\begin{center}
-	returnObject = symbRepChannel(input, edges, alphabet)
-\end{center}
+\subsection{A = allcomb(varargin)}
+	A function to get all permutation of mutliple input arrays. This function is taken from \url{https://de.mathworks.com/matlabcentral/fileexchange/10064-allcomb-varargin}. For documentation see function documentation.
+	
 
-\subsubsection{Purpose}
-
-Generate the symbolic representation of a given channel of an mdtsObject.
-
-\subsubsection{Input Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	input & Input for the computation as struct which holds the handle to the mdtsObject as input.object and the required tag as input.tag \\ \hline
-	edges & Array of length(alphabet) + 1, which contains the edges for the quantization \\ \hline
-	alphabet & Array containing the symbols to assign to the values \\ \hline
-\end{longtabu}
-
-\subsubsection{Return Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	returnObject  &  symbRepObject with the symbolized channel \\ \hline
-\end{longtabu}
-
-\subsubsection{Description}
-
-Function to extract the data from the according channel of the mdtsObject specified in \textit{input}, assign every data point of this channel a symbol given in \textit{alphabet} according to the limits given in \textit{edges}.
 
 \subsection{applyMCLA}
 
-\subsubsection{Function Signature:}
+	\subsubsection{Function Signature:}
+	
+		\begin{center}
+			mclaSymbRepObject = applyMCLA(symbRepObjectsList)
+		\end{center}
 
-\begin{center}
-	mclaSymbRepObject = applyMCLA(symbRepObjectsList)
-\end{center}
+	\subsubsection{Purpose}
+	
+		Merge symbolic representations of different channel to one representation.
 
-\subsubsection{Purpose}
+	\subsubsection{Input Parameters:}
 
-Merge symbolic representations of different channel to one representation.
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			symbRepObjectsList & List of all SymbRepObjects, which are supposed to be merged, as cell array \\ \hline
+		\end{longtabu}
 
-\subsubsection{Input Parameters:}
+	\subsubsection{Return Parameters:}
 
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	symbRepObjectsList & List of all SymbRepObjects, which are supposed to be merged, as cell array \\ \hline
-\end{longtabu}
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			mclaSymbRepObject  &  SymbRepObject with merged symbolic representation \\ \hline
+		\end{longtabu}
 
-\subsubsection{Return Parameters:}
+	\subsubsection{Description}
 
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	mclaSymbRepObject  &  SymbRepObject with merged symbolic representation \\ \hline
-\end{longtabu}
+		Combines the symbols at every time stamp of an arbitrary number of channels to one symbolic representation.
+		
 
-\subsubsection{Description}
+\subsection{FigureManager\_hierarchicalSymRep}
+	A subclass of \textit{FigureManager} (see FigureManager toolbox). This is used to visualize hierarchical symbolic analysis. This is used in the function \textit{visuHierarchicalSymRep}-see \ref{ssec:visuHierarchicalSymRep}. This function is under development.
+	
+\subsection{bTrue = isHierarchicalSymRep(hierarchicalSymbolicData)}
+	A function which checks, if the given cell array \textit{hierarchicalSymbolicData} is a cell array of \textit{SymbRepObject}'s. Returns true if it is the case.
 
-Combines the symbols at every time stamp of an arbitrary number of channels to one symbolic representation.
+\subsection{gObjArr = plotSymRepObjectOnAllAxes(axes\_in, SymbRepObj, xTime, varargin)}
+
+	\subsubsection{Function Signature:}
+	
+		\begin{center}
+			gObjArr = plotSymRepObjectOnAllAxes(axes\_in, SymbRepObj, xTime, varargin)
+		\end{center}
+	
+	\subsubsection{Purpose}
+	
+		This function plots an instance of a SymbRepObject onto the given axes (using semi-transparent patches).
+	
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			axes\_in & the axes, on which the symbolic representation should be plotted. \\ \hline
+			SymbRepObj & a single instance of a SymbRepObject, which should be visualized on all given axes (axes\_in); \\ \hline
+			xTime & The abscissae values the symbolic representation refers to. This is used for plotting and has to be consistent with the axes\_in \\ \hline
+			plotSymbolName & (optional key-value, default: false)a boolean indicating if the Symbol name should be shown in the plot;\\ \hline
+			plotSymbolDuration & (optional key-value, default: false )a boolean indicating if the Symbol duration should be shown in the plot;\\ \hline
+			plotSymbolNameMinLength & (optional key-value, default: 0) an integer, symbols with a length less than  this value are not annotated with symbol name and/or duration;\\ \hline
+			colorDismiss & (optional key-value, default: no color) a color string or color triplet which should not be in the colors used for shading the plots.\\ \hline
+			additional inputs &  additional key-value pairs are forwarded to the matlab fill function.\\ \hline
+		\end{longtabu}
+		
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			gObjArr  &  an array containing the hggroups for all axes, containing the symbolic representation; \\ \hline
+		\end{longtabu}
+	
+	
+\subsection{gObjArr = plotSymRepObjectOnAxes(axes\_in, SymbRepObjs, xTime, varargin)}
+
+	\subsubsection{Function Signature:}
+	
+		\begin{center}
+			gObjArr = plotSymRepObjectOnAxes(axes\_in, SymbRepObjs, xTime, varargin)
+		\end{center}
+	
+	\subsubsection{Purpose}
+	
+		This function plots multiple instances of SymbRepObjects onto multiple axes. There is a SymbRepObject for each axes.
+	
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			axes\_in & the axes, on which the symbolic representations should be plotted. \\ \hline
+			SymbRepObjs & a cellarry which contains multiple instances of a  SymbRepObject. The SymbRepObjs{i} should be visualized in \\ \hline
+			xTime & The abscissae values the symbolic representation refers to. This is used for plotting and has to be consistent with the axes\_in \\ \hline
+			plotSymbolName & (optional key-value, default: false)a boolean indicating if the Symbol name should be shown in the plot;\\ \hline
+			plotSymbolDuration & (optional key-value, default: false )a boolean indicating if the Symbol duration should be shown in the plot;\\ \hline
+			plotSymbolNameMinLength & (optional key-value, default: 0) an integer, symbols with a length less than  this value are not annotated with symbol name and/or duration;\\ \hline
+			colorDismiss & (optional key-value, default: no color) a color string or color triplet which should not be in the colors used for shading the plots.\\ \hline
+			additional inputs &  additional key-value pairs are forwarded to the matlab fill function.\\ \hline
+		\end{longtabu}
+	
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			gObjArr  &  an array containing the hggroups for all axes, containing the symbolic representation; \\ \hline
+		\end{longtabu}
+				
+\subsection{symbRepChannel}
+
+	\subsubsection{Function Signature:}
+	
+		\begin{center}
+			returnObject = symbRepChannel(input, edges, alphabet)
+		\end{center}
+	
+	\subsubsection{Purpose}
+	
+		Generate the symbolic representation (instance of SymbRepObject) of a given channel of an mdtsObject.
+	
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			input & Input for the computation as struct which holds the handle to the mdtsObject as input.object and the required tag as input.tag \\ \hline
+			edges & Array of length(alphabet) + 1, which contains the edges for the quantization \\ \hline
+			alphabet & Array containing the symbols to assign to the values \\ \hline
+		\end{longtabu}
+
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			returnObject  &  symbRepObject with the symbolized channel \\ \hline
+		\end{longtabu}
+	
+	\subsubsection{Description}
+	
+		Function to extract the data from the according channel of the mdtsObject specified in \textit{input}, assign every data point of this channel a symbol given in \textit{alphabet} according to the limits given in \textit{edges}.
+
+\subsection{visuHierachicalSymRep}
+\label{ssec:visuHierarchicalSymRep}
+	
+	
+	\subsubsection{Function Signature:}
+		
+		\begin{center}
+			[Ax, fM, figH] = visuHierachicalSymRep(mdtsObj, HierarchicalSymRep, varargin)
+		\end{center}
+	
+	\subsubsection{Purpose}
+	
+		Function to plot hierarchical symbolic Representation for a given mdts-object. \textit{This function is under development}
+	
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			mdtsObj & an mdtsObject which is used to generate the plot and is the base for the hierarchical symbolic time series \\ \hline
+			HierarchicalSymRep & A cell which contains an instance of a SymbRepObject for each level and is used to visualize\\ \hline
+		\end{longtabu}
+	
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			Ax  &  The handles to the axes\\ \hline
+			fM  &  The handle to the used FigureManager instance\\ \hline
+			figH  &  The handle to generated figure\\ \hline
+		\end{longtabu}
+		
+\subsection{visuHierarchicalCompoundingOverview}
+
+
+	\subsubsection{Function Signature:}
+
+		\begin{center}
+			figureH = visuHierarchicalCompoundingOverview(compressionData, imageMatrix,varargin)
+		\end{center}
+
+	\subsubsection{Purpose}
+	
+		Function to plot hierarchical symbolic Representation overview. This function esembles different kpi's such as compression ratio and an image representation of all levels \textit{This function is under development}
+	
+	\subsubsection{Input Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			compressionData & A structure containing the hierarchical KPI's. This is returned by the class function \textit{SymbRepObject.genHierarchicalCompounding} and \textit{SymbRepObject.genHierarchicalCompounding2} \\ \hline
+			imageMatrix & A matrix which represents the hierarchical compoounding.  This is returned by the class function \textit{SymbRepObject.genHierarchicalCompounding} and \textit{SymbRepObject.genHierarchicalCompounding2}\\ \hline
+		\end{longtabu}
+	
+	\subsubsection{Return Parameters:}
+	
+		\begin{longtabu} to \textwidth {|c|X|}
+			\hline
+			\textbf{Parameter} & \textbf{Description} \\ \hline
+			\endhead
+			figureH  &  The handle to generated figure\\ \hline
+		\end{longtabu}
+	
 
 \section{Computations}
 
@@ -1064,17 +1640,27 @@ The structure of the \textit{segmentsObject} is illustrated in an example in fig
 \end{figure}
 
 This example shows two segments in the segmentsObject: One with the tag label "Machine Running" and one with "Machine Error". The segment "Machine Running" shows two instances of this segment: From time stamp 1 to time stamp 4 and from time stamp 8 to time stamp 9. "Machine Error" shows only one instance from time stamp 12 to time stamp 14. Note that the label in this object refers to the name of the segments - they do not correlate with the tags of the mdtsObject in any way!
+To each channel of the mdtsObject one segmentsObject can be assigned.
 
 \subsection{segmentsObject}
 \label{ChpDescriptionSegmentsObject}
 
 \subsubsection{Properties}
-
 \begin{enumerate}
-	\item \textbf{nTimeStamps:} Total number of time stamps in the segments. Must correlate with the number of time stamps in the data of the according mdtsObject.
-	\item \textbf{tags:} Names of the segments as row vector.
-	\item \textbf{starts:} Start indices of all instances of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all start indices of the according segment.
-	\item \textbf{durations:} Number of time stamps of every instance of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all durations of the according segment.
+	\item Core Data
+	\begin{enumerate}
+		\item \textbf{nTimestamps:} Total number of time stamps in the segments. Must correlate with the number of time stamps in the data of the according mdtsObject.
+		\item \textbf{tags:} Names of the segments as row vector.
+		\item \textbf{starts:} Will be renamed in future. Start indices of all instances of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all start indices of the according segment.
+		\item \textbf{durations:} Number of time stamps of every instance of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all durations of the according segment.
+	\end{enumerate}
+
+	\item Dependend Properties
+	\begin{enumerate}
+		\item \textbf{startInds:} Start indices of all instances of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all start indices of the according segment. 
+		\item \textbf{stopInds:} Stop indices of all instances of the according segment. Stored as cell array (row vector), where every cell contains a column vector representing all stop indices of the according segment.
+	\end{enumerate}
+	
 \end{enumerate}
 
 \subsubsection{Constructor}
@@ -1091,7 +1677,11 @@ This example shows two segments in the segmentsObject: One with the tag label "M
 	
 	\item \textbf{obj = addSegmentVector(tagName, bVec)}
 	
-	Adds a new segment given in the logical vector \textit{bVec} with label \textit{tagName}.
+	Adds new segments  given in the logical vector \textit{bVec} with label \textit{tagName} to the segmentsObject.
+	
+	\item \textbf{obj = addSegmentVectorStartDuration(tagName, startInds, durations)}
+	
+	Adds new segments  definded by the vectors \textit{startInds} and \textit{durations} with label \textit{tagName} to the segmentsObject.
 	
 	\item \textbf{bVec = getLogicalVector(tagName)}
 	
@@ -1127,46 +1717,64 @@ This example shows two segments in the segmentsObject: One with the tag label "M
 	
 	Extracts the time stamps given in \textit{intervalIndices} as $1 \times 2$ vector from all segments of the according object and returns the extracted segmentsObject.
 	
-\end{enumerate}
-
-\subsection{extractSegments}
-
-\subsubsection{Function Signature:}
-
-\begin{center}
-	arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, varargin)
-\end{center}
-
-\subsubsection{Purpose}
-
-Extract all instances of a certain segment
-
-\subsubsection{Input Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	inputObject & The mdtsObject containing the segmentsObject\\ \hline
-	segmentTag & The tag name of the required segment within the segmentsObject\\ \hline
-	varargin & The following parameters are available:
+	\item \textbf{[pa, tHandleAll] = plotOnAxes(axes\_in, xTime, varargin)}\\
+	This function plots  segments (segments object) on the given \textit{axesIn} as semi-transparent patches.
+	The input arguments are:
 	\begin{enumerate}
-		\item \textbf{frameLength:} Number of time stamps before the start and after the end of an instance of the segment, which define the range in which the instance is plotted. Default is 10.
-	\end{enumerate} \\ \hline
-\end{longtabu}
-
-\subsubsection{Return Parameters:}
-
-\begin{longtabu} to \textwidth {|c|X|}
-	\hline
-	\textbf{Parameter} & \textbf{Description} \\ \hline
-	\endhead
-	arrayOfmdtsObjects & Cell array of mdtsObjects, where every object represents one instance of the required segment\\ \hline
-\end{longtabu}
-
-\subsubsection{Description}
-
-Extracts every instance of the segment specified in \textit{segmentTag} and initializes a new mdtsObject for every such an instance from $start - frameLength$ to $start + duration + frameLength$ of the according instance. Embraces all initialized mdtsObjects in a cell array of mdtsObjects and returns this cell array.
+		\item \textbf{axes\_in}: the axes on which the segments should be plotted
+		\item \textbf{xTime}: the abscissae values used for plotting the patches and the indexes are referring to
+		\item \textbf{segmentTags}: optional key-value pair;  the names (nameIDs) of the segments to be plotted on all of the axes
+		\item \textbf{colorDismiss}: optional key-value pair;  color to be not used as patch color
+		\item \textbf{plotSegName}: optional key-value pair;  boolean flag indicating if the segment name (segTag) should be annotated as text within the patch
+		\item \textbf{plotSegDuration}: optional key-value pair;  boolean flag indicating if the segment duration should be annotated as text within the patch
+		\item \textbf{plotSegNameMinLength}: optional key-value pair;  minimum number of datapoints (duration) within a segment to annotate the segment name and/or duration
+		\item \textbf{additional key-value pairs}: these are forwarded to the Matlab fill command.
+	\end{enumerate}
+	returned are:
+	\begin{enumerate}
+		\item \textbf{paAll}: the handles to the plotted segments (handles to the patches objects).
+		\item \textbf{tHandleAll}: the handles to annotated text objects.
+	\end{enumerate}	
+\end{enumerate}
+%
+%\subsection{extractSegments}
+%
+%\subsubsection{Function Signature:}
+%
+%\begin{center}
+%	arrayOfmdtsObjects = extractSegments(inputObject, segmentTag, varargin)
+%\end{center}
+%
+%\subsubsection{Purpose}
+%
+%Extract all instances of a certain segment
+%
+%\subsubsection{Input Parameters:}
+%
+%\begin{longtabu} to \textwidth {|c|X|}
+%	\hline
+%	\textbf{Parameter} & \textbf{Description} \\ \hline
+%	\endhead
+%	inputObject & The mdtsObject containing the segmentsObject\\ \hline
+%	segmentTag & The tag name of the required segment within the segmentsObject\\ \hline
+%	varargin & The following parameters are available:
+%	\begin{enumerate}
+%		\item \textbf{frameLength:} Number of time stamps before the start and after the end of an instance of the segment, which define the range in which the instance is plotted. Default is 10.
+%	\end{enumerate} \\ \hline
+%\end{longtabu}
+%
+%\subsubsection{Return Parameters:}
+%
+%\begin{longtabu} to \textwidth {|c|X|}
+%	\hline
+%	\textbf{Parameter} & \textbf{Description} \\ \hline
+%	\endhead
+%	arrayOfmdtsObjects & Cell array of mdtsObjects, where every object represents one instance of the required segment\\ \hline
+%\end{longtabu}
+%
+%\subsubsection{Description}
+%
+%Extracts every instance of the segment specified in \textit{segmentTag} and initializes a new mdtsObject for every such an instance from $start - frameLength$ to $start + duration + frameLength$ of the according instance. Embraces all initialized mdtsObjects in a cell array of mdtsObjects and returns this cell array.
 
 \section{Supporting Functions}
 

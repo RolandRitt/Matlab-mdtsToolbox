@@ -172,12 +172,19 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
         function testsubsref(testCase)
             
             ts = duration(0, 0, 0, 50);
+            ts2 = duration(0, 0, 5);
             time = [datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts)));
                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts)));
                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts)));
                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts)));
                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts)));
                 datenum(datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts)))];
+            time2 = [datetime(2017, 7, 31, 14, 3, 3, 123 + 0 * seconds(ts2));
+                datetime(2017, 7, 31, 14, 3, 3, 123 + 1 * seconds(ts2));
+                datetime(2017, 7, 31, 14, 3, 3, 123 + 2 * seconds(ts2));
+                datetime(2017, 7, 31, 14, 3, 3, 123 + 3 * seconds(ts2));
+                datetime(2017, 7, 31, 14, 3, 3, 123 + 4 * seconds(ts2));
+               datetime(2017, 7, 31, 14, 3, 3, 123 + 5 * seconds(ts2))];
             data = [9, 8, 7, 6;
                 7, 6, 5, 4;
                 8, 7, 6, 5;
@@ -217,6 +224,7 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             end
             segmentsIn{2} = segments2;
             returns = mdtsCoreObject(time, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn, table());
+            returns2 =  mdtsCoreObject(time2, data, tags, units, ts, name, who, when, description, comment, tsEvents, symbReps, segmentsIn, table());
             
             extraction1 = returns(1, 1);
             extraction2 = returns(3, 2);
@@ -225,6 +233,12 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
             extraction5 = returns(2 : 4, 2 : 3);
             extraction6 = returns(2 : 4, tags{2});
             extraction7 = returns(3 : 5, tags(2 : 3));
+            extraction8 = returns2({datetime(2017, 7, 31, 14, 3, 3, 133), datetime(2017, 7, 31, 14, 3, 3, 143)},:);
+            extraction9 = returns2({datetime(2017, 7, 31, 14, 3, 3, 134), datetime(2017, 7, 31, 14, 3, 3, 143)},:);
+            extraction10 = returns2({datetime(2017, 7, 31, 14, 3, 3, 132), datetime(2017, 7, 31, 14, 3, 3, 143)},:);
+            extraction11 = returns2({datetime(2017, 7, 31, 14, 3, 3, 133), datetime(2017, 7, 31, 14, 3, 3, 142)},:);
+            extraction12 = returns2({datetime(2017, 7, 31, 14, 3, 3, 133), datetime(2017, 7, 31, 14, 3, 3, 144)},:);
+            
             
 %             for j=1:numel
                 testCase.verifyEqual(data(1, 1), extraction1.data);
@@ -355,6 +369,13 @@ classdef mdtsCoreObjectTestClass < matlab.unittest.TestCase
                         testCase.verifyEqual(extraction7.segments{j}.durations{2}, 3);
                     end
                 end
+                
+                testCase.verifyEqual(extraction8, returns2(3:5,:));
+                testCase.verifyEqual(extraction9, returns2(4:5,:));
+                testCase.verifyEqual(extraction10, returns2(3:5,:));
+                testCase.verifyEqual(extraction11, returns2(3:4,:));
+                testCase.verifyEqual(extraction12, returns2(3:5,:));
+                
 %                 testCase.verifyEqual(extraction7.segments{i}.starts{1}, 2);
 %                 testCase.verifyEqual(extraction7.segments{i}.durations{1}, 2);
             
